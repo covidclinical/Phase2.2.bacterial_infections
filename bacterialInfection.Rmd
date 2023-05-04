@@ -1,12 +1,12 @@
 ---
 title: "Bacterial infection"
 output:
-  word_document:
-    toc: yes
   html_document:
     code_folding: hide
     toc: yes
     toc_float: yes
+  word_document:
+    toc: yes
   pdf_document:
     toc: yes
 editor_options:
@@ -1251,38 +1251,4 @@ table1 %>%
   kable( booktabs = T) %>%
   kableExtra::kable_styling(latex_options = "striped") %>%
   kableExtra::group_rows(index = setNames(rle(table1$Category)[[1]], rle(table1$Category)[[2]]))
-```
-
-# Save the output in a RData file.
-
-```{r, eval=FALSE}
-length_hospitalisation_values <- all_codes_bacterial %>% 
-  dplyr::distinct( patient_num, n_hospitalisation, len_hospitalisation, period ) %>%
-  dplyr::mutate( siteid = site ) %>%
-  dplyr::select( len_hospitalisation, siteid, period )
-
-# add the site id as column for each of the output data frames
-bacteria_infection_codes_qc infection_output$siteid = site 
-count_icd$siteid = site 
-patient_count_bacterial_period_bacterial$siteid = site 
-patient_count_bacterial_period_bacterial_clear$siteid = site 
-bootstrapped_coefficients_df$siteid = site 
-bootstrapped_fitted_df$siteid = site 
-perc_disorder_group$siteid = site 
-patients_hospitalized_agg_sex_perc$siteid = site 
-table1$siteid = site 
-ratios_patients_with_without_bacterial$siteid = site 
-
-save( count_icd,
-      bacteria_infection_codes_qc infection_output,
-      ratios_patients_with_without_bacterial,
-      patient_count_bacterial_period_bacterial,
-      patient_count_bacterial_period_bacterial_clear,
-      bootstrapped_coefficients_df,
-      bootstrapped_fitted_df,
-      perc_disorder_group,
-      patients_hospitalized_agg_sex_perc,
-      table1,
-      length_hospitalisation_values,
-      file = paste0("./peds_bacterial_aggResults_", site, ".RData"))
 ```
