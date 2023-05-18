@@ -14,27 +14,7 @@ editor_options:
     wrap: 72
 ---
 
-# Setting up the R environment
-
-This includes:
-1. installing and loading the libraries
-2. set up the theme plots and color palettes 
-3. get the session info 
-4. save all these information in the logs file
-
-```{r libraries, message=FALSE, warning=FALSE, results='hide'}
-# Install packages
-source("../R/packagesInstallation.R")
-# set up the theme plots
-source("../R/theme_plots.R")
-# get the session information
-sessionInfo()
-```
-
-
-# Data retrieval
-
-## Inclusion criteria
+# Inclusion criteria
 The *patients* inclusion criteria is **patients < 18 at the date of visit**
 The *Visits* inclusion criteria includes:
     -   Inpatients (at least one hospitalization \> 1 day)
@@ -42,7 +22,7 @@ The *Visits* inclusion criteria includes:
     -   Start date: January 1st, 2019
     -   End date: March 31st, 2023
 
-## Variables that need to be checked/modified by each site
+# Variables that need to be checked/modified by each site
 Change the values of the following variables according to your site:
 1.  "folder_4ce_files": folder path where your phase 2.2 data files are
     located
@@ -66,6 +46,41 @@ data_update_date <- "2022-04-02"
 dir.output <- "/4ceData/bacterialInfection_outputs/"
 ```
 
+
+# Setting up the R environment
+
+This includes:
+1. create the output directory if it does not exist 
+2. create the logs file. 
+
+```{r}
+print("Creating the output folder if it doesn't exist")
+if (! dir.output %in% list.dirs()) {dir.create(dir.output)}
+
+sink(file = paste0( dir.output, "/logs_QC.txt"))
+print('##########')
+print(timestamp())
+print('##########')
+```
+
+3. installing and loading the libraries
+4. set up the theme plots and color palettes 
+5. get the session info 
+
+```{r libraries, message=FALSE, warning=FALSE, results='hide'}
+# Install packages
+source("../R/packagesInstallation.R")
+# set up the theme plots
+source("../R/theme_plots.R")
+# get the session information
+sessionInfo()
+# load the local variables
+source("../R/setUpVariableParameters.R")
+
+print(paste0( 'FourCePhase2.2bacterial Infection Code version: ', codeVersion ))
+print('##########')
+```
+
 ## Data loading
 We will use as input the 2.2 data files. Specifically:
 -   LocalPatientSummary
@@ -78,7 +93,7 @@ We will use as input the 2.2 data files. Specifically:
 ### Read the CSV input files
 source("../R/readInputFiles.R")
 
-getwd()
+print("Reading input files")
 files <- readInputFiles( path      = folder_4ce_files, 
                          separator = ",",
                          skip      = 0, 
@@ -88,22 +103,19 @@ files <- readInputFiles( path      = folder_4ce_files,
 demo_raw <- files[["patientSummary"]] %>% filter(cohort == "AllAdm")
 obs_raw <- files[["patientObservations"]] %>% filter(cohort == "AllAdm")
 clinical_raw <- files[["patientClinicalCourse"]] %>% filter(cohort == "AllAdm")
+
+print('Input files successfully read, patient data extracted')
 ```
 
 ### Select the specific ICD codes of interest
 ```{r}
 #### ICD codes bacterial conditions ####
+print('Reading ICD bacterial codes')
 icdCodes <- read.csv("../public-data/ICD_bacterial4.csv", header = TRUE, colClasses = "character") %>%
    dplyr::select( disorder_group = syndrome, ICD10_Code, description, bacterial_syndrome )
 ```
 
 ## Data-management
-
-Create the output directory if it does not exist. 
-```{r}
-print("Creating the output folder if it doesn't exist")
-if (! dir.output %in% list.dirs()) {dir.create(dir.output)}
-```
 
 ### Filtering on "inpatient" status
 
