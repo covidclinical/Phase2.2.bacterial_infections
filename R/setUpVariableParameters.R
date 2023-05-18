@@ -1,3 +1,6 @@
+### code version
+codeVersion <- "1.1.0"
+
 ## minimum days hospitalized
 min_hosp_days <- 1 
 
