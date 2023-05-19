@@ -1,0 +1,19 @@
+age_group	age
+infancy	0
+infancy	1
+infancy	2
+childhood	3
+childhood	4
+childhood	5
+middle childhood	6
+middle childhood	7
+middle childhood	8
+middle childhood	9
+middle childhood	10
+middle childhood	11
+adolescence	12
+adolescence	13
+adolescence	14
+adolescence	15
+adolescence	16
+adolescence	17
