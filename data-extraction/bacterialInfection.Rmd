@@ -420,6 +420,30 @@ nh_ado <- admission_plot_count(df = new_hospitalizations_ado,
 nh_ado
 ```
 
+## New admissions by age group
+```{r}
+new_hospitalizations_ado_sg <- clinical_table_ado %>%
+  dplyr::left_join( ageGroups, by = c( "age_time_diagnosis" = "age")) %>%
+  dplyr::group_by(patient_num, n_hospitalisation) %>%
+  dplyr::slice(which.min(time_p)) %>%
+  dplyr::filter( in_hospital == 1 ) %>%
+  dplyr::group_by( time_p, age_group ) %>%
+  dplyr::summarise(count = ifelse(n_distinct(patient_num) > obfuscation | isFALSE(obfuscation),
+                               n_distinct(patient_num), 
+                               0.5)) %>% 
+  dplyr::ungroup()
+
+
+admission_plot_count(df = new_hospitalizations_ado_sg, 
+                     x = "time_p",
+                     y = "count", 
+                     title = paste0("New admissions (per ", time_period, ")"), 
+                     y_title = "Patient Count")+
+    labs( subtitle = "(age range < 18)") +
+  ggplot2::facet_wrap( . ~ age_group )
+```
+
+
 ## Total hospitalize patients age range < 18
 
 Calculating the total number of patients hospitalized on a given day
@@ -441,6 +465,26 @@ th <- admission_plot_count(df = unique_patients_hospitalized,
                      y_title = "Patient Count") +
   labs( subtitle = "(age range 0-17)")
 th
+```
+
+## Total patients hospitalized per month and age group
+```{r}
+unique_patients_hospitalized_ag <- clinical_table_ado %>%
+  dplyr::left_join( ageGroups, by = c( "age_time_diagnosis" = "age")) %>%
+  dplyr::filter(date < end_date_plots &
+         date >= start_date_plots ) %>%
+  dplyr::group_by( time_p, age_group ) %>%
+  dplyr::summarise(count = ifelse(n_distinct(patient_num) > obfuscation | isFALSE(obfuscation),
+                               n_distinct(patient_num), 
+                               0.5))
+
+admission_plot_count(df = unique_patients_hospitalized_ag, 
+                     x = "time_p",
+                     y = "count", 
+                     title = paste0("Total hospitalization (per ", time_period, ")"), 
+                     y_title = "Patient Count") +
+  labs( subtitle = "(age range 0-17)") +
+  ggplot2::facet_wrap( . ~ age_group )
 ```
 
 ## Patient count filtered on bacterial infection disorders
