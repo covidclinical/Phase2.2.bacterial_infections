@@ -112,7 +112,25 @@ print('Input files successfully read, patient data extracted')
 #### ICD codes bacterial conditions ####
 print('Reading ICD bacterial codes')
 icdCodes <- read.csv("../public-data/ICD_bacterial4.csv", header = TRUE, colClasses = "character") %>%
-   dplyr::select( disorder_group = syndrome, ICD10_Code, description, bacterial_syndrome )
+   dplyr::mutate( concept_code = gsub("\\.", "",ICD10_Code)) %>%
+   dplyr::select( disorder_group = syndrome, ICD10_Code, concept_code, description, bacterial_syndrome )
+```
+
+
+## Calculate how many of the bacterial infection codes are in the dataset
+```{r}
+bacterialInfectionCodes <- unique( obs_raw %>%
+  dplyr::mutate( concept_code = gsub("[.]", "", concept_code ) ) %>%
+  dplyr::filter( concept_type == "DIAG-ICD10", 
+                 concept_code %in% icdCodes$concept_code ) %>%
+  dplyr::mutate( concept_code = as.character( concept_code ), 
+                 concept_length = nchar( concept_code ), 
+                 concept_check = ifelse( concept_length == 2 | concept_length > 8, "Check", "OK")) %>%
+  dplyr::select( concept_code, concept_length, concept_check) )
+
+summary(as.factor( bacterialInfectionCodes$concept_check ) )
+
+print( paste0("There are ", length(bacterialInfectionCodes$concept_code), " ICD10 bacterial infection codes out of the total ",length(unique(icdCodes$ICD10_Code)), " in the dataset"))
 ```
 
 ## Data-management
@@ -133,49 +151,26 @@ the clinical raw file
 source("../R/count_sequences_hospitalisation.R")
 stopifnot(all(clinical_raw$in_hospital == 1))
 hospitalisations_seq_df <- clinical_raw %>%
-  distinct(patient_num, cohort, days_since_admission, in_hospital) %>%
-  group_by(patient_num, cohort) %>%
-  group_modify(count_sequences_hospitalisation)
+  dplyr::distinct(patient_num, cohort, days_since_admission, in_hospital) %>%
+  dplyr::group_by(patient_num, cohort) %>%
+  dplyr::group_modify(count_sequences_hospitalisation)
 
 clinical_raw <- left_join(clinical_raw,
                           hospitalisations_seq_df,
                           by = c("patient_num", "cohort", "days_since_admission"))
 ```
 
-### Counting ICD10 bacterial infection codes in the obs_raw table
-
-```{r}
-### check that the ICD codes follow the regular expression [A-Z][0-9][0-9AB]\.?[0-9A-TV-Z]{0,4}
-codesToReview <- obs_raw %>% dplyr::filter(concept_type == "DIAG-ICD10",
-                                           ! grepl( "[A-Z][0-9][0-9AB]\\.?[0-9A-TV-Z]{0,4}", concept_code))
-print(codesToReview)
-
-
-### Remove dots from the input file
-icdCodes$concept_code <- gsub("\\.", "", icdCodes$ICD10_Code) 
-
-### Calculate how many of the bacterial infection codes are in the dataset
-bacterialInfectionCodes <- unique( obs_raw %>%
-  dplyr::mutate( concept_code = gsub("[.]", "", concept_code ) ) %>%
-  dplyr::filter( concept_type == "DIAG-ICD10", 
-                 concept_code %in% icdCodes$concept_code ) %>%
-  dplyr::mutate( concept_code = as.character( concept_code ), 
-                 concept_length = nchar( concept_code ), 
-                 concept_check = ifelse( concept_length == 2 | concept_length > 8, "Check", "OK")) %>%
-  dplyr::select( concept_code, concept_length, concept_check) )
-
-summary(as.factor( bacterialInfectionCodes$concept_check ) )
-
-print( paste0("There are ", length(bacterialInfectionCodes$concept_code), " ICD10 bacterial infection codes out of the total ",length(unique(icdCodes$ICD10_Code)), " in the dataset"))
-```
-
 ### Calculating age at hospitalization time
 
 ```{r}
 # Calculating patient age at the time of visit, assuming the age used is the patients' age at the time of extraction (last discharge date available in the data)
-obs_raw_age <- left_join(obs_raw, demo_raw[c("patient_num", "age")], by = c("patient_num")) %>% 
-  inner_join(clinical_raw[, c("patient_num", "days_since_admission", "calendar_date")], 
+# removing the dots from the ICD codes (if any)
+obs_raw_age <- left_join(obs_raw, demo_raw[c("patient_num", "age")], by = c("patient_num")) %>%
+  dplyr::mutate( concept_code = gsub("\\.", "",concept_code )) %>%
+  dplyr::inner_join(clinical_raw[, c("patient_num", "days_since_admission", "calendar_date")], 
             by = c("patient_num", "days_since_admission"))
+
+# estimate age at each diagnosis
 obs_raw_age$age_time_diagnosis <- obs_raw_age$age - floor(as.numeric(as.Date(data_update_date) - as.Date(obs_raw_age$calendar_date, dateFormat)) / 365.25)
 ```
 
@@ -192,11 +187,11 @@ We are selecting hospitalizations based on the following criteria:
 
 ```{r}
 obs_filtered_age <- obs_raw_age %>% 
-  filter(concept_type == 'DIAG-ICD10', 
+  dplyr::filter(concept_type == 'DIAG-ICD10', 
          days_since_admission >= 0)
 
 clinical_filtered <- clinical_raw %>%
-  filter( len_hospitalisation >= min_hosp_days, 
+  dplyr::filter( len_hospitalisation >= min_hosp_days, 
           cohort  %in% c("AllAdm")) %>%
   dplyr::mutate( date = as.Date( calendar_date, format = dateFormat ),
                  weeks = as.Date(cut( date, breaks = "week")),
@@ -221,22 +216,32 @@ if( time_period == "weeks"){
   # - ICD diagnosed outside of encounters
   # - patients from the patients table that don't have any encounters matching the criteria
 clinical_table <- clinical_filtered %>% 
-  inner_join( distinct(obs_filtered_age, patient_num, days_since_admission),  by = c("patient_num", "days_since_admission")) %>% 
-  distinct(patient_num, n_hospitalisation) %>% 
-  inner_join(clinical_filtered, by = c("patient_num", "n_hospitalisation"))
+  dplyr::inner_join( distinct(obs_filtered_age, patient_num, days_since_admission),  
+                        by = c("patient_num", "days_since_admission")) %>% 
+  dplyr::distinct(patient_num, n_hospitalisation) %>% 
+  dplyr::inner_join(clinical_filtered, by = c("patient_num", "n_hospitalisation"))
+
 # Adding new columns
 observation_table <- obs_filtered_age %>% 
-  inner_join(clinical_table[, c("patient_num", "days_since_admission")], by = c("patient_num", "days_since_admission"))
+  dplyr::inner_join(clinical_table[, c("patient_num", "days_since_admission")], 
+                    by = c("patient_num", "days_since_admission"))
+
 demographic_table <- demo_raw %>% 
-  inner_join(distinct(clinical_table, patient_num), by = "patient_num")
+  dplyr::inner_join(distinct(clinical_table, patient_num), by = "patient_num")
+
 all_codes <- observation_table %>% 
-   inner_join(select(clinical_table, -calendar_date), by = c("patient_num", "days_since_admission")) %>% 
-   inner_join(demographic_table[, c("patient_num", "sex")], by = "patient_num")
+   dplyr::inner_join(select(clinical_table, -calendar_date), 
+                     by = c("patient_num", "days_since_admission")) %>% 
+   dplyr::inner_join(demographic_table[, c("patient_num", "sex")], 
+                     by = "patient_num")
 ```
 
-
-
+## QC
 ```{r}
+print("Starting QC")
+source("../R/qc_summary.R")
+qc_summary( input_df = all_codes, obfuscation_threshold = obfuscation, dir.output = dir.output  )
+
 stopifnot(unique(all_codes$cohort) == "AllAdm")
 stopifnot(unique(all_codes$in_hospital) == 1)
 stopifnot(unique(all_codes$len_hospitalisation >= min_hosp_days))
@@ -247,6 +252,7 @@ stopifnot(length(unique(all_codes$patient_num)) == length(unique(clinical_table$
 stopifnot(nrow(distinct(all_codes, patient_num, n_hospitalisation)) == nrow(distinct(clinical_table, patient_num, n_hospitalisation)))
 stopifnot(nrow(distinct(all_codes, patient_num, days_since_admission)) == nrow(distinct(observation_table, patient_num, days_since_admission)))
 ```
+
 
 ### Filtering on age less than 18
 
