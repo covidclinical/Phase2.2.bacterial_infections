@@ -365,7 +365,7 @@ all_codes_desc <- all_codes_ado %>%
                  period, time_p, disorder_group, description, icd_code_category )
 
 all_codes_bacterial <- all_codes_desc %>% 
-  filter(concept_code %in% icdCodes$concept_code)
+  dplyr::filter(concept_code %in% icdCodes$concept_code)
 ```
 
 # Results
@@ -375,60 +375,39 @@ all_codes_bacterial <- all_codes_desc %>%
 First calculation: total number of patients, matching the inclusion
 criteria, admitted on one day (without filtering by any disease
 subtype). Summed up over one week, or one month depending on the time
-unit chosen. Not filtered on qge.
-
-```{r}
-admission_plot_count <- function(df,
-                               x,
-                               y, 
-                               title,
-                               y_title,
-                               size = NULL, 
-                               color = NULL){
-  plot <- ggplot(df, aes_string(x = x, y = y, color = color, size = size))  +
-    geom_point() +
-    scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y", limits = c(start_date_plots, end_date_plots), expand = expansion(mult = 0.01, add = 1)) +
-    theme(axis.text.x=element_text(angle=60, hjust=1))+
-    labs(x = "Calendar date",
-         y = y_title, 
-       title = title) 
-  return(plot)
-}
-
-```
+unit chosen. Not filtered on age.
 
 ```{r}
 new_hospitalizations <- clinical_table %>%
-  group_by(patient_num, n_hospitalisation) %>%
-  slice(which.min(time_p)) %>%
-  filter( in_hospital == 1 ) %>%
-    group_by( time_p ) %>%
-  summarise(count = ifelse(n_distinct(patient_num) > obfuscation | isFALSE(obfuscation),
+  dplyr::group_by(patient_num, n_hospitalisation) %>%
+  dplyr::slice(which.min(time_p)) %>%
+  dplyr::filter( in_hospital == 1 ) %>%
+  dplyr::group_by( time_p ) %>%
+  dplyr::summarise(count = ifelse(n_distinct(patient_num) > obfuscation | isFALSE(obfuscation),
                                n_distinct(patient_num), 
                                0.5)) %>% 
-  ungroup()
+  dplyr::ungroup()
 
+source("../R/admission_plot_count.R")
 nh <- admission_plot_count(df = new_hospitalizations, 
                      x = "time_p",
                      y = "count", 
                      title = paste0("New admissions (per ", time_period,")"), 
                      y_title = "Patient Count")
-
 nh
 ```
 
 ## New admissions age range 0-17
-
 ```{r}
 new_hospitalizations_ado <- clinical_table_ado %>%
-  group_by(patient_num, n_hospitalisation) %>%
-  slice(which.min(time_p)) %>%
-  filter( in_hospital == 1 ) %>%
-    group_by( time_p ) %>%
-  summarise(count = ifelse(n_distinct(patient_num) > obfuscation | isFALSE(obfuscation),
+  dplyr::group_by(patient_num, n_hospitalisation) %>%
+  dplyr::slice(which.min(time_p)) %>%
+  dplyr::filter( in_hospital == 1 ) %>%
+  dplyr::group_by( time_p ) %>%
+  dplyr::summarise(count = ifelse(n_distinct(patient_num) > obfuscation | isFALSE(obfuscation),
                                n_distinct(patient_num), 
                                0.5)) %>% 
-  ungroup()
+  dplyr::ungroup()
 
 
 nh_ado <- admission_plot_count(df = new_hospitalizations_ado, 
