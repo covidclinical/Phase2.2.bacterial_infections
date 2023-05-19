@@ -255,28 +255,38 @@ stopifnot(nrow(distinct(all_codes, patient_num, days_since_admission)) == nrow(d
 
 
 ### Filtering on age less than 18
-
 ```{r}
+# add the age groups
+ageGroups <- read.delim("../public-data/ageGroups.txt", sep="\t",  header = TRUE) 
+
 # Filtering hospitalizations where patient age is in inclusion criteria
-observation_table_ado <- filter(observation_table, age_time_diagnosis < 18)
+observation_table_ado <- filter(observation_table, age_time_diagnosis < 18) %>%
+  dplyr::left_join( ageGroups, by = c("age_time_diagnosis" = "age")) 
+
+### print checks
+print("Age range before filtering")
+print(summary(observation_table$age_time_diagnosis))
+
+print("Age range after filtering")
+print(summary(observation_table_ado$age_time_diagnosis))
 
 # Filtering observation tables which patient_num and days_since_admission are still in clinical table after filtering on age
-
 clinical_test <- clinical_table[, c("patient_num", "n_hospitalisation", "days_since_admission")] %>% 
-  inner_join(distinct(observation_table_ado, patient_num, days_since_admission, age_time_diagnosis), 
+  dplyr::inner_join(distinct(observation_table_ado, patient_num, days_since_admission, age_time_diagnosis), 
             by = c("patient_num", "days_since_admission")) %>% 
-  distinct(patient_num, n_hospitalisation, age_time_diagnosis)
+  dplyr::distinct(patient_num, n_hospitalisation, age_time_diagnosis)
 
 clinical_table_ado <- clinical_table %>% 
-  inner_join(clinical_test,
+  dplyr::inner_join(clinical_test,
              by = c("patient_num", "n_hospitalisation"))
   
 # Filtering observation tables which patient_num are still in clinical table after filtering on age
 demographic_table_ado <- demographic_table %>% 
-  inner_join(distinct(clinical_table_ado, patient_num), by = "patient_num")
+  dplyr::inner_join(distinct(clinical_table_ado, patient_num), by = "patient_num")
 
+# Filtering all_codes by age
 all_codes_ado <- all_codes %>% 
-   filter(age_time_diagnosis <  18)
+   dplyr::filter(age_time_diagnosis <  18)
 ```
 
 ```{r}
@@ -298,9 +308,8 @@ code, number of patients diagnosed with each code and the date range in
 which the code was used.
 
 ```{r}
-#filter the whole dataset to only mental codes
+#filter the whole dataset to only bacterial infection codes
 bacteria_infection_codes_qc <- all_codes_ado %>% 
-  mutate( concept_code = gsub("[.]", "", concept_code)) %>%
   filter( concept_code %in% bacterialInfectionCodes$concept_code )
 
 bacteria_infection_codes_qc_output <- bacteria_infection_codes_qc %>%
