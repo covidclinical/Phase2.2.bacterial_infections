@@ -180,7 +180,7 @@ We are selecting hospitalizations based on the following criteria:
 
 -   Associated with at least 1 ICD code
 
--   With a duration of hospitalization spanning over at least two
+-   With a duration of hospitalization spanning over at least one
     consecutive days
 
 -   Starting on or after 2019/01/01
