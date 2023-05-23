@@ -483,7 +483,7 @@ count_disorder_group <- all_codes_desc %>%
   summarise(count_dg =  ifelse(n_distinct(hospitalization_id) > obfuscation | isFALSE(obfuscation),
                                n_distinct(hospitalization_id), 
                                0.5)) %>%
-  mutate( period = ifelse( time_p < pandemic_start_date,
+  dplyr::mutate( period = ifelse( time_p < pandemic_start_date,
                            "before_pandemic",
                            "during_pandemic")
   )
@@ -622,6 +622,51 @@ hospitalized_agg_sex_perc %>%
   theme(legend.position = "bottom") + 
   geom_smooth(method = "lm", formula = y ~ splines::ns(x, 2), se = TRUE, aes(colour=sex), colour= "black", size = 0.5)
 ```
+
+## Bacterial infection conditions by age group
+
+
+### Count
+
+```{r}
+# counts per time period and sex
+hospitalizations_agg_age <- all_codes_desc %>%
+  dplyr::filter( icd_code_category == "bacterial", 
+          time_p < end_date_plots &
+         time_p >= start_date_plots ) %>%
+    group_by( time_p, age_group ) %>%
+  summarise(count_age =  ifelse(n_distinct(hospitalization_id) > obfuscation | isFALSE(obfuscation),
+                               n_distinct(hospitalization_id), 
+                               0.5)) %>%
+  dplyr::mutate( period = ifelse( time_p < pandemic_start_date,
+                           "before_pandemic",
+                           "during_pandemic")
+  )
+
+
+hospitalizations_agg_age %>%  
+  ggplot(aes(x = time_p, y= count_age, fill = period, group = age_group )) +
+  geom_bar(stat = "identity")+
+  geom_vline(xintercept = as.Date(pandemic_start_date),
+             linetype = "dashed") +
+  geom_smooth(method = "lm", formula = y ~ splines::ns(x, 2), se= TRUE, aes(colour=period), colour= "black", size = 0.5) + 
+  labs(x = time_period,
+       y = "Number of Hospitalizations",
+       title = paste0("Per ", time_period, " number of hospitazations with bacterial infection related ICD codes"), 
+       subtitle = "Grouped by age group") + 
+  ylim(0, NA) + 
+  facet_wrap(. ~ age_group, scales = "free_y") +
+  theme(strip.text.x = element_text(size = 10),
+        axis.text.x = element_text(size = 5, angle = 90), 
+        axis.text.y = element_text(size = 6), 
+        axis.title.x = element_text(size = 10),
+        axis.title.y = element_text(size = 10),
+        title = element_text(size = 12),
+        plot.subtitle = element_text(size = 11),
+        legend.position = "none") +
+  scale_fill_manual(values = cbPalette[-1])
+```
+
 
 ## Table 1
 
