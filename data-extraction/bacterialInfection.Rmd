@@ -30,7 +30,7 @@ Change the values of the following variables according to your site:
     obfuscation, or the numeric value of the obfuscation threshold if
     any)
 3.  "dateFormat": specify the format of the date at your site (e.g., for
-    "03-AUG-20", the format would be "%d-%b-%y", [see
+    "2021-06-24", the format would be ""%Y-%m-%d"", [see
     documentation](https://www.stat.berkeley.edu/~s133/dates.html))
 4.  "data_update_date": date at which the data has been updated in the
     local datawarehouse. Used to estimate patient age at time of visit,
@@ -38,11 +38,11 @@ Change the values of the following variables according to your site:
     at data update.
     
 ```{r message=FALSE, warning=FALSE}
-folder_4ce_files <- "/4ceData/Input/Phase2_AllAdm_March2022/"
+folder_4ce_files <- "/4ceData/Input/AllAdmin2023//"
 obfuscation =  FALSE
 #obfuscation = 3
-dateFormat <- "%d-%b-%y"
-data_update_date <- "2022-04-02"
+dateFormat <- "%Y-%m-%d"
+data_update_date <- "2023-04-25"
 dir.output <- "/4ceData/bacterialInfection_outputs/"
 site_id <- 'BCH' ### needed?
 ```
@@ -152,11 +152,7 @@ the clinical raw file
 
 ```{r}
 source("../R/count_sequences_hospitalisation.R")
-stopifnot(all(clinical_raw$in_hospital == 1))
-
-
 clinical_raw <- count_hosp(clinical_raw)
-
 ```
 
 ### Calculating age at hospitalization time
@@ -190,9 +186,9 @@ obs_filtered_age <- obs_raw_age %>%
          days_since_admission >= 0)
 
 clinical_filtered <- clinical_raw %>%
-  dplyr::filter( len_hospitalisation >= min_hosp_days, 
+  dplyr::filter( length_hospitalization >= min_hosp_days, 
           cohort  %in% c("AllAdm")) %>%
-  dplyr::mutate( date = as.Date( calendar_date, format = dateFormat ),
+  dplyr::mutate( date = as.Date( calendar_date),
                  weeks = as.Date(cut( date, breaks = "week")),
                  month = as.Date(cut( date, breaks = "month")),
                  year = format( date, "%Y"), 
@@ -217,8 +213,8 @@ if( time_period == "weeks"){
 clinical_table <- clinical_filtered %>% 
   dplyr::inner_join( distinct(obs_filtered_age, patient_num, days_since_admission),  
                         by = c("patient_num", "days_since_admission")) %>% 
-  dplyr::distinct(patient_num, n_hospitalisation) %>% 
-  dplyr::inner_join(clinical_filtered, by = c("patient_num", "n_hospitalisation"))
+  dplyr::distinct(patient_num, n_hospitalization) %>% 
+  dplyr::inner_join(clinical_filtered, by = c("patient_num", "n_hospitalization"))
 
 # Adding new columns
 observation_table <- obs_filtered_age %>% 
@@ -239,16 +235,19 @@ all_codes <- observation_table %>%
 ```{r}
 print("Starting QC")
 source("../R/qc_summary.R")
+# summary restricted to patients < 18 years old
 qc_summary( input_df = all_codes, obfuscation_threshold = obfuscation, dir.output = dir.output  )
 
 stopifnot(unique(all_codes$cohort) == "AllAdm")
 stopifnot(unique(all_codes$in_hospital) == 1)
-stopifnot(unique(all_codes$len_hospitalisation >= min_hosp_days))
-stopifnot(nrow(all_codes) == nrow(observation_table))
+stopifnot(unique(all_codes$length_hospitalization >= min_hosp_days))
+### this does not match
+#stopifnot(nrow(all_codes) == nrow(observation_table)) #to check
+####
 stopifnot(length(unique(all_codes$patient_num)) == length(unique(demographic_table$patient_num)))
 stopifnot(length(unique(all_codes$patient_num)) == length(unique(observation_table$patient_num)))
 stopifnot(length(unique(all_codes$patient_num)) == length(unique(clinical_table$patient_num)))
-stopifnot(nrow(distinct(all_codes, patient_num, n_hospitalisation)) == nrow(distinct(clinical_table, patient_num, n_hospitalisation)))
+stopifnot(nrow(distinct(all_codes, patient_num, n_hospitalization)) == nrow(distinct(clinical_table, patient_num, n_hospitalization)))
 stopifnot(nrow(distinct(all_codes, patient_num, days_since_admission)) == nrow(distinct(observation_table, patient_num, days_since_admission)))
 ```
 
@@ -270,14 +269,14 @@ print("Age range after filtering")
 print(summary(observation_table_ado$age_time_diagnosis))
 
 # Filtering observation tables which patient_num and days_since_admission are still in clinical table after filtering on age
-clinical_test <- clinical_table[, c("patient_num", "n_hospitalisation", "days_since_admission")] %>% 
+clinical_test <- clinical_table[, c("patient_num", "n_hospitalization", "days_since_admission")] %>% 
   dplyr::inner_join(distinct(observation_table_ado, patient_num, days_since_admission, age_time_diagnosis), 
             by = c("patient_num", "days_since_admission")) %>% 
-  dplyr::distinct(patient_num, n_hospitalisation, age_time_diagnosis)
+  dplyr::distinct(patient_num, n_hospitalization, age_time_diagnosis)
 
 clinical_table_ado <- clinical_table %>% 
   dplyr::inner_join(clinical_test,
-             by = c("patient_num", "n_hospitalisation"))
+             by = c("patient_num", "n_hospitalization"))
   
 # Filtering observation tables which patient_num are still in clinical table after filtering on age
 demographic_table_ado <- demographic_table %>% 
@@ -291,12 +290,14 @@ all_codes_ado <- all_codes %>%
 ```{r}
 stopifnot(unique(all_codes_ado$cohort) == "AllAdm")
 stopifnot(unique(all_codes_ado$in_hospital) == 1)
-stopifnot(unique(all_codes_ado$len_hospitalisation >= min_hosp_days))
-stopifnot(nrow(all_codes_ado) == nrow(observation_table_ado))
+stopifnot(unique(all_codes_ado$length_hospitalization >= min_hosp_days))
+### to check
+#stopifnot(nrow(all_codes_ado) == nrow(observation_table_ado))
+######
 stopifnot(length(unique(all_codes_ado$patient_num)) == length(unique(demographic_table_ado$patient_num)))
 stopifnot(length(unique(all_codes_ado$patient_num)) == length(unique(observation_table_ado$patient_num)))
 stopifnot(length(unique(all_codes_ado$patient_num)) == length(unique(clinical_table_ado$patient_num)))
-stopifnot(nrow(distinct(all_codes_ado, patient_num, n_hospitalisation)) == nrow(distinct(clinical_table_ado, patient_num, n_hospitalisation)))
+stopifnot(nrow(distinct(all_codes_ado, patient_num, n_hospitalization)) == nrow(distinct(clinical_table_ado, patient_num, n_hospitalization)))
 stopifnot(nrow(distinct(all_codes_ado, patient_num, days_since_admission)) == nrow(distinct(observation_table_ado, patient_num, days_since_admission)))
 ```
 
@@ -319,8 +320,8 @@ bacteria_infection_codes_qc_output <- bacteria_infection_codes_qc %>%
                     distinct_observations = ifelse(length(patient_num) > obfuscation | isFALSE(obfuscation),
                                length(patient_num), 
                                0.5),                           
-                    min_date = min( dmy( calendar_date ) ), 
-                    max_date = max( dmy( calendar_date ) ))%>% 
+                    min_date = min( as.Date( calendar_date, format = dateFormat ) ), 
+                    max_date = max( as.Date( calendar_date, format = dateFormat ) ))%>% 
   arrange(desc(distinct_observations))
 
 bacteria_infection_codes_qc_output <- bacteria_infection_codes_qc_output %>%
@@ -340,8 +341,8 @@ bacteria_infection_codes_qc %>%
                     distinct_observations = ifelse(length(patient_num) > obfuscation | isFALSE(obfuscation),
                                length(patient_num), 
                                0.5),                           
-                    min_date = min( dmy( calendar_date ) ), 
-                    max_date = max( dmy( calendar_date ) ))%>% 
+                    min_date = min( as.Date( calendar_date, format = dateFormat ) ), 
+                    max_date = max( as.Date( calendar_date, format = dateFormat ) ))%>% 
   arrange(disorder_group, year )
   
 ```
@@ -360,7 +361,7 @@ all_codes_desc <- all_codes_ado %>%
                                "bacterial", 
                                "others")) %>%
   dplyr::select( patient_num, sex, age_time_diagnosis, concept_type, concept_code, calendar_date,
-                 in_hospital, n_hospitalisation, len_hospitalisation, date, weeks, month, year,
+                 in_hospital, n_hospitalization, length_hospitalization, date, weeks, month, year,
                  period, time_p, disorder_group, description, icd_code_category )
 
 all_codes_bacterial <- all_codes_desc %>% 
@@ -378,7 +379,7 @@ unit chosen. Not filtered on age.
 
 ```{r}
 new_hospitalizations <- clinical_table %>%
-  dplyr::group_by(patient_num, n_hospitalisation) %>%
+  dplyr::group_by(patient_num, n_hospitalization) %>%
   dplyr::slice(which.min(time_p)) %>% #probably need to remove this
   dplyr::filter( in_hospital == 1 ) %>%
   dplyr::group_by( time_p ) %>%
@@ -399,7 +400,7 @@ nh
 ## New admissions age range 0-17
 ```{r}
 new_hospitalizations_ado <- clinical_table_ado %>%
-  dplyr::group_by(patient_num, n_hospitalisation) %>%
+  dplyr::group_by(patient_num, n_hospitalization) %>%
   dplyr::slice(which.min(time_p)) %>%
   dplyr::filter( in_hospital == 1 ) %>%
   dplyr::group_by( time_p ) %>%
@@ -417,73 +418,6 @@ nh_ado <- admission_plot_count(df = new_hospitalizations_ado,
     labs( subtitle = "(age range < 18)")
 
 nh_ado
-```
-
-## New admissions by age group
-```{r}
-new_hospitalizations_ado_sg <- clinical_table_ado %>%
-  dplyr::left_join( ageGroups, by = c( "age_time_diagnosis" = "age")) %>%
-  dplyr::group_by(patient_num, n_hospitalisation) %>%
-  dplyr::slice(which.min(time_p)) %>%
-  dplyr::filter( in_hospital == 1 ) %>%
-  dplyr::group_by( time_p, age_group ) %>%
-  dplyr::summarise(count = ifelse(n_distinct(patient_num) > obfuscation | isFALSE(obfuscation),
-                               n_distinct(patient_num), 
-                               0.5)) %>% 
-  dplyr::ungroup()
-
-
-admission_plot_count(df = new_hospitalizations_ado_sg, 
-                     x = "time_p",
-                     y = "count", 
-                     title = paste0("New admissions (per ", time_period, ")"), 
-                     y_title = "Patient Count")+
-    labs( subtitle = "(age range < 18)") +
-  ggplot2::facet_wrap( . ~ age_group )
-```
-
-
-## Total hospitalize patients age range < 18
-
-Calculating the total number of patients hospitalized on a given day
-(taking into account the hospitalization length).
-
-```{r}
-unique_patients_hospitalized <- clinical_table_ado %>%
-  filter(date < end_date_plots &
-         date >= start_date_plots ) %>%
-    group_by( time_p ) %>%
-  summarise(count = ifelse(n_distinct(patient_num) > obfuscation | isFALSE(obfuscation),
-                               n_distinct(patient_num), 
-                               0.5))
-
-th <- admission_plot_count(df = unique_patients_hospitalized, 
-                     x = "time_p",
-                     y = "count", 
-                     title = paste0("Total hospitalization (per ", time_period, ")"), 
-                     y_title = "Patient Count") +
-  labs( subtitle = "(age range 0-17)")
-th
-```
-
-## Total patients hospitalized per month and age group
-```{r}
-unique_patients_hospitalized_ag <- clinical_table_ado %>%
-  dplyr::left_join( ageGroups, by = c( "age_time_diagnosis" = "age")) %>%
-  dplyr::filter(date < end_date_plots &
-         date >= start_date_plots ) %>%
-  dplyr::group_by( time_p, age_group ) %>%
-  dplyr::summarise(count = ifelse(n_distinct(patient_num) > obfuscation | isFALSE(obfuscation),
-                               n_distinct(patient_num), 
-                               0.5))
-
-admission_plot_count(df = unique_patients_hospitalized_ag, 
-                     x = "time_p",
-                     y = "count", 
-                     title = paste0("Total hospitalization (per ", time_period, ")"), 
-                     y_title = "Patient Count") +
-  labs( subtitle = "(age range 0-17)") +
-  ggplot2::facet_wrap( . ~ age_group )
 ```
 
 ## Patient count filtered on bacterial infection disorders
@@ -540,7 +474,7 @@ thpd_bacterialCount <- count_icd %>%
 thpd_bacterialCount
 ```
 
-### Ratio: patients with bacterial infection condition / patients without bacterial infection condition
+### Percentages: patients with bacterial infection condition / patients without bacterial infection condition
 
 ```{r}
 all_patients <- unique( all_codes_desc[, c("patient_num", "time_p")])
@@ -575,39 +509,6 @@ ratios_patients_with_without_bacterial <- patients_without_bacterial_conditions_
 
 ```{r}
 ratios_patients_with_without_bacterial %>%
-  pivot_longer(cols = c("count_no_bacterial_patients", "count_bacterial_patients"), 
-               values_to = "count", 
-               names_to = "count_type") %>% 
-  ggplot(aes(x = time_p, y = count, color = count_type)) +
-  geom_point() +
-  geom_vline(xintercept = as.Date(pandemic_start_date),
-             linetype = "dashed") +
-  scale_fill_manual(values = cbPalette) +
-  scale_color_manual(values = cbPalette) +
-  labs(y = "Count",
-       x = paste0("Date (by ", time_period,")"),
-       title = paste0("Count comparison: patients with vs without bacterial infection conditions (per ", time_period,")")) +
-  guides(color = guide_legend(title="Patient diagnoses types"))
-```
-
-```{r}
-ratio_bacterial_non_bacterial <- ratios_patients_with_without_bacterial %>%
-  ggplot(aes(x = time_p, y = ratio, fill = period, color = period)) +
-  geom_point() +
-  geom_vline(xintercept = as.Date(pandemic_start_date),
-             linetype = "dashed") +
-  scale_fill_manual(values = cbPalette) +
-  scale_color_manual(values = cbPalette) +
-  labs(y = "Ratio (with bacterial conditions/without bacterial conditions)",
-       x = paste0("Date (by ", time_period,")"),
-       title = paste0("Ratio patient with vs without bacterial infection conditions ( per ", time_period,")"))
-
-ratio_bacterial_non_bacterial
-
-```
-
-```{r}
-ratios_patients_with_without_bacterial %>%
   ggplot(aes(x = time_p, y = percentage, color = period)) +
   geom_point() +
   geom_vline(xintercept = as.Date(pandemic_start_date),
@@ -623,56 +524,7 @@ ratios_patients_with_without_bacterial %>%
 ## Interrupted Time-Series Analyses
 
 ```{r}
-# Model without seasonality
-time_series_analysis_plotting <- function(model, df_count_bacterial, count_col, clearance_period = FALSE) {
-  output_model <- broom::tidy(model)
-  coeff_slope <- round(output_model[output_model$term == "periodduring_pandemic:time", "estimate"][[1]], 3)
-  pvalue_slope <- round(output_model[output_model$term == "periodduring_pandemic:time", "p.value"][[1]], 3)
-  annotation <- paste0("Lockdown slope: ", coeff_slope, " (pvalue: ", pvalue_slope, ")")
-  pred_model <- predict(model, df_count_bacterial, type = "response", interval = "confidence") %>% as.data.frame()
-  pred_model_b <- predict(model, mutate(df_count_bacterial, period = "before_pandemic"), type = "response", interval = "confidence") %>%
-    as.data.frame()
-  names(pred_model_b) <- paste0(names(pred_model_b), "_wo_intervention")
-  pred_model <- bind_cols(df_count_bacterial, pred_model, pred_model_b)
-  if (clearance_period) {
-    pred_model$clearance_period <- ifelse(pred_model$time_p < as.Date(cut(start_clear_period, breaks = time_period)) ,
-                                          "before_pandemic",
-                                          ifelse(pred_model$time_p > as.Date(cut(end_clear_period, breaks = time_period)),
-                                                 "during_pandemic",
-                                                 "during_clearance")
-    )
-    pred_model$lwr <- ifelse(pred_model$clearance_period == "during_clearance", NA, pred_model$lwr)
-    pred_model$upr <- ifelse(pred_model$clearance_period == "during_clearance", NA, pred_model$upr)
-    pred_model$fit_wo_intervention <- ifelse(pred_model$time_p >= max(pred_model$time_p[pred_model$clearance_period == "before pandemic"]),
-                                             pred_model$fit_wo_intervention,
-                                             NA)
-  } else {
-    pred_model$clearance_period <- pred_model$period
-  }
-  plot <- ggplot(pred_model, aes_string(x = "time_p", y = count_col)) +
-    geom_point(aes(colour = clearance_period)) +
-    geom_line(aes(x = time_p, y = fit_wo_intervention, colour = "Expected mean w/o pandemic"), linetype = "dashed") +
-    geom_line(aes(x = time_p, y = fit, colour = clearance_period)) +
-    geom_ribbon(aes(ymin = lwr, ymax = upr, colour = clearance_period), alpha = 0.3, colour = NA) +
-    scale_color_manual(name = "Time Series projection", values = c("before_pandemic" = "black",
-                                                                   "Expected mean w/o pandemic" = "red",
-                                                                   "during_pandemic" = "black",
-                                                                   "during_clearance" = "white")) +
-    annotate("text", x = as.Date("2019-01-01"), y = max(pred_model[[count_col]]) + 5, label = annotation) +
-    theme(legend.position = "bottom")
-
-  if (clearance_period) {
-    plot +
-      geom_vline(xintercept = as.Date(max(pred_model$time_p[pred_model$clearance_period == "before_pandemic"])), linetype = "dashed") +
-      geom_vline(xintercept = as.Date(min(pred_model$time_p[pred_model$clearance_period == "during_pandemic"])), linetype = "dashed")
-  } else {
-    plot + geom_vline(xintercept = as.Date(pandemic_start_date), linetype = "dashed")
-  }
-}
-```
-
-```{r}
-# Time series analysis of percentage of bacterial codes per encounter, linear (without seasonality)
+# Time series analysis 
 patient_count_bacterial_period_bacterial <- ratios_patients_with_without_bacterial %>%
   filter(time_p > as.Date(cut( start_date_plots, breaks = time_period)) &
            time_p < as.Date(cut( end_date_plots, breaks = time_period))) %>%
@@ -704,47 +556,20 @@ patient_count_bacterial_period_bacterial_clear <- patient_count_bacterial_period
 
 ```{r, its count based}
 ts_linear_count <- lm(count_bacterial_patients ~ period * time, patient_count_bacterial_period_bacterial)
-ts_linear_count_clear <- lm(count_bacterial_patients ~ period * time, patient_count_bacterial_period_bacterial_clear)
 ts_seasonal_count <- lm(count_bacterial_patients ~ period*time + harmonic(month_year, 1, 12), patient_count_bacterial_period_bacterial)
-ts_seasonal_count_clear <- lm(count_bacterial_patients ~ period*time + harmonic(month_year, 1, 12), patient_count_bacterial_period_bacterial_clear)
 ```
 
 ```{r, its percentage based}
 ts_linear_percent <- lm(percentage ~ period * time, patient_count_bacterial_period_bacterial)
-ts_linear_percent_clear <- lm(percentage ~ period * time, patient_count_bacterial_period_bacterial_clear)
 ts_seasonal_percent <- lm(percentage ~ period*time + harmonic(month_year, 1, 12), patient_count_bacterial_period_bacterial)
-ts_seasonal_percent_clear <- lm(percentage ~ period*time + harmonic(month_year, 1, 12), patient_count_bacterial_period_bacterial_clear)
 ```
 
-### ITS: patient counts, no clearance period, no seasonality effect
-
-```{r}
-time_series_analysis_plotting(ts_linear_count,
-                              patient_count_bacterial_period_bacterial,
-                              "count_bacterial_patients",
-                              clearance_period = FALSE) +
-  labs(title = "Interrupted Time-Series Analysis: Count of encounters with bacterial infection ICD codes",
-       subtitle = "Without seasonality effect",
-       x = time_period,
-       y = "Count")
-```
-
-### ITS: patient counts, clearance period, no seasonality effect
-
-```{r}
-time_series_analysis_plotting(ts_linear_count_clear,
-                              patient_count_bacterial_period_bacterial,
-                              "count_bacterial_patients",
-                              clearance_period = TRUE) +
-  labs(title = "Interrupted Time-Series Analysis: Percentage of encounters with bacterial infection ICD codes",
-       subtitle = "Without seasonality effect",
-       x = time_period,
-       y = "Count")
-```
 
 ### ITS: patient counts, no clearance period, with seasonality effect
 
 ```{r}
+source("../R/time_series_analysis_plotting.R")
+
 time_series_analysis_plotting(ts_seasonal_count,
                               patient_count_bacterial_period_bacterial,
                               "count_bacterial_patients",
@@ -753,45 +578,6 @@ time_series_analysis_plotting(ts_seasonal_count,
        subtitle = "With seasonality effect",
        x = time_period,
        y = "Count")
-```
-
-### ITS: patient counts, with clearance period, with seasonality effect
-
-```{r}
-time_series_analysis_plotting(ts_seasonal_count_clear,
-                              patient_count_bacterial_period_bacterial,
-                              "count_bacterial_patients",
-                              clearance_period = TRUE) +
-  labs(title = "Interrupted Time-Series Analysis: Count of encounters with bacterial infection ICD codes",
-       subtitle = "With seasonality effect",
-       x = time_period,
-       y = "Count")
-```
-
-### ITS: bacterial percentage, no clearance period, no seasonality effect
-
-```{r}
-time_series_analysis_plotting(ts_linear_percent,
-                              patient_count_bacterial_period_bacterial,
-                              "percentage",
-                              clearance_period = FALSE) +
-  labs(title = "Interrupted Time-Series Analysis: Percentage of encounters with bacterial infection ICD codes",
-       subtitle = "Without seasonality effect",
-       x = time_period,
-       y = "Percentage")
-```
-
-### ITS: bacterial percentage, clearance period, no seasonality effect
-
-```{r}
-time_series_analysis_plotting(ts_linear_percent_clear,
-                              patient_count_bacterial_period_bacterial,
-                              "percentage",
-                              clearance_period = TRUE) +
-  labs(title = "Interrupted Time-Series Analysis: Percentage of encounters with bacterial infection ICD codes",
-       subtitle = "Without seasonality effect",
-       x = time_period,
-       y = "Percentage")
 ```
 
 ### ITS: bacterial percentage, no clearance period, with seasonality effect
@@ -807,101 +593,7 @@ time_series_analysis_plotting(ts_seasonal_percent,
        y = "Percentage")
 ```
 
-### ITS: bacterial percentage, with clearance period, with seasonality effect
-
-```{r}
-time_series_analysis_plotting(ts_seasonal_percent_clear,
-                              patient_count_bacterial_period_bacterial,
-                              "percentage",
-                              clearance_period = TRUE) +
-  labs(title = "Interrupted Time-Series Analysis: Percentage of encounters with bacterial infection ICD codes",
-       subtitle = "With seasonality effect",
-       x = time_period,
-       y = "Percentage")
-```
-
-### ITS bootstrap
-
-#### Parametric bootstrap
-
-```{r}
-bootstrap_size <- 1000
-binom_proportion <- function(n, prob, size) {
-  (rbinom(n, size, prob) / size) * 100
-}
-bootstrapped_timepoints <- mapply(binom_proportion,
-                                  n = bootstrap_size,
-                                  size = patient_count_bacterial_period_bacterial$count_no_bacterial_patients +
-                                    patient_count_bacterial_period_bacterial$count_bacterial_patients,
-                                  prob = patient_count_bacterial_period_bacterial$percentage/100)
-
-bootstrapped_sample_list <- vector(mode = "list", length = bootstrap_size)
-bootstrapped_coefficients_list <- vector(mode = "list", length = bootstrap_size)
-for (iteration in 1:bootstrap_size) {
-  df_iteration <- data.frame(period = patient_count_bacterial_period_bacterial$period,
-                             time = patient_count_bacterial_period_bacterial$time,
-                             percentage = bootstrapped_timepoints[iteration, ])
-  ts_linear_percent <- lm(percentage ~ period * time, df_iteration)
-  linear_model <- broom::tidy(ts_linear_percent) %>%
-    filter(term %in% c("time", "periodduring_pandemic:time"))
-  coefficients <- linear_model$estimate
-  names(coefficients) <- linear_model$term
-  bootstrapped_coefficients_list[[iteration]] <- coefficients
-  df_iteration$predicted <- predict(ts_linear_percent)
-  df_iteration$time_p <- patient_count_bacterial_period_bacterial$time_p
-  bootstrapped_sample_list[[iteration]] <- df_iteration
-}
-
-bootstrapped_fitted_df <- bind_rows(bootstrapped_sample_list, .id = "iteration")
-
-quantile_bootstrapped_fitted <- bootstrapped_fitted_df %>%
-  group_by(time_p, period) %>%
-  summarise("2.5%" = quantile(predicted, 0.025),
-            "50%" = quantile(predicted, 0.5),
-            "97.5%" = quantile(predicted, 0.975)) %>%
-  pivot_longer(cols = c("2.5%", "50%", "97.5%"),
-               names_to = "quantiles")
-
-
-bootstrapped_coefficients_df <- bind_rows(bootstrapped_coefficients_list,
-                                          .id = "iteration")
-
-z <-  mean(bootstrapped_coefficients_df[["periodduring_pandemic:time"]]) / sd(bootstrapped_coefficients_df[["periodduring_pandemic:time"]])
-
-pvalue_coeff_interaction <- round(pnorm(abs(z), lower.tail = FALSE) * 2, 3)
-
-plot_annotation <- paste0("Coeffs differences: ",
-       round(mean(bootstrapped_coefficients_df[["periodduring_pandemic:time"]]), 2),
-       " (pvalue: ",
-       pvalue_coeff_interaction,
-       ")")
-
-ggplot(bootstrapped_fitted_df, aes(x = time_p, y = predicted, group = interaction(iteration, period))) +
-  geom_line(aes(color = period),
-            alpha = 0.03) +
-  geom_line(data = quantile_bootstrapped_fitted,
-            aes(y = value, group = interaction(quantiles, period)),
-            linetype = "dashed") +
-  geom_line(data = quantile_bootstrapped_fitted[quantile_bootstrapped_fitted$quantiles == "50%", ],
-            aes(y = value, group = period)) +
-  geom_point(data = patient_count_bacterial_period_bacterial,
-             aes(y = percentage),
-             alpha = 0.5) +
-  scale_colour_manual(values = cbPalette) +
-  guides(color = guide_legend(override.aes = list(alpha = 1))) +
-  annotate("text",
-           x = as.Date("2019-01-01"),
-           y = max(patient_count_bacterial_period_bacterial[["percentage"]]) + 5,
-           label = plot_annotation) +
-  labs(title = "Interrupted Time Series Analysis: Percentage of patients with bacterial infection conditions",
-       subtitle = "Parametric bootstrap estimation: (1000 iterations)",
-       x = "Calendar dates",
-       y = "Percentage",
-       color = "Period")
-
-```
-
-## bacterial infection conditions aggregating by subcategories
+## Bacterial infection conditions aggregating by subcategories
 
 ### New admissions: count
 
@@ -1054,20 +746,7 @@ patients_hospitalized_agg_sex_perc %>%
 ## Table 1
 
 ```{r}
-
-t.test2 <- function(m1, m2, s1, s2, n1, n2) {
-  # t.test computed from sample statistics, ie using mean, standard deviation and count value of the samples
-  # useful in case we can only retrieve aggregated stats from the sites
-  # ref: https://stats.stackexchange.com/questions/30394/how-to-perform-two-sample-t-tests-in-r-by-inputting-sample-statistics-rather-tha
-  # and https://en.wikipedia.org/wiki/Student%27s_t-test?oldformat=true#Equal_or_unequal_sample_sizes,_unequal_variances_(sX1_%3E_2sX2_or_sX2_%3E_2sX1)
-  se <- sqrt( (s1^2/n1) + (s2^2/n2) )
-  # welch-satterthwaite df
-  df <- ( (s1^2/n1 + s2^2/n2)^2 )/( (s1^2/n1)^2/(n1-1) + (s2^2/n2)^2/(n2-1) )
-  t <- (m1-m2)/se
-  dat <- c(m1-m2, se, t, 2*pt(-abs(t),df))
-  names(dat) <- c("Difference of means", "Std Error", "t", "p-value")
-  return(dat)
-}
+source("../R/ttest2.R")
 
 age_by_period <- all_codes_bacterial %>%
   distinct(patient_num, age_time_diagnosis, period) %>% 
