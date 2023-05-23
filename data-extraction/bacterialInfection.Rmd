@@ -305,7 +305,7 @@ all_codes_desc <- all_codes %>%
 
 # Preliminary Results Overview
 
-## Number of total hospitailzations
+## Number of total hospitalizations
 Total number of patients, matching the inclusion
 criteria, admitted on one day (without filtering by any disease
 subtype). Summed up over one week, or one month depending on the time
@@ -367,12 +367,12 @@ thpd_bacterialCount <- count_icd_perc %>%
   scale_color_manual(values = cbPalette) +
   labs(y = "Counts",
        x = paste0("Date (by ", time_period,")"),
-       title = paste0("Per ", time_period , " patient counts with bacterial infection related ICD codes")) + 
+       title = paste0("Per ", time_period , " number of hospitazations with bacterial infection related ICD codes")) + 
   geom_smooth(method = "lm", formula = y ~ splines::ns(x, 2), se = TRUE, aes(colour=period), colour= "black", size = 0.5)
 
 thpd_bacterialCount
 ```
-## Percentage of patients with bacterial infections
+## Percentage of hospitalizations with bacterial infections
 ```{r}
 bacterialPercentage <- admission_plot_count(df = count_icd_perc, 
                      x = "time_p",
@@ -442,7 +442,7 @@ ts_seasonal_percent <- lm(percentage_bacterial ~ period*time + harmonic(month_ye
 ```
 
 
-### ITS: patient counts, no clearance period, with seasonality effect
+### ITS: number of hospitazations, no clearance period, with seasonality effect
 
 ```{r}
 source("../R/time_series_analysis_plotting.R")
@@ -496,7 +496,7 @@ dg <- count_disorder_group %>%
   geom_smooth(method = "lm", formula = y ~ splines::ns(x, 2), se= TRUE, aes(colour=period), colour= "black", size = 0.5) + 
   labs(x = time_period,
        y = "Patient Count",
-       title = paste0("Per ", time_period, " patient counts with bacterial infection related ICD codes"), 
+       title = paste0("Per ", time_period, " number of hospitazations with bacterial infection related ICD codes"), 
        subtitle = "Grouped by bacterial infection ICD subcategories") + 
   ylim(0, NA) + 
   facet_wrap(. ~ disorder_group, scales = "free_y") +
