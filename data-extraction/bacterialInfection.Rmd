@@ -44,6 +44,7 @@ obfuscation =  FALSE
 dateFormat <- "%d-%b-%y"
 data_update_date <- "2022-04-02"
 dir.output <- "/4ceData/bacterialInfection_outputs/"
+site_id <- 'BCH' ### needed?
 ```
 
 
@@ -59,6 +60,7 @@ if (! dir.output %in% list.dirs()) {dir.create(dir.output)}
 
 sink(file = paste0( dir.output, "/logs_QC.txt"))
 print('##########')
+print(site_id)
 print(timestamp())
 print('##########')
 ```
@@ -103,6 +105,7 @@ files <- readInputFiles( path      = folder_4ce_files,
 demo_raw <- files[["patientSummary"]] %>% filter(cohort == "AllAdm")
 obs_raw <- files[["patientObservations"]] %>% filter(cohort == "AllAdm")
 clinical_raw <- files[["patientClinicalCourse"]] %>% filter(cohort == "AllAdm")
+rm(files) # remove files object to not have unnecessary objects
 
 print('Input files successfully read, patient data extracted')
 ```
@@ -130,7 +133,7 @@ bacterialInfectionCodes <- unique( obs_raw %>%
 
 summary(as.factor( bacterialInfectionCodes$concept_check ) )
 
-print( paste0("There are ", length(bacterialInfectionCodes$concept_code), " ICD10 bacterial infection codes out of the total ",length(unique(icdCodes$ICD10_Code)), " in the dataset"))
+print( paste0("There are ", length(bacterialInfectionCodes$concept_code), " ICD10 bacterial infection codes in this site out of the total ",length(unique(icdCodes$ICD10_Code)), " in the dataset"))
 ```
 
 ## Data-management
@@ -150,14 +153,10 @@ the clinical raw file
 ```{r}
 source("../R/count_sequences_hospitalisation.R")
 stopifnot(all(clinical_raw$in_hospital == 1))
-hospitalisations_seq_df <- clinical_raw %>%
-  dplyr::distinct(patient_num, cohort, days_since_admission, in_hospital) %>%
-  dplyr::group_by(patient_num, cohort) %>%
-  dplyr::group_modify(count_sequences_hospitalisation)
 
-clinical_raw <- left_join(clinical_raw,
-                          hospitalisations_seq_df,
-                          by = c("patient_num", "cohort", "days_since_admission"))
+
+clinical_raw <- count_hosp(clinical_raw)
+
 ```
 
 ### Calculating age at hospitalization time
@@ -380,7 +379,7 @@ unit chosen. Not filtered on age.
 ```{r}
 new_hospitalizations <- clinical_table %>%
   dplyr::group_by(patient_num, n_hospitalisation) %>%
-  dplyr::slice(which.min(time_p)) %>%
+  dplyr::slice(which.min(time_p)) %>% #probably need to remove this
   dplyr::filter( in_hospital == 1 ) %>%
   dplyr::group_by( time_p ) %>%
   dplyr::summarise(count = ifelse(n_distinct(patient_num) > obfuscation | isFALSE(obfuscation),
