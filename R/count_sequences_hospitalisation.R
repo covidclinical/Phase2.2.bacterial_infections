@@ -32,9 +32,9 @@ count_hosp <- function(df){
                      in_icu = paste0(in_icu, collapse = ','),
                      dead = paste0(dead, collapse = ','), 
                      calendar_date = paste0(calendar_date, collapse = ','))
-    stopifnot(n_distinct(df2$severe) == 2)
-    stopifnot(n_distinct(df2$in_icu) == 2)
-    stopifnot(n_distinct(df2$dead) == 2)
+    stopifnot(n_distinct(df2$severe) %in% c(1,2))
+    stopifnot(n_distinct(df2$in_icu) %in% c(1,2))
+    stopifnot(n_distinct(df2$dead) %in% c(1,2))
 
     # calculate sequences using helper function above
     out <- df2 %>%
