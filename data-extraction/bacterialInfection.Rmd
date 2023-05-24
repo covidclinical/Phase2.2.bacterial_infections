@@ -99,9 +99,16 @@ files <- readInputFiles( path      = folder_4ce_files,
                          verbose   = FALSE )
 
 ### Extract the patient summary and observation information. 
-demo_raw <- files[["patientSummary"]] %>% filter(cohort == "AllAdm")
-obs_raw <- files[["patientObservations"]] %>% filter(cohort == "AllAdm")
-clinical_raw <- files[["patientClinicalCourse"]] %>% filter(cohort == "AllAdm")
+# arrange in a consistent way to make sure we are not assuming the order of some sites
+demo_raw <- files[["patientSummary"]] %>% 
+  filter(cohort == "AllAdm") %>%
+  arrange(patient_num, as.Date(admission_date), days_since_admission)
+obs_raw <- files[["patientObservations"]] %>% 
+  filter(cohort == "AllAdm") %>%
+  arrange(patient_num, days_since_admission)
+clinical_raw <- files[["patientClinicalCourse"]] %>% 
+  filter(cohort == "AllAdm") %>%
+  arrange(patient_num, as.Date(calendar_date), days_since_admission)
 rm(files) # remove files object to not have unnecessary objects
 
 print('Input files successfully read, patient data extracted')
