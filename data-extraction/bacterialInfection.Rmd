@@ -42,7 +42,7 @@ folder_4ce_files <- "/4ceData/Input/AllAdmin2023//"
 obfuscation =  FALSE
 #obfuscation = 3
 dateFormat <- "%Y-%m-%d"
-data_update_date <- "2022-04-02"
+data_update_date <- "2023-04-01"
 dir.output <- "/4ceData/bacterialInfection_outputs/"
 ```
 
@@ -239,6 +239,19 @@ all_codes <- all_codes %>%
 ### print checks
 print("Age summary")
 print(summary(all_codes$age_time_diagnosis))
+```
+
+### Save the ICD code frequencies for this cohort
+```{r}
+cohort_icd_codes <- all_codes %>%
+  dplyr::select(hospitalization_id, concept_code) %>%
+  unique() %>%
+  group_by(concept_code) %>%
+  summarise(n_hospitalizations = length(hospitalization_id)) %>%
+  dplyr::arrange(desc(n_hospitalizations))
+
+save(cohort_icd_codes, file = paste0(dir.output, 'cohort_icd_codes.Rdata'))
+
 ```
 
 #### QC step: do a summary of the bacterial infection ICD codes present in each site
