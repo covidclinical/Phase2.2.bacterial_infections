@@ -182,8 +182,8 @@ clinical_filtered  <- clinical_raw %>%
                  weeks = as.Date(cut( date, breaks = "week")),
                  month = as.Date(cut( date, breaks = "month")),
                  year = format( date, "%Y"), 
-                 period = ifelse( date < pandemic_start_date,
-                                  "before_pandemic", "during_pandemic"))
+                 period = ifelse( date <= pre_NPI,
+                           "pre-NPI", ifelse( date > full_NPI, "partial-NPI", "full-NPI")))
 if( time_period == "weeks"){
   clinical_filtered$time_p <- clinical_filtered$weeks
 }else if(time_period == "days"){
@@ -259,19 +259,6 @@ print("Age summary")
 print(summary(all_codes$age_time_diagnosis))
 ```
 
-### Save the ICD code frequencies for this cohort
-```{r}
-cohort_icd_codes <- all_codes %>%
-  dplyr::select(hospitalization_id, concept_code) %>%
-  unique() %>%
-  group_by(concept_code) %>%
-  summarise(n_hospitalizations = length(hospitalization_id)) %>%
-  dplyr::arrange(desc(n_hospitalizations))
-
-save(cohort_icd_codes, file = paste0(dir.output, 'cohort_icd_codes.Rdata'))
-
-```
-
 #### QC step: do a summary of the bacterial infection ICD codes present in each site
 
 As output we will generate a table with: the number of observations per
@@ -305,7 +292,7 @@ bacteria_infection_codes_qc_output <- bacteria_infection_codes_qc_output %>%
           "distinct_observations", "min_date", "max_date")
 
 ### counts per disorder group and year 
-bacteria_infection_codes_qc %>%
+bacterialCodesSummary <-bacteria_infection_codes_qc %>%
   dplyr::left_join( icdCodes ) %>%
   dplyr::mutate( year = format( as.Date(calendar_date, format = dateFormat), "%Y")) %>%
   dplyr::group_by( disorder_group, year ) %>%
@@ -318,7 +305,9 @@ bacteria_infection_codes_qc %>%
                     min_date = min( as.Date( calendar_date, format = dateFormat ) ), 
                     max_date = max( as.Date( calendar_date, format = dateFormat ) ))%>% 
   dplyr::arrange(disorder_group, year, distinct_patients )
-  
+
+# save the file for QC
+save( bacterialCodesSummary, file = paste0(dir.output, 'bacterialCodesSummary.Rdata')) 
 ```
 
 ### Add the bacterial infection ICD code description and filter
@@ -337,25 +326,22 @@ all_codes_desc <- all_codes %>%
 
 # Preliminary Results Overview
 
-## Number of total hospitalizations
-Total number of patients, matching the inclusion
-criteria, admitted on one day (without filtering by any disease
-subtype). Summed up over one week, or one month depending on the time
-unit chosen. 
+## Number of total monthly hospitalizations
+Estimate the number of monthly hospitalizations. 
+For this estimate, done for QC purposes, we do not filter by any condition. 
 
 ```{r}
-count_icd_total <- all_codes_desc %>%
+monthly_hospitalizations <- all_codes_desc %>%
   dplyr::filter( time_p < end_date_plots, 
                  time_p >= start_date_plots ) %>%
   dplyr::group_by( time_p ) %>%
   dplyr::summarise(count_total =  ifelse(n_distinct(hospitalization_id) > obfuscation | isFALSE(obfuscation),
                                n_distinct(hospitalization_id), 
                                0.5)) %>%
- dplyr::mutate( period = ifelse( time_p < pandemic_start_date,
-                           "before_pandemic",
-                           "during_pandemic"))
+ dplyr::mutate( period = ifelse( time_p <= pre_NPI,
+                           "pre-NPI", ifelse( time_p > full_NPI, "partial-NPI", "full-NPI")))
 source("../R/admission_plot_count.R")
-nh <- admission_plot_count(df = count_icd_total, 
+nh <- admission_plot_count(df = monthly_hospitalizations, 
                      x = "time_p",
                      y = "count_total", 
                      title = paste0("New admissions (per ", time_period,")"), 
@@ -364,7 +350,6 @@ nh
 ```
 
 ## Number of total hospitalizations with bacterial infection disorders
-
 
 ```{r}
 count_icd_bacterial <- all_codes_desc %>%
@@ -375,13 +360,12 @@ count_icd_bacterial <- all_codes_desc %>%
   dplyr::summarise(count_bacterial =  ifelse(n_distinct(hospitalization_id) > obfuscation | isFALSE(obfuscation),
                                n_distinct(hospitalization_id), 
                                0.5)) %>%
- dplyr::mutate( period = ifelse( time_p < pandemic_start_date,
-                           "before_pandemic",
-                           "during_pandemic"))
+ dplyr::mutate( period = ifelse( time_p <= pre_NPI,
+                           "pre-NPI", ifelse( time_p > full_NPI, "partial-NPI", "full-NPI")))
 
 
 
-count_icd_perc <- count_icd_total %>%
+count_icd_perc <- monthly_hospitalizations %>%
   dplyr::left_join(count_icd_bacterial, 
             by = c("time_p", "period")) %>% 
   tidyr::replace_na(list(count_bacterial = 0)) %>%
@@ -427,9 +411,8 @@ patients_without_bacterial_conditions_counts <- patients_without_bacterial_condi
   summarise(count_no_bacterial_patients =  ifelse(n_distinct(patient_num) > obfuscation | isFALSE(obfuscation),
                                n_distinct(patient_num), 
                                0.5)) %>%
-  mutate( period = ifelse( time_p < pandemic_start_date,
-                           "before_pandemic",
-                           "during_pandemic"))
+  mutate( period = ifelse( time_p <= pre_NPI,
+                           "pre-NPI", ifelse( time_p > full_NPI, "partial-NPI", "full-NPI")))
 
 
 patients_with_bacterial_conditions_counts <-  patients_with_bacterial_conditions %>%
@@ -437,9 +420,8 @@ patients_with_bacterial_conditions_counts <-  patients_with_bacterial_conditions
   summarise(count_bacterial_patients =  ifelse(n_distinct(patient_num) > obfuscation | isFALSE(obfuscation),
                                n_distinct(patient_num), 
                                0.5)) %>%
-  mutate( period = ifelse( time_p < pandemic_start_date,
-                           "before_pandemic",
-                           "during_pandemic"))
+  mutate( period = ifelse( time_p <= pre_NPI,
+                           "pre-NPI", ifelse( time_p > full_NPI, "partial-NPI", "full-NPI")))
 
 ratios_patients_with_without_bacterial <- patients_without_bacterial_conditions_counts %>%
   full_join( patients_with_bacterial_conditions_counts, by=c("time_p", "period")) %>%
@@ -515,9 +497,8 @@ count_disorder_group <- all_codes_desc %>%
   summarise(count_dg =  ifelse(n_distinct(hospitalization_id) > obfuscation | isFALSE(obfuscation),
                                n_distinct(hospitalization_id), 
                                0.5)) %>%
-  dplyr::mutate( period = ifelse( time_p < pandemic_start_date,
-                           "before_pandemic",
-                           "during_pandemic")
+  dplyr::mutate( period = ifelse( time_p <= pre_NPI,
+                           "pre-NPI", ifelse( time_p > full_NPI, "partial-NPI", "full-NPI"))
   )
 
 dg <- count_disorder_group %>%  
@@ -557,10 +538,8 @@ count_icd_all <- all_codes_desc %>%
   summarise(count_icd =  ifelse(n_distinct(hospitalization_id) > obfuscation | isFALSE(obfuscation),
                                n_distinct(hospitalization_id), 
                                0.5)) %>%
-  mutate( period = ifelse( time_p < pandemic_start_date,
-                           "before_pandemic",
-                           "during_pandemic")
-  )
+  mutate( period = ifelse( time_p <= pre_NPI,
+                           "pre-NPI", ifelse( time_p > full_NPI, "partial-NPI", "full-NPI")))
 
 
 # join the total with the disorder group count to estimate the percentage
@@ -670,10 +649,8 @@ hospitalizations_agg_age <- all_codes_desc %>%
   summarise(count_age =  ifelse(n_distinct(hospitalization_id) > obfuscation | isFALSE(obfuscation),
                                n_distinct(hospitalization_id), 
                                0.5)) %>%
-  dplyr::mutate( period = ifelse( time_p < pandemic_start_date,
-                           "before_pandemic",
-                           "during_pandemic")
-  )
+  dplyr::mutate( period = ifelse( time_p <= pre_NPI,
+                           "pre-NPI", ifelse( time_p > full_NPI, "partial-NPI", "full-NPI")))
 
 
 hospitalizations_agg_age %>%  
