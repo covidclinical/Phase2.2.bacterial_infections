@@ -231,6 +231,14 @@ all_codes <- all_codes %>%
 
 ```
 
+## Assign to each hospitalization the date of admission / first date of diagnosis in that visit
+```{r}
+all_codes <- all_codes %>%
+  dplyr::group_by( hospitalization_id ) %>%
+  dplyr::mutate( time_p = min(as.Date( time_p )))
+```
+
+
 ### QC
 ```{r}
 print("Starting QC")
