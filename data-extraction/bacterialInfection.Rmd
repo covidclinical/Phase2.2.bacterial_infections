@@ -80,13 +80,13 @@ print(paste0( 'FourCePhase2.2bacterial Infection Code version: ', codeVersion ))
 print('##########')
 ```
 
-## Data loading
+# Data loading
 We will use as input the 2.2 data files. Specifically:
 -   LocalPatientSummary
 -   LocalPatientObservation
 -   LocalPatientClinicalcourse
 
-### Reading 4CE phase 2.2 files
+## Reading 4CE phase 2.2 files
 
 ```{r message=FALSE, warning=FALSE}
 ### Read the CSV input files
@@ -114,7 +114,7 @@ rm(files) # remove files object to not have unnecessary objects
 print('Input files successfully read, patient data extracted')
 ```
 
-### Select the specific ICD codes of interest
+## Select the ICD codes of interest
 ```{r}
 #### ICD codes bacterial conditions ####
 print('Reading ICD bacterial codes')
@@ -123,16 +123,16 @@ icdCodes <- read.csv("../public-data/ICD_bacterial4.csv", header = TRUE, colClas
    dplyr::select( disorder_group = syndrome, ICD10_Code, concept_code, description, bacterial_syndrome )
 ```
 
-## Data-management
+# Data-management
 
-### Filtering on "inpatient" status
+## Filtering on "inpatient" status
 
 ```{r}
 # Filtering on inpatients here (in_hospital == 1), to reduce subsequent compute time of the encounter length calculation 
 clinical_raw <- dplyr::filter(clinical_raw, in_hospital == 1)
 ```
 
-### Calculating duration of individual hospitalizations
+## Calculating duration of individual hospitalizations
 
 Adding columns with hospitalization number and hospitalization length to
 the clinical raw file
@@ -142,7 +142,7 @@ source("../R/count_sequences_hospitalisation.R")
 clinical_raw <- count_hosp(clinical_raw)
 ```
 
-### Calculating age at hospitalization time
+## Calculating age at hospitalization time
 
 ```{r}
 # Calculating patient age at the time of visit, assuming the age used is the patients' age at the time of extraction (last discharge date available in the data)
@@ -156,7 +156,7 @@ obs_raw_age <- left_join(obs_raw, demo_raw[c("patient_num", "age")], by = c("pat
 obs_raw_age$age_time_diagnosis <- obs_raw_age$age - floor(as.numeric(as.Date(data_update_date, format = dateFormat) - as.Date(obs_raw_age$calendar_date, format = dateFormat)) / 365.25)
 ```
 
-### Applying inclusion criteria to filter and format the data
+## Applying inclusion criteria to filter and format the data
 
 We are selecting hospitalizations based on the following criteria:
 
@@ -207,6 +207,8 @@ demographic_filtered_inclusion_criteria <- demo_raw %>%
   unique()
 ```
 
+## Put all the data together in a unique table
+
 We create a table with all the data together. 
 ```{r}
 all_codes <- obs_filtered_inclusion_criteria %>% 
@@ -217,6 +219,7 @@ all_codes <- obs_filtered_inclusion_criteria %>%
   select( -cohort.x, -cohort.y)
 ```
 
+## Adding ICU and dead status by hospitalization
 We add two columns to know if in each hospitalization the patient was dead and/or in the ICU.
 We need this information by hospitalization, not by day as it is here. 
 
@@ -228,7 +231,7 @@ all_codes <- all_codes %>%
 
 ```
 
-## QC
+### QC
 ```{r}
 print("Starting QC")
 source("../R/qc_summary.R")
@@ -242,7 +245,7 @@ stopifnot(length(unique(all_codes$patient_num)) == length(unique(obs_filtered_in
 ```
 
 
-### Adding the age group and length of hospitalization category
+## Adding the age group and length of hospitalization category
 ```{r}
 # add the age groups
 ageGroups <- read.delim("../public-data/ageGroups.txt", sep="\t",  header = TRUE) 
@@ -259,7 +262,7 @@ print("Age summary")
 print(summary(all_codes$age_time_diagnosis))
 ```
 
-#### QC step: do a summary of the bacterial infection ICD codes present in each site
+### QC: do a summary of the bacterial infection ICD codes present in each site
 
 As output we will generate a table with: the number of observations per
 code, number of patients diagnosed with each code and the date range in
@@ -310,7 +313,7 @@ bacterialCodesSummary <-bacteria_infection_codes_qc %>%
 save( bacterialCodesSummary, file = paste0(dir.output, 'bacterialCodesSummary.Rdata')) 
 ```
 
-### Add the bacterial infection ICD code description and filter
+## Add the bacterial infection ICD code description and filter
 
 ```{r message=FALSE, warning=FALSE}
 # Getting site name, will be used later in the analysis
@@ -324,9 +327,9 @@ all_codes_desc <- all_codes %>%
                                "others")) 
 ```
 
-# Preliminary Results Overview
+# Monthly hospitalizations
 
-## Number of total monthly hospitalizations
+## Total (counts)
 Estimate the number of monthly hospitalizations. 
 For this estimate, done for QC purposes, we do not filter by any condition. 
 
@@ -349,7 +352,7 @@ nh <- admission_plot_count(df = monthly_hospitalizations,
 nh
 ```
 
-## Number of total hospitalizations with bacterial infection disorders
+## Bacterial infection related hospitalizations (counts)
 
 ```{r}
 count_bacterial_hosp <- all_codes_desc %>%
@@ -391,6 +394,7 @@ thpd_bacterialCount <- count_perc_bact_hosp %>%
 
 thpd_bacterialCount
 ```
+
 ## Percentage of hospitalizations with bacterial infections
 ```{r}
 bacterialPercentage <- admission_plot_count(df = count_perc_bact_hosp, 
@@ -402,8 +406,7 @@ bacterialPercentage
 ```
 
 
-# Interrupted Time-Series Analyses
-
+# Interrupted Time-Series Analyses (ITS)
 
 ```{r}
 # Time series analysis 
@@ -415,20 +418,13 @@ hospitalization_summary <- count_perc_bact_hosp %>%
   )
 ```
 
-## Count based
+## ITS Count based
 ```{r, its count based}
 ts_linear_count <- lm(count_bacterial ~ period * time, hospitalization_summary)
 ts_seasonal_count <- lm(count_bacterial ~ period*time + harmonic(month_year, 1, 12), hospitalization_summary)
 ```
 
-## Percentage based
-```{r, its percentage based}
-ts_linear_percent <- lm(percentage_bacterial ~ period * time, hospitalization_summary)
-ts_seasonal_percent <- lm(percentage_bacterial ~ period*time + harmonic(month_year, 1, 12), hospitalization_summary)
-```
-
-
-## ITS: number of hospitazations, no clearance period, with seasonality effect
+### ITS Visualization: counts, no clearance period, with seasonality effect
 
 ```{r}
 source("../R/time_series_analysis_plotting.R")
@@ -443,7 +439,13 @@ time_series_analysis_plotting(ts_seasonal_count,
        y = "Count")
 ```
 
-### ITS: bacterial percentage, no clearance period, with seasonality effect
+## ITS Percentage based
+```{r, its percentage based}
+ts_linear_percent <- lm(percentage_bacterial ~ period * time, hospitalization_summary)
+ts_seasonal_percent <- lm(percentage_bacterial ~ period*time + harmonic(month_year, 1, 12), hospitalization_summary)
+```
+
+### ITS Visualization: percentage, no clearance period, with seasonality effect
 
 ```{r}
 time_series_analysis_plotting(ts_seasonal_percent,
@@ -456,7 +458,9 @@ time_series_analysis_plotting(ts_seasonal_percent,
        y = "Percentage")
 ```
 
-## Bacterial infection conditions aggregating by subcategories
+# Bacterial infection hospitalizations aggregating by subcategories
+
+## Disorder group
 
 ### New admissions: count
 
