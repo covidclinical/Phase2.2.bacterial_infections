@@ -38,10 +38,11 @@ hospitalizations_estimation_subcategories <- function( input_df, subcategory ){
   
   # add the percentage estimation
   hosp_subcategory_summary <- counts_subcategory_numerator %>%
-    left_join(counts_subcategory_denominator, 
+    dplyr::left_join(counts_subcategory_denominator, 
               by = c("time_p", "period")) %>% 
-    replace_na(list(count_hosp = 0)) %>%
-    dplyr::mutate( percentage_hospitalizations = round(100*count_hosp/count_hosp_total, 3))
+    tidyr::replace_na(list(count_hosp = 0)) %>%
+    dplyr::mutate( percentage_hospitalizations = round(100*count_hosp/count_hosp_total, 3)) %>%
+    dplyr::select( time_p, period, subcategory = disorder_group, count_hosp, count_hosp_total, percentage_hospitalizations)
   
   return( hosp_subcategory_summary )
   
