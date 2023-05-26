@@ -459,20 +459,24 @@ time_series_analysis_plotting(ts_seasonal_percent,
 ```
 
 # Bacterial infection hospitalizations aggregating by subcategories
-
-## Disorder group
+Load the functions. 
 
 ```{r}
 source("../R/hospitalizations_estimations_subcategories.R")
 source("../R/hospitalizations_visualization_subcategories.R")
+```
 
+
+## Disorder group
+
+```{r}
 by_disorder_group <- hospitalizations_estimation_subcategories( input_df = all_codes_desc, subcategory = "disorder_group" )
 ```
 
 ### Counts
 ```{r}
 hospitalizations_visualization_subcategories( input_df = by_disorder_group, 
-                                              type = "count", 
+                                              type = "counts", 
                                               title_plot = "Hospitalizations based on bacterial infection subcategory", 
                                               subtitle_plot = "Monthly Counts")
 ```
@@ -480,168 +484,114 @@ hospitalizations_visualization_subcategories( input_df = by_disorder_group,
 ### Percentages
 ```{r}
 hospitalizations_visualization_subcategories( input_df = by_disorder_group, 
-                                              type = "count", 
+                                              type = "percentages", 
                                               title_plot = "Hospitalizations based on bacterial infection subcategory", 
+                                              subtitle_plot = "Monthly Percentages")
+```
+
+
+## Sex
+
+```{r}
+by_sex_group <- hospitalizations_estimation_subcategories( input_df = all_codes_desc, subcategory = "sex" )
+```
+
+### Counts
+
+```{r}
+hospitalizations_visualization_subcategories( input_df = by_sex_group, 
+                                              type = "counts", 
+                                              title_plot = "Hospitalizations based on sex subcategory", 
                                               subtitle_plot = "Monthly Counts")
 ```
 
-### New admissions: percentage
-
+### Percentage
 ```{r}
-# estimate the counts
-count_icd_all <- all_codes_desc %>%
-  dplyr::filter( icd_code_category == "bacterial", 
-          time_p < end_date_plots &
-         time_p >= start_date_plots ) %>%
-    group_by( time_p ) %>%
-  summarise(count_icd =  ifelse(n_distinct(hospitalization_id) > obfuscation | isFALSE(obfuscation),
-                               n_distinct(hospitalization_id), 
-                               0.5)) %>%
-  mutate( period = ifelse( time_p <= pre_NPI,
-                           "pre-NPI", ifelse( time_p > full_NPI, "partial-NPI", "full-NPI")))
-
-
-# join the total with the disorder group count to estimate the percentage
-perc_disorder_group <- count_icd_all %>%
-  left_join(count_disorder_group, 
-            by = c("time_p", "period")) %>% 
-  replace_na(list(count_dg = 0)) %>%
-  dplyr::mutate( percentage_dg = round(100*count_dg/count_icd, 3))
-
-
-dgPerc <- perc_disorder_group %>%  
-  ggplot(aes(x = time_p, y= percentage_dg, fill = period, group = disorder_group )) +
-  geom_bar(stat = "identity")+
-  geom_vline(xintercept = as.Date(pandemic_start_date),
-             linetype = "dashed") +
-  geom_smooth(method = "lm", formula = y ~ splines::ns(x, 2), se= TRUE, aes(colour=period), colour= "black", size = 0.5) + 
-  labs(x = time_period,
-       y = "Patient (%)",
-       title = paste0("Percentage of patients per ", time_period,"with bacterial infection related ICD codes"), 
-       subtitle = "Grouped by bacterial infection ICD subcategories") + 
-  ylim(0, NA) + 
-  facet_wrap(. ~ disorder_group, scales = "free_y") +
-  theme(strip.text.x = element_text(size = 10),
-        axis.text.x = element_text(size = 5, angle = 90), 
-        axis.text.y = element_text(size = 6), 
-        axis.title.x = element_text(size = 10),
-        axis.title.y = element_text(size = 10),
-        title = element_text(size = 12),
-        plot.subtitle = element_text(size = 11),
-        legend.position = "none") +
-  scale_fill_manual(values = cbPalette[-1])
-
-dgPerc
+hospitalizations_visualization_subcategories( input_df = by_sex_group, 
+                                              type = "percentages", 
+                                              title_plot = "Hospitalizations based on sex subcategory", 
+                                              subtitle_plot = "Monthly Percentages")
 ```
 
-
-## Bacterial infection conditions, dichotomized on patients' sex
-
-### Count
+## By age group
 
 ```{r}
-# counts per time period and sex
-hospitalizations_agg_sex <- all_codes_desc %>%
-  dplyr::filter( icd_code_category == "bacterial", 
-          time_p < end_date_plots &
-         time_p >= start_date_plots, 
-         sex %in% c("female", "male") ) %>%
-    group_by( time_p, sex ) %>%
-  summarise(count_sex =  ifelse(n_distinct(hospitalization_id) > obfuscation | isFALSE(obfuscation),
-                               n_distinct(hospitalization_id), 
-                               0.5))
+by_age_group <- hospitalizations_estimation_subcategories( input_df = all_codes_desc, subcategory = "age_group" )
 
-hospitalizations_agg_sex %>%
-  ggplot(aes(x = time_p, y = count_sex, fill = sex)) +
-  geom_bar(stat="identity", position = "dodge")+
-  scale_fill_manual(values = cbPalette) +
-  labs(y = "Counts",
-       x = time_period,
-       title = paste0("Hospitalization counts per ", time_period, " aggregated by sex"),
-       subtitle = "Per Sex") + 
-  theme(legend.position = "bottom") + 
-  geom_smooth(method = "lm", formula = y ~ splines::ns(x, 2), se = TRUE, aes(colour=sex), colour= "black", size = 0.5)
+```
+
+### Counts
+
+```{r}
+hospitalizations_visualization_subcategories( input_df = by_age_group, 
+                                              type = "counts", 
+                                              title_plot = "Hospitalizations based on age group subcategory", 
+                                              subtitle_plot = "Monthly Counts")
 ```
 
 ### Percentage
-
 ```{r}
-##percentage
-total_hospitalizations_bacterial <- all_codes_desc %>%
-   dplyr::filter( icd_code_category == "bacterial", 
-          time_p < end_date_plots &
-         time_p >= start_date_plots) %>%
-    group_by( time_p ) %>%
-  summarise(count =  ifelse(n_distinct(hospitalization_id) > obfuscation | isFALSE(obfuscation),
-                               n_distinct(hospitalization_id), 
-                               0.5))
-
-hospitalized_agg_sex_perc <- total_hospitalizations_bacterial %>%
-  dplyr::left_join( hospitalizations_agg_sex, by = c("time_p")) %>% 
-  tidyr::replace_na(list(count_sex = 0)) %>%
-  dplyr::mutate( percentage = round(100*count_sex/count ,3))
-
-hospitalized_agg_sex_perc %>%
-  ggplot(aes(x = time_p, y = percentage, fill = sex)) +
-  geom_bar(stat="identity", position = "dodge")+
-  scale_fill_manual(values = cbPalette) +
-  labs(y = "Percentage ",
-       x = time_period,
-       title = paste0("Patient (%) per ", time_period," aggregated by sex"),
-       subtitle = "Per Sex") + 
-  theme(legend.position = "bottom") + 
-  geom_smooth(method = "lm", formula = y ~ splines::ns(x, 2), se = TRUE, aes(colour=sex), colour= "black", size = 0.5)
+hospitalizations_visualization_subcategories( input_df = by_age_group, 
+                                              type = "percentages", 
+                                              title_plot = "Hospitalizations based on age group subcategory", 
+                                              subtitle_plot = "Monthly Percentages")
 ```
 
-## Bacterial infection conditions by age group
-
-
-### Count
+## By ICU status
 
 ```{r}
-# counts per time period and sex
-hospitalizations_agg_age <- all_codes_desc %>%
-  dplyr::filter( icd_code_category == "bacterial", 
-          time_p < end_date_plots &
-         time_p >= start_date_plots ) %>%
-    group_by( time_p, age_group ) %>%
-  summarise(count_age =  ifelse(n_distinct(hospitalization_id) > obfuscation | isFALSE(obfuscation),
-                               n_distinct(hospitalization_id), 
-                               0.5)) %>%
-  dplyr::mutate( period = ifelse( time_p <= pre_NPI,
-                           "pre-NPI", ifelse( time_p > full_NPI, "partial-NPI", "full-NPI")))
+by_icu_in_hosp <- hospitalizations_estimation_subcategories( input_df = all_codes_desc, subcategory = "icu_in_hosp" )
 
-
-hospitalizations_agg_age %>%  
-  ggplot(aes(x = time_p, y= count_age, fill = period, group = age_group )) +
-  geom_bar(stat = "identity")+
-  geom_vline(xintercept = as.Date(pandemic_start_date),
-             linetype = "dashed") +
-  geom_smooth(method = "lm", formula = y ~ splines::ns(x, 2), se= TRUE, aes(colour=period), colour= "black", size = 0.5) + 
-  labs(x = time_period,
-       y = "Number of Hospitalizations",
-       title = paste0("Per ", time_period, " number of hospitazations with bacterial infection related ICD codes"), 
-       subtitle = "Grouped by age group") + 
-  ylim(0, NA) + 
-  facet_wrap(. ~ age_group, scales = "free_y") +
-  theme(strip.text.x = element_text(size = 10),
-        axis.text.x = element_text(size = 5, angle = 90), 
-        axis.text.y = element_text(size = 6), 
-        axis.title.x = element_text(size = 10),
-        axis.title.y = element_text(size = 10),
-        title = element_text(size = 12),
-        plot.subtitle = element_text(size = 11),
-        legend.position = "none") +
-  scale_fill_manual(values = cbPalette[-1])
 ```
 
+### Counts
+
+```{r}
+hospitalizations_visualization_subcategories( input_df = by_icu_in_hosp, 
+                                              type = "counts", 
+                                              title_plot = "Hospitalizations based on ICU status", 
+                                              subtitle_plot = "Monthly Counts")
+```
+
+### Percentage
+```{r}
+hospitalizations_visualization_subcategories( input_df = by_icu_in_hosp, 
+                                              type = "percentages", 
+                                              title_plot = "Hospitalizations based on ICU status", 
+                                              subtitle_plot = "Monthly Percentages")
+```
+
+## By dead status
+
+```{r}
+by_dead_in_hosp <- hospitalizations_estimation_subcategories( input_df = all_codes_desc, subcategory = "dead_in_hosp" )
+
+```
+
+### Counts
+
+```{r}
+hospitalizations_visualization_subcategories( input_df = by_dead_in_hosp, 
+                                              type = "counts", 
+                                              title_plot = "Hospitalizations based on dead status", 
+                                              subtitle_plot = "Monthly Counts")
+```
+
+### Percentage
+```{r}
+hospitalizations_visualization_subcategories( input_df = by_dead_in_hosp, 
+                                              type = "percentages", 
+                                              title_plot = "Hospitalizations based on dead status", 
+                                              subtitle_plot = "Monthly Percentages")
+```
 
 ## Table 1
 
-```{r, eval=FALSE}
+```{r}
 source("../R/ttest2.R")
 
-age_by_period <- all_codes_bacterial %>%
+age_by_period <- all_codes_desc %>%
+  dplyr::filter( icd_code_category == "bacterial") %>%
   distinct(patient_num, age_time_diagnosis, period) %>% 
   dplyr::group_by(period) %>%
   dplyr::summarise( mean = mean( age_time_diagnosis ),
@@ -658,22 +608,24 @@ age_test <- t.test2(m1 = age_by_period[[1, "mean"]],
   `[[`("p-value")
 ```
 
-```{r, eval=FALSE}
-sex <- all_codes_bacterial %>%
+```{r}
+sex <- all_codes_desc %>%
+  dplyr::filter( icd_code_category == "bacterial") %>%
   dplyr::distinct(patient_num, sex) %>% 
   dplyr::group_by( sex ) %>%
   dplyr::summarise( count = n_distinct(patient_num) ) %>%
   dplyr::mutate( count = ifelse( count > obfuscation, count, obfuscation * 0.5),
                  total = sum( count ), percentage = round( count/total*100, 2)  )
 
-sex_by_period <- all_codes_bacterial %>%
+sex_by_period <- all_codes_desc %>%
+  dplyr::filter( icd_code_category == "bacterial") %>%
   dplyr::distinct(patient_num, period, sex) %>% 
-  group_by(period, sex ) %>%
-  summarise(count = n_distinct(patient_num)) %>%
-  group_by(period, .add=TRUE) %>%
-  mutate( count = ifelse( count > obfuscation, count, obfuscation * 0.5),
+  dplyr::group_by(period, sex ) %>%
+  dplyr::summarise(count = n_distinct(patient_num)) %>%
+  dplyr::group_by(period, .add=TRUE) %>%
+  dplyr::mutate( count = ifelse( count > obfuscation, count, obfuscation * 0.5),
           percentage=round(count/sum( count )*100, 2)) %>%
-  replace_na(list(male = 0, female = 0))
+  tidyr::replace_na(list(male = 0, female = 0))
 
 
 sex_test <- sex_by_period %>%
@@ -685,9 +637,10 @@ sex_test <- sex_by_period %>%
   `[[`("p.value")
 ```
 
-```{r, eval=FALSE}
-summary_diagnosis <- all_codes_bacterial %>%
-  dplyr::distinct( patient_num, description, period, weeks, concept_code ) %>%
+```{r}
+summary_diagnosis <-  all_codes_desc %>%
+  dplyr::filter( icd_code_category == "bacterial") %>%
+  dplyr::distinct( patient_num, description, period, time_p, concept_code ) %>%
   dplyr::group_by( concept_code, description, period ) %>%
   dplyr::count( patient_num ) %>%
   dplyr::tally(name = "count") %>%
@@ -695,45 +648,28 @@ summary_diagnosis <- all_codes_bacterial %>%
   dplyr::arrange( desc(count) ) %>%
   dplyr::ungroup()
 
-summary_diagnosis_test <- summary_diagnosis %>%
-  tidyr::pivot_wider(names_from = period,
-                     values_from = count) %>%
-  #select(late_pandemic, early_pandemic) %>%
-  select(during_pandemic) %>%
-  #tidyr::replace_na(list(late_pandemic = 0, early_pandemic = 0)) %>%
-  tidyr::replace_na(list(during_pandemic = 0)) %>%
-  chisq.test() %>%
-  `[[`("p.value")
-
 ```
 
-```{r, eval=FALSE}
-summary_disorder_group <- all_codes_bacterial %>%
+```{r}
+summary_disorder_group <-  all_codes_desc %>%
+  dplyr::filter( icd_code_category == "bacterial") %>%
   dplyr::group_by( disorder_group ) %>%
   dplyr::count( patient_num ) %>%
   dplyr::tally(name = "count") %>%
   dplyr::mutate(count = ifelse( count > obfuscation, count, obfuscation * 0.5)) %>%
   dplyr::arrange( desc( count ))
 
-summary_disorder_group_by_period <- all_codes_bacterial %>%
-  dplyr::distinct( patient_num, disorder_group, period, weeks ) %>%
+summary_disorder_group_by_period <-  all_codes_desc %>%
+  dplyr::filter( icd_code_category == "bacterial") %>%
+  dplyr::distinct( patient_num, disorder_group, period, time_p ) %>%
   dplyr::group_by( period, disorder_group ) %>%
-  summarise(count = n_distinct(patient_num)) %>%
-  group_by(period, .add=TRUE) %>%
-  mutate(count = ifelse( count > obfuscation, count, obfuscation * 0.5),
+  dplyr::summarise(count = n_distinct(patient_num)) %>%
+  dplyr::group_by(period, .add=TRUE) %>%
+  dplyr::mutate(count = ifelse( count > obfuscation, count, obfuscation * 0.5),
          percentage = count/sum( count )*100)
-
-summary_disorder_group_by_period_test <- summary_disorder_group_by_period %>%
-  pivot_wider(id_cols = disorder_group, names_from = period, values_from = c(count, percentage)) %>%
-  mutate(across(where(is.numeric), ~replace_na(.x, replace = 0))) %>%
-  #select(count_early_pandemic, count_late_pandemic) %>%
-  select(count_during_pandemic) %>%
-  chisq.test() %>%
-  `[[`("p.value")
-
 ```
 
-```{r, eval=FALSE}
+```{r}
 format_counts <- function(count, percentage) {
   glue::glue("{count} ({percentage} %)", count = count, percentage = percentage)
 }
@@ -770,11 +706,11 @@ disorder_table1 <- summary_disorder_group_by_period %>%
   rename(name = disorder_group)
 ```
 
-```{r, eval=FALSE}
+```{r}
 list_tests <- c("Sex" = sex_test,
                 "Age" = age_test,
-                "Diagnoses" = summary_diagnosis_test,
-                "Disorder groups" = summary_disorder_group_by_period_test
+                "Diagnoses" = NA,
+                "Disorder groups" = NA
 )
 
 list_table1 <- list(
@@ -800,7 +736,7 @@ table1 %>%
   mutate(pvalue = ifelse(duplicated(pvalue, fromLast = TRUE), "", as.character(pvalue))) %>%
   ungroup() %>%
   mutate(Category = "") %>%
-  mutate(across(.cols = c(before_pandemic, during_pandemic), .fns = replace_na, "0")) %>%
+  mutate(across(.cols = c(`pre-NPI`, `full-NPI`, `partial-NPI`), .fns = replace_na, "0")) %>%
   rename_with(str_to_title) %>%
   rename_with(sub, pattern = "_", replacement = " ") %>%
   mutate(across(.fns = str_to_title)) %>%
