@@ -4,7 +4,9 @@ qc_summary <- function(input_df, obfuscation_threshold, dir.output){
   
   ### check that the ICD codes follow the regular expression [A-Z][0-9][0-9AB]\.?[0-9A-TV-Z]{0,4}
   codesToReview <- input_df %>% dplyr::filter(concept_type == "DIAG-ICD10",
-                                             ! grepl( "[A-Z][0-9][0-9AB]\\.?[0-9A-TV-Z]{0,4}", concept_code))
+                                             ! grepl( "[A-Z][0-9][0-9AB]\\.?[0-9A-TV-Z]{0,4}", concept_code)) %>%
+                  dplyr::ungroup() %>%
+                  dplyr::select(concept_type, concept_code, calendar_date)
   print(codesToReview)
   
   ### summary of the ICD codes for QC
