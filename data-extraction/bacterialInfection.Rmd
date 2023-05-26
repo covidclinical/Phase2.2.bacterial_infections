@@ -344,7 +344,7 @@ source("../R/admission_plot_count.R")
 nh <- admission_plot_count(df = monthly_hospitalizations, 
                      x = "time_p",
                      y = "count_total", 
-                     title = paste0("New admissions (per ", time_period,")"), 
+                     title = paste0("Total hospitalizations (per ", time_period,")"), 
                      y_title = "Hospitalization Count")
 nh
 ```
@@ -352,7 +352,7 @@ nh
 ## Number of total hospitalizations with bacterial infection disorders
 
 ```{r}
-count_icd_bacterial <- all_codes_desc %>%
+count_bacterial_hosp <- all_codes_desc %>%
   dplyr::filter( icd_code_category == "bacterial",
                  time_p < end_date_plots, 
                  time_p >= start_date_plots ) %>%
@@ -365,32 +365,35 @@ count_icd_bacterial <- all_codes_desc %>%
 
 
 
-count_icd_perc <- monthly_hospitalizations %>%
-  dplyr::left_join(count_icd_bacterial, 
+count_perc_bact_hosp <- monthly_hospitalizations %>%
+  dplyr::left_join(count_bacterial_hosp, 
             by = c("time_p", "period")) %>% 
   tidyr::replace_na(list(count_bacterial = 0)) %>%
-  dplyr::mutate( percentage_bacterial = round(100*count_bacterial/count_total, 3))
+  dplyr::mutate( percentage_bacterial = round(100*count_bacterial/count_total, 3),
+                 count_no_bacterial = count_total - count_bacterial,
+                 ratio = count_bacterial/count_no_bacterial )
 
 
-thpd_bacterialCount <- count_icd_perc %>%
-  pivot_longer(names_to = "counts", cols=c(count_bacterial, count_total)) %>%
-  mutate( counts = ifelse( counts == "count_bacterial", "Bacterial", "Total")) %>%
-  ggplot(aes(x = time_p, y = value, fill = counts, color = counts)) +
-  geom_point() +
-  geom_vline(xintercept = as.Date(pandemic_start_date),
+thpd_bacterialCount <- count_perc_bact_hosp %>%
+  tidyr::pivot_longer(names_to = "counts", cols=c(count_bacterial, count_total)) %>%
+  dplyr::mutate( counts = ifelse( counts == "count_bacterial", "Bacterial", "Total")) %>%
+  ggplot2::ggplot(aes(x = time_p, y = value, fill = counts, color = counts)) +
+  ggplot2::geom_point() +
+  ggplot2::geom_vline(xintercept = as.Date(pre_NPI),
              linetype = "dashed") +
-  scale_fill_manual(values = cbPalette) +
-  scale_color_manual(values = cbPalette) +
-  labs(y = "Counts",
+  ggplot2::geom_vline(xintercept = as.Date(full_NPI),
+             linetype = "dashed") +
+  ggplot2::scale_fill_manual(values = cbPalette) +
+  ggplot2::scale_color_manual(values = cbPalette) +
+  ggplot2::labs(y = "Counts",
        x = paste0("Date (by ", time_period,")"),
-       title = paste0("Per ", time_period , " number of hospitazations with bacterial infection related ICD codes")) + 
-  geom_smooth(method = "lm", formula = y ~ splines::ns(x, 2), se = TRUE, aes(colour=period), colour= "black", size = 0.5)
+       title = paste0("Per ", time_period , " number of hospitazations with bacterial infection related ICD codes")) 
 
 thpd_bacterialCount
 ```
 ## Percentage of hospitalizations with bacterial infections
 ```{r}
-bacterialPercentage <- admission_plot_count(df = count_icd_perc, 
+bacterialPercentage <- admission_plot_count(df = count_perc_bact_hosp, 
                      x = "time_p",
                      y = "percentage_bacterial", 
                      title = paste0("Total hospitalizations (per ", time_period,")"), 
@@ -401,43 +404,10 @@ bacterialPercentage
 
 # Interrupted Time-Series Analyses
 
-```{r}
-all_patients <- unique( all_codes_desc[, c("patient_num", "time_p")])
-patients_with_bacterial_conditions <- unique( all_codes_desc %>% filter( icd_code_category == "bacterial") %>% select( patient_num, time_p))
-patients_without_bacterial_conditions <- setdiff(all_patients,patients_with_bacterial_conditions)
-
-patients_without_bacterial_conditions_counts <- patients_without_bacterial_conditions %>%
-  group_by( time_p ) %>%
-  summarise(count_no_bacterial_patients =  ifelse(n_distinct(patient_num) > obfuscation | isFALSE(obfuscation),
-                               n_distinct(patient_num), 
-                               0.5)) %>%
-  mutate( period = ifelse( time_p <= pre_NPI,
-                           "pre-NPI", ifelse( time_p > full_NPI, "partial-NPI", "full-NPI")))
-
-
-patients_with_bacterial_conditions_counts <-  patients_with_bacterial_conditions %>%
-  group_by( time_p ) %>%
-  summarise(count_bacterial_patients =  ifelse(n_distinct(patient_num) > obfuscation | isFALSE(obfuscation),
-                               n_distinct(patient_num), 
-                               0.5)) %>%
-  mutate( period = ifelse( time_p <= pre_NPI,
-                           "pre-NPI", ifelse( time_p > full_NPI, "partial-NPI", "full-NPI")))
-
-ratios_patients_with_without_bacterial <- patients_without_bacterial_conditions_counts %>%
-  full_join( patients_with_bacterial_conditions_counts, by=c("time_p", "period")) %>%
-  mutate( ratio = count_bacterial_patients/count_no_bacterial_patients, 
-          percentage = 100 * count_bacterial_patients/(count_no_bacterial_patients + count_bacterial_patients))
-
-```
-
-
 
 ```{r}
 # Time series analysis 
-count_icd_perc <- count_icd_perc %>%
-  dplyr::mutate( count_no_bacterial = count_total - count_bacterial )
-
-hospitalization_count_bacterial <- count_icd_perc %>%
+hospitalization_summary <- count_perc_bact_hosp %>%
   filter(time_p > as.Date(cut( start_date_plots, breaks = time_period)) &
            time_p < as.Date(cut( end_date_plots, breaks = time_period))) %>%
   mutate(time = seq_along(time_p),
@@ -445,27 +415,29 @@ hospitalization_count_bacterial <- count_icd_perc %>%
   )
 ```
 
+## Count based
 ```{r, its count based}
-ts_linear_count <- lm(count_bacterial ~ period * time, hospitalization_count_bacterial)
-ts_seasonal_count <- lm(count_bacterial ~ period*time + harmonic(month_year, 1, 12), hospitalization_count_bacterial)
+ts_linear_count <- lm(count_bacterial ~ period * time, hospitalization_summary)
+ts_seasonal_count <- lm(count_bacterial ~ period*time + harmonic(month_year, 1, 12), hospitalization_summary)
 ```
 
+## Percentage based
 ```{r, its percentage based}
-ts_linear_percent <- lm(percentage_bacterial ~ period * time, hospitalization_count_bacterial)
-ts_seasonal_percent <- lm(percentage_bacterial ~ period*time + harmonic(month_year, 1, 12), hospitalization_count_bacterial)
+ts_linear_percent <- lm(percentage_bacterial ~ period * time, hospitalization_summary)
+ts_seasonal_percent <- lm(percentage_bacterial ~ period*time + harmonic(month_year, 1, 12), hospitalization_summary)
 ```
 
 
-### ITS: number of hospitazations, no clearance period, with seasonality effect
+## ITS: number of hospitazations, no clearance period, with seasonality effect
 
 ```{r}
 source("../R/time_series_analysis_plotting.R")
 
 time_series_analysis_plotting(ts_seasonal_count,
-                              hospitalization_count_bacterial,
+                              hospitalization_summary,
                               "count_bacterial",
                               clearance_period = FALSE) +
-  labs(title = "Interrupted Time-Series Analysis: Percentage of encounters with bacterial infection ICD codes",
+  labs(title = "Interrupted Time-Series Analysis: Number of hospitalizations with bacterial infection ICD codes",
        subtitle = "With seasonality effect",
        x = time_period,
        y = "Count")
@@ -475,10 +447,10 @@ time_series_analysis_plotting(ts_seasonal_count,
 
 ```{r}
 time_series_analysis_plotting(ts_seasonal_percent,
-                              hospitalization_count_bacterial,
+                              hospitalization_summary,
                               "percentage_bacterial",
                               clearance_period = FALSE) +
-  labs(title = "Interrupted Time-Series Analysis: Percentage of encounters with bacterial infection ICD codes",
+  labs(title = "Interrupted Time-Series Analysis: Percentage of hospitalizations with bacterial infection ICD codes",
        subtitle = "Without seasonality effect",
        x = time_period,
        y = "Percentage")
