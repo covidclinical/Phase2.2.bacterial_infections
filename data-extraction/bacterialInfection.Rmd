@@ -38,11 +38,11 @@ Change the values of the following variables according to your site:
     at data update.
     
 ```{r message=FALSE, warning=FALSE}
-folder_4ce_files <- "/4ceData/Input/AllAdmin2023//"
+folder_4ce_files <- "/4ceData/Input/AllAdmin2023/"
 obfuscation =  FALSE
 #obfuscation = 3
 dateFormat <- "%Y-%m-%d"
-data_update_date <- "2023-04-01"
+data_update_date <- "2022-12-01"
 dir.output <- "/4ceData/bacterialInfection_outputs/"
 ```
 
@@ -101,14 +101,14 @@ files <- readInputFiles( path      = folder_4ce_files,
 ### Extract the patient summary and observation information. 
 # arrange in a consistent way to make sure we are not assuming the order of some sites
 demo_raw <- files[["patientSummary"]] %>% 
-  filter(cohort == "AllAdm") %>%
-  arrange(patient_num, as.Date(admission_date), days_since_admission)
+  dplyr::filter(cohort == "AllAdm") %>%
+  dplyr::arrange(patient_num, as.Date(admission_date, format = dateFormat), days_since_admission)
 obs_raw <- files[["patientObservations"]] %>% 
-  filter(cohort == "AllAdm") %>%
-  arrange(patient_num, days_since_admission)
+  dplyr::filter(cohort == "AllAdm") %>%
+  dplyr::arrange(patient_num, days_since_admission)
 clinical_raw <- files[["patientClinicalCourse"]] %>% 
-  filter(cohort == "AllAdm") %>%
-  arrange(patient_num, as.Date(calendar_date), days_since_admission)
+  dplyr::filter(cohort == "AllAdm") %>%
+  dplyr::arrange(patient_num, as.Date(calendar_date, format = dateFormat), days_since_admission)
 rm(files) # remove files object to not have unnecessary objects
 
 print('Input files successfully read, patient data extracted')
@@ -129,7 +129,7 @@ icdCodes <- read.csv("../public-data/ICD_bacterial4.csv", header = TRUE, colClas
 
 ```{r}
 # Filtering on inpatients here (in_hospital == 1), to reduce subsequent compute time of the encounter length calculation 
-clinical_raw <- filter(clinical_raw, in_hospital == 1)
+clinical_raw <- dplyr::filter(clinical_raw, in_hospital == 1)
 ```
 
 ### Calculating duration of individual hospitalizations
@@ -153,7 +153,7 @@ obs_raw_age <- left_join(obs_raw, demo_raw[c("patient_num", "age")], by = c("pat
             by = c("patient_num", "days_since_admission"))
 
 # estimate age at each diagnosis
-obs_raw_age$age_time_diagnosis <- obs_raw_age$age - floor(as.numeric(as.Date(data_update_date) - as.Date(obs_raw_age$calendar_date, dateFormat)) / 365.25)
+obs_raw_age$age_time_diagnosis <- obs_raw_age$age - floor(as.numeric(as.Date(data_update_date, format = dateFormat) - as.Date(obs_raw_age$calendar_date, format = dateFormat)) / 365.25)
 ```
 
 ### Applying inclusion criteria to filter and format the data
@@ -178,7 +178,7 @@ obs_filtered_inclusion_criteria <- obs_raw_age %>%
 clinical_filtered  <- clinical_raw %>%
   dplyr::filter( length_hospitalization >= min_hosp_days, 
           cohort  %in% c("AllAdm")) %>%
-  dplyr::mutate( date = as.Date( calendar_date),
+  dplyr::mutate( date = as.Date( calendar_date, format = dateFormat),
                  weeks = as.Date(cut( date, breaks = "week")),
                  month = as.Date(cut( date, breaks = "month")),
                  year = format( date, "%Y"), 
@@ -215,6 +215,17 @@ all_codes <- obs_filtered_inclusion_criteria %>%
    dplyr::inner_join(demographic_filtered_inclusion_criteria, 
                      by = "patient_num") %>%
   select( -cohort.x, -cohort.y)
+```
+
+We add two columns to know if in each hospitalization the patient was dead and/or in the ICU.
+We need this information by hospitalization, not by day as it is here. 
+
+```{r}
+all_codes <- all_codes %>%
+  dplyr::group_by( patient_num, n_hospitalization ) %>%
+  dplyr::mutate( icu_in_hosp = ifelse( max(in_icu ) == 1, 1, 0 ), 
+                 dead_in_hosp = ifelse( max( dead ) == 1, 1, 0 ))
+
 ```
 
 ## QC
@@ -271,10 +282,12 @@ which the code was used.
 ```{r}
 #filter the whole dataset to only bacterial infection codes
 bacteria_infection_codes_qc <- all_codes %>% 
-  filter( concept_code %in% icdCodes$concept_code )
+  dplyr::filter( concept_code %in% icdCodes$concept_code )
 
+# count the number of patients with each code and the min and max dates
+# this will help to identify codes that were only used for specific periods 
 bacteria_infection_codes_qc_output <- bacteria_infection_codes_qc %>%
-  group_by( concept_code ) %>%
+  dplyr::group_by( concept_code ) %>%
   dplyr::summarise( distinct_patients = ifelse(length(unique(patient_num)) > obfuscation | isFALSE(obfuscation),
                                length(unique(patient_num)), 
                                0.5),
@@ -283,14 +296,13 @@ bacteria_infection_codes_qc_output <- bacteria_infection_codes_qc %>%
                                0.5),                           
                     min_date = min( as.Date( calendar_date, format = dateFormat ) ), 
                     max_date = max( as.Date( calendar_date, format = dateFormat ) ))%>% 
-  arrange(desc(distinct_observations))
+  dplyr::arrange(desc(distinct_observations))
 
+# add the descriptions to the codes
 bacteria_infection_codes_qc_output <- bacteria_infection_codes_qc_output %>%
-  left_join( icdCodes, by="concept_code")  %>%
-  select( "disorder_group", "description", "concept_code", "distinct_patients", 
+  dplyr::left_join( icdCodes, by="concept_code")  %>%
+  dplyr::select( "disorder_group", "description", "concept_code", "distinct_patients", 
           "distinct_observations", "min_date", "max_date")
-
-bacteria_infection_codes_qc_output[1:10, ]
 
 ### counts per disorder group and year 
 bacteria_infection_codes_qc %>%
@@ -305,7 +317,7 @@ bacteria_infection_codes_qc %>%
                                0.5),                           
                     min_date = min( as.Date( calendar_date, format = dateFormat ) ), 
                     max_date = max( as.Date( calendar_date, format = dateFormat ) ))%>% 
-  arrange(disorder_group, year )
+  dplyr::arrange(disorder_group, year, distinct_patients )
   
 ```
 
@@ -315,10 +327,10 @@ bacteria_infection_codes_qc %>%
 # Getting site name, will be used later in the analysis
 site <- unique(as.character(demo_raw$siteid))
 
-
+# add a column that will allow us to identify if the code belongs to any of the bacterial infections or not
 all_codes_desc <- all_codes %>% 
-  left_join( icdCodes, by=c("concept_code") ) %>%
-  mutate(icd_code_category = ifelse(concept_code %in% icdCodes$concept_code, 
+  dplyr::left_join( icdCodes, by=c("concept_code") ) %>%
+  dplyr::mutate(icd_code_category = ifelse(concept_code %in% icdCodes$concept_code, 
                                "bacterial", 
                                "others")) 
 ```
