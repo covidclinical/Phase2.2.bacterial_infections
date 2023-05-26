@@ -2,7 +2,7 @@ hospitalizations_visualization_subcategories <- function( input_df, type, title_
   
   if( type == "counts"){
     output_pl <- input_df %>%  
-      ggplot2::ggplot(aes(x = time_p, y= count_hosp, fill = period, group = subcategory )) +
+      ggplot2::ggplot(aes(x = time_p, y= count_hosp, fill = period, group = category )) +
       ggplot2::geom_bar(stat = "identity")+
       ggplot2::geom_vline(xintercept = as.Date(pre_NPI), linetype = "dashed") +
       ggplot2::geom_vline(xintercept = as.Date(full_NPI), linetype = "dashed") +
@@ -11,7 +11,7 @@ hospitalizations_visualization_subcategories <- function( input_df, type, title_
            title = title_plot, 
            subtitle = subtitle_plot) + 
       ylim(0, NA) + 
-      ggplot2::facet_wrap(. ~ subcategory, scales = "free_y") +
+      ggplot2::facet_wrap(. ~ category, scales = "free_y") +
       ggplot2::theme(strip.text.x = element_text(size = 10),
             axis.text.x = element_text(size = 5, angle = 90), 
             axis.text.y = element_text(size = 6), 
@@ -24,7 +24,7 @@ hospitalizations_visualization_subcategories <- function( input_df, type, title_
     
   }else if(type == "percentages"){
     output_pl <- input_df %>%  
-      ggplot2::ggplot(aes(x = time_p, y= percentage_hospitalizations, fill = period, group = subcategory )) +
+      ggplot2::ggplot(aes(x = time_p, y= percentage_hospitalizations, fill = period, group = category )) +
       ggplot2::geom_bar(stat = "identity")+
       ggplot2::geom_vline(xintercept = as.Date(pre_NPI), linetype = "dashed") +
       ggplot2::geom_vline(xintercept = as.Date(full_NPI), linetype = "dashed") +
@@ -33,7 +33,7 @@ hospitalizations_visualization_subcategories <- function( input_df, type, title_
                     title = title_plot, 
                     subtitle = subtitle_plot) + 
       ylim(0, NA) + 
-      ggplot2::facet_wrap(. ~ subcategory, scales = "free_y") +
+      ggplot2::facet_wrap(. ~ category, scales = "free_y") +
       ggplot2::theme(strip.text.x = element_text(size = 10),
                      axis.text.x = element_text(size = 5, angle = 90), 
                      axis.text.y = element_text(size = 6), 
