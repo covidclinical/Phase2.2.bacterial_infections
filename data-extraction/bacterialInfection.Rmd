@@ -462,44 +462,27 @@ time_series_analysis_plotting(ts_seasonal_percent,
 
 ## Disorder group
 
-### New admissions: count
-
 ```{r}
-count_disorder_group <- all_codes_desc %>%
-  dplyr::filter( icd_code_category == "bacterial", 
-          time_p < end_date_plots &
-         time_p >= start_date_plots ) %>%
-  dplyr::group_by( time_p, disorder_group ) %>%
-  summarise(count_dg =  ifelse(n_distinct(hospitalization_id) > obfuscation | isFALSE(obfuscation),
-                               n_distinct(hospitalization_id), 
-                               0.5)) %>%
-  dplyr::mutate( period = ifelse( time_p <= pre_NPI,
-                           "pre-NPI", ifelse( time_p > full_NPI, "partial-NPI", "full-NPI"))
-  )
+source("../R/hospitalizations_estimations_subcategories.R")
+source("../R/hospitalizations_visualization_subcategories.R")
 
-dg <- count_disorder_group %>%  
-  ggplot(aes(x = time_p, y= count_dg, fill = period, group = disorder_group )) +
-  geom_bar(stat = "identity")+
-  geom_vline(xintercept = as.Date(pandemic_start_date),
-             linetype = "dashed") +
-  geom_smooth(method = "lm", formula = y ~ splines::ns(x, 2), se= TRUE, aes(colour=period), colour= "black", size = 0.5) + 
-  labs(x = time_period,
-       y = "Patient Count",
-       title = paste0("Per ", time_period, " number of hospitazations with bacterial infection related ICD codes"), 
-       subtitle = "Grouped by bacterial infection ICD subcategories") + 
-  ylim(0, NA) + 
-  facet_wrap(. ~ disorder_group, scales = "free_y") +
-  theme(strip.text.x = element_text(size = 10),
-        axis.text.x = element_text(size = 5, angle = 90), 
-        axis.text.y = element_text(size = 6), 
-        axis.title.x = element_text(size = 10),
-        axis.title.y = element_text(size = 10),
-        title = element_text(size = 12),
-        plot.subtitle = element_text(size = 11),
-        legend.position = "none") +
-  scale_fill_manual(values = cbPalette[-1])
+by_disorder_group <- hospitalizations_estimation_subcategories( input_df = all_codes_desc, subcategory = "disorder_group" )
+```
 
-dg
+### Counts
+```{r}
+hospitalizations_visualization_subcategories( input_df = by_disorder_group, 
+                                              type = "count", 
+                                              title_plot = "Hospitalizations based on bacterial infection subcategory", 
+                                              subtitle_plot = "Monthly Counts")
+```
+
+### Percentages
+```{r}
+hospitalizations_visualization_subcategories( input_df = by_disorder_group, 
+                                              type = "count", 
+                                              title_plot = "Hospitalizations based on bacterial infection subcategory", 
+                                              subtitle_plot = "Monthly Counts")
 ```
 
 ### New admissions: percentage
