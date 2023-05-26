@@ -9,7 +9,11 @@ min_hosp_days <- 1
 time_period <-"months"
 
 ## cut-off dates
-pandemic_start_date <- as.Date("2020-03-01")
+pre_NPI <- as.Date( "2020-02-01") 
+full_NPI <- as.Date( "2021-02-01")
+partial_NPI <- as.Date("2023-02-01")
+
+## plots start and end dates
 start_date_plots <- as.Date("2018-12-01")
 end_date_plots <- as.Date("2023-03-03")
 
