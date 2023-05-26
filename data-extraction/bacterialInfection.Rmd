@@ -335,6 +335,41 @@ all_codes_desc <- all_codes %>%
                                "others")) 
 ```
 
+## Bacterial pneumonia and LRTI/empyema
+Bacterial pneumonia and empyema is a special case. 
+- If the patient in the hospitalization presents both,bacterial pneumonia and empyema we only want to keep empyema. 
+- If the patient in the hospitalization only has bacterial pneumonia we keep it is
+- If the patient in the hospitalization only presents empyema, then we keep it as it is.
+![Example](./empyemaCase.png)
+Identify which is the subset of patients in the first scenario (having both in the same hospitalization), and remove bacterial pneumonia. 
+
+```{r}
+#identify the patients with at least one of the disorders
+#and estimate if they had 1 or both
+pneumonia_empyema <-  all_codes_desc %>% 
+  dplyr::filter( disorder_group %in% c("bacterial pneumonia", "LRTI/empyema")) %>%
+  dplyr::select( hospitalization_id, disorder_group ) %>%
+  unique() 
+
+cases <- pneumonia_empyema %>%
+  dplyr::group_by(hospitalization_id) %>%
+  dplyr::summarise( n = n_distinct(disorder_group)) %>%
+  dplyr::filter( n > 1)
+
+# create a data frame with the rows to exclude
+# create an id with the hospitalization id and the disorder group to make it easier to exclude
+rows_to_exclude <- pneumonia_empyema %>% 
+  dplyr::filter( hospitalization_id %in% cases$hospitalization_id & disorder_group != "LRTI/empyema") %>%
+  dplyr::mutate( key = paste0( hospitalization_id , "*", disorder_group))
+
+# remove the rows
+all_codes_desc <- all_codes_desc %>%
+  dplyr::mutate( key = paste0( hospitalization_id , "*", disorder_group)) %>%
+  dplyr::filter( ! key %in% rows_to_exclude$key ) %>%
+  dplyr::select( - key )
+```
+
+
 # Monthly hospitalizations
 
 ## Total (counts)
