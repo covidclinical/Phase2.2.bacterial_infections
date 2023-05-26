@@ -6,13 +6,13 @@ Analysis developed with the aim of using the 2.2 4CE consortium data
 
 ## Repo organization
 - `R/`: contains the files carrying out the analysis
-- `public-data/ICD10codes.csv`: mapping of ICD codes to bacterial infection categories
+- `public-data/ICD_bacterial4.csv`: mapping of ICD codes to bacterial infection categories
 - `output`: location of the files saved with by the analysis 
 
 ## How to run this code?
 First, clone the repository: git clone https://github.com/covidclinical/Phase2.2.bacterial_infections 
 
-Then open the file runAnalysis.Rmd and go to the section “Variables that need to be checked/modified by each site”:
+Then open the folder 'data_extraction' and open the file bacterialInfection.Rmd and go to the section “Variables that need to be checked/modified by each site”:
 - change the folder_4ce_files to the directory where your phase 2.2 AllAdm cohort data is located
 - determine the obfuscation threshold: 
     - obfuscation = FALSE if no obfuscation
@@ -30,7 +30,7 @@ Then open the file runAnalysis.Rmd and go to the section “Variables that need 
 %Y 4-digit year (e.g., 2007)
 
 
-After all these changes are done, run the runAnalysis.Rmd. 
+After all these changes are done, run the bacterialInfection.Rmd. 
 As an output the next files will be generated in the output folder:
-- an html file named: runAnalysis.html 
-- files with the counts/frequencies for meta-analysis
+- an html file named: bacterialInfection.html 
+- two RData files with ICD codes summary for QC
