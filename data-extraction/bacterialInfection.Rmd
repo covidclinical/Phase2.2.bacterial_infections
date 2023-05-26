@@ -90,13 +90,13 @@ We will use as input the 2.2 data files. Specifically:
 
 ```{r message=FALSE, warning=FALSE}
 ### Read the CSV input files
-source("../R/readInputFiles.R")
+source("../R/readInputFiles_fread.R")
 
 print("Reading input files")
-files <- readInputFiles( path      = folder_4ce_files, 
+files <- readInputFilesFread( path      = folder_4ce_files, 
                          separator = ",",
                          skip      = 0, 
-                         verbose   = FALSE )
+                         verbose   = TRUE )
 
 ### Extract the patient summary and observation information. 
 # arrange in a consistent way to make sure we are not assuming the order of some sites
@@ -147,6 +147,10 @@ clinical_raw <- count_hosp(clinical_raw)
 ```{r}
 # Calculating patient age at the time of visit, assuming the age used is the patients' age at the time of extraction (last discharge date available in the data)
 # removing the dots from the ICD codes (if any)
+obs_raw <- as.data.frame( obs_raw )
+demo_raw <- as.data.frame( demo_raw )
+clinical_raw <- as.data.frame( clinical_raw )
+
 obs_raw_age <- left_join(obs_raw, demo_raw[c("patient_num", "age")], by = c("patient_num")) %>%
   dplyr::mutate( concept_code = gsub("\\.", "",concept_code )) %>%
   dplyr::inner_join(clinical_raw[, c("patient_num", "days_since_admission", "calendar_date")], 
@@ -215,8 +219,7 @@ all_codes <- obs_filtered_inclusion_criteria %>%
    dplyr::inner_join( clinical_filtered, 
                      by = c("patient_num", "days_since_admission")) %>% 
    dplyr::inner_join(demographic_filtered_inclusion_criteria, 
-                     by = "patient_num") %>%
-  select( -cohort.x, -cohort.y)
+                     by = "patient_num")
 ```
 
 ## Adding ICU and dead status by hospitalization
