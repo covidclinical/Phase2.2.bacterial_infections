@@ -7,14 +7,14 @@ hospitalizations_estimation_subcategories <- function( input_df, subcategory ){
     print("subcategory not available")}
   ## identify the name of the column for the aggregation
   ncol <- which(colnames( input_df) == subcategory)
-  input_df$subcategory <- input_df[, ncol] 
+  input_df$category <- as.data.frame(input_df)[, ncol] 
   
   # get the numerator count  
   counts_subcategory_numerator <- input_df %>%
     dplyr::filter( icd_code_category == "bacterial" & 
                      time_p < end_date_plots &
                    time_p >= start_date_plots ) %>%
-    dplyr::group_by( time_p, disorder_group ) %>%
+    dplyr::group_by( time_p, category ) %>%
     summarise(count_hosp =  ifelse(n_distinct(hospitalization_id) > obfuscation | isFALSE(obfuscation),
                                  n_distinct(hospitalization_id), 
                                  0.5)) %>%
@@ -42,7 +42,7 @@ hospitalizations_estimation_subcategories <- function( input_df, subcategory ){
               by = c("time_p", "period")) %>% 
     tidyr::replace_na(list(count_hosp = 0)) %>%
     dplyr::mutate( percentage_hospitalizations = round(100*count_hosp/count_hosp_total, 3)) %>%
-    dplyr::select( time_p, period, subcategory = disorder_group, count_hosp, count_hosp_total, percentage_hospitalizations)
+    dplyr::select( time_p, period, category, count_hosp, count_hosp_total, percentage_hospitalizations)
   
   return( hosp_subcategory_summary )
   
