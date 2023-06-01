@@ -299,7 +299,7 @@ which the code was used.
 
 ```{r}
 source('./../R/summarize_bi_codes.R')
-summarize_bi_codes(all_codes)
+summarize_bi_codes(all_codes, icdCodes)
 # outputs saved as bacterialCodesSummary.Rdata and bacterialCodesSummary_bycode.Rdata
 ```
 
@@ -308,6 +308,7 @@ summarize_bi_codes(all_codes)
 ```{r message=FALSE, warning=FALSE}
 # Getting site name, will be used later in the analysis
 site <- unique(as.character(demo_raw$siteid))
+print(paste0('site id: ', site))
 
 # add a column that will allow us to identify if the code belongs to any of the bacterial infections or not
 all_codes_desc <- all_codes %>% 
@@ -315,6 +316,8 @@ all_codes_desc <- all_codes %>%
   dplyr::mutate(icd_code_category = ifelse(concept_code %in% icdCodes$concept_code, 
                                "bacterial", 
                                "others")) 
+
+print(table(all_codes_desc$icd_code_category))
 ```
 
 ## Bacterial pneumonia and LRTI/empyema
@@ -345,10 +348,37 @@ rows_to_exclude <- pneumonia_empyema %>%
   dplyr::mutate( key = paste0( hospitalization_id , "*", disorder_group))
 
 # remove the rows
-all_codes_desc <- all_codes_desc %>%
+alba_method <- all_codes_desc %>%
   dplyr::mutate( key = paste0( hospitalization_id , "*", disorder_group)) %>%
   dplyr::filter( ! key %in% rows_to_exclude$key ) %>%
   dplyr::select( - key )
+
+########
+sim_method <- all_codes_desc %>%
+  dplyr::group_by(hospitalization_id) %>%
+  dplyr::mutate(has_both = "LRTI/empyema" %in% disorder_group & "bacterial pneumonia" %in% disorder_group) %>%
+  dplyr::filter(!(disorder_group == "bacterial pneumonia" & has_both)) %>% # remove the bacterial pneumonia rows if the hospitalization has both 
+  dplyr::select(-has_both)
+
+diff <- setdiff(alba_method, sim_method)
+# there are 4182 rows in sim_method that are not present in alba_method
+
+
+# test cases
+test_cases <- pneumonia_empyema %>% group_by(hospitalization_id) %>% mutate(has_both = "LRTI/empyema" %in% disorder_group & "bacterial pneumonia" %in% disorder_group)
+
+alba_method %>% 
+  filter(hospitalization_id == '100594-1',
+         !is.na(disorder_group))
+
+sim_method %>% 
+  filter(hospitalization_id == '100594-1',
+         !is.na(disorder_group))
+
+testdf %>% group_by(hid) %>% mutate(has_both = 'e' %in% code & 'b' %in% code) %>% filter(!(code == 'b' & has_both))
+
+
+all_codes_desc <- all_codes_desc
 ```
 
 
