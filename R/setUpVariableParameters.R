@@ -5,8 +5,8 @@ codeVersion <- "1.1.0"
 min_hosp_days <- 1 
 
 ## time period for the analysis
-## (possible values: days, weeks, months )
-time_period <-"months"
+## (possible values: day, week, month )
+time_period <-"month"
 
 ## cut-off dates
 pre_NPI <- as.Date( "2020-02-01") 

@@ -141,12 +141,15 @@ clinical_raw <- dplyr::filter(clinical_raw, in_hospital == 1)
 
 ## Calculating duration of individual hospitalizations
 
-Adding columns with hospitalization number and hospitalization length to
+- Adding columns with hospitalization number and hospitalization length to
 the clinical raw file
+- Calculate 'admit date': date of admission for each hospitalization
 
 ```{r}
 source("../R/count_sequences_hospitalisation.R")
 clinical_raw <- count_hosp(clinical_raw)
+
+print('Hospitalization sequences have been counted.')
 ```
 
 ## Calculating age at hospitalization time
@@ -165,6 +168,8 @@ obs_raw_age <- left_join(obs_raw, demo_raw[c("patient_num", "age")], by = c("pat
 
 # estimate age at each diagnosis
 obs_raw_age$age_time_diagnosis <- obs_raw_age$age - floor(as.numeric(as.Date(data_update_date, format = dateFormat) - as.Date(obs_raw_age$calendar_date, format = dateFormat)) / 365.25)
+
+print('Patient age calculated')
 ```
 
 ## Applying inclusion criteria to filter and format the data
@@ -186,22 +191,23 @@ obs_filtered_inclusion_criteria <- obs_raw_age %>%
                 days_since_admission >= 0, 
                 age_time_diagnosis < 18 )
 
+if (!time_period %in% c('day', 'week', 'month')) {
+  print(paste0('unidentified time period: ', time_period))
+  print(paste0('possible time periods: ', c('day', 'week', 'month')))
+} else {
+  print(paste0('time period: ', time_period))
+}
+
+# base the time period on admit date, not calendar date
 clinical_filtered  <- clinical_raw %>%
   dplyr::filter( length_hospitalization >= min_hosp_days, 
           cohort  %in% c("AllAdm")) %>%
-  dplyr::mutate( date = as.Date( calendar_date, format = dateFormat),
-                 weeks = as.Date(cut( date, breaks = "week")),
-                 month = as.Date(cut( date, breaks = "month")),
-                 year = format( date, "%Y"), 
-                 period = ifelse( date <= pre_NPI,
-                           "pre-NPI", ifelse( date > full_NPI, "partial-NPI", "full-NPI")))
-if( time_period == "weeks"){
-  clinical_filtered$time_p <- clinical_filtered$weeks
-}else if(time_period == "days"){
-  clinical_filtered$time_p <- clinical_filtered$date
-}else if(time_period == "months"){
-  clinical_filtered$time_p <- clinical_filtered$month
-}
+  dplyr::mutate( calendar_date = as.Date( calendar_date, format = dateFormat),
+                 admit_date = as.Date( admit_date, format = dateFormat),
+                 time_p = as.Date(cut( admit_date, breaks = time_period)),
+                 period = ifelse( admit_date <= pre_NPI, "pre-NPI", 
+                                  ifelse( admit_date > full_NPI, "partial-NPI", "full-NPI")))
+
 
 # we create a hospitalization id and select only the columns of interest
 clinical_filtered <- clinical_filtered %>%
@@ -241,12 +247,7 @@ all_codes <- all_codes %>%
 
 ```
 
-## Assign to each hospitalization the date of admission / first date of diagnosis in that visit
-```{r}
-all_codes <- all_codes %>%
-  dplyr::group_by( hospitalization_id ) %>%
-  dplyr::mutate( time_p = min(as.Date( time_p )))
-```
+
 
 
 ### QC
