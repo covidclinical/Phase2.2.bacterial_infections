@@ -251,6 +251,7 @@ all_codes <- all_codes %>%
 
 
 ### QC
+# from here only use all_codes combined data structure? remove other dataframes?
 ```{r}
 print("Starting QC")
 source("../R/qc_summary.R")
@@ -297,47 +298,9 @@ which the code was used.
 
 
 ```{r}
-#filter the whole dataset to only bacterial infection codes
-bacteria_infection_codes_qc <- all_codes %>% 
-  dplyr::filter( concept_code %in% icdCodes$concept_code )
-
-# count the number of patients with each code and the min and max dates
-# this will help to identify codes that were only used for specific periods 
-bacteria_infection_codes_qc_output <- bacteria_infection_codes_qc %>%
-  dplyr::group_by( concept_code ) %>%
-  dplyr::summarise( distinct_patients = ifelse(length(unique(patient_num)) > obfuscation | isFALSE(obfuscation),
-                               length(unique(patient_num)), 
-                               0.5),
-                    distinct_observations = ifelse(length(patient_num) > obfuscation | isFALSE(obfuscation),
-                               length(patient_num), 
-                               0.5),                           
-                    min_date = min( as.Date( calendar_date, format = dateFormat ) ), 
-                    max_date = max( as.Date( calendar_date, format = dateFormat ) ))%>% 
-  dplyr::arrange(desc(distinct_observations))
-
-# add the descriptions to the codes
-bacteria_infection_codes_qc_output <- bacteria_infection_codes_qc_output %>%
-  dplyr::left_join( icdCodes, by="concept_code")  %>%
-  dplyr::select( "disorder_group", "description", "concept_code", "distinct_patients", 
-          "distinct_observations", "min_date", "max_date")
-
-### counts per disorder group and year 
-bacterialCodesSummary <-bacteria_infection_codes_qc %>%
-  dplyr::left_join( icdCodes ) %>%
-  dplyr::mutate( year = format( as.Date(calendar_date, format = dateFormat), "%Y")) %>%
-  dplyr::group_by( disorder_group, year ) %>%
-  dplyr::summarise( distinct_patients = ifelse(length(unique(patient_num)) > obfuscation | isFALSE(obfuscation),
-                               length(unique(patient_num)), 
-                               0.5),
-                    distinct_observations = ifelse(length(patient_num) > obfuscation | isFALSE(obfuscation),
-                               length(patient_num), 
-                               0.5),                           
-                    min_date = min( as.Date( calendar_date, format = dateFormat ) ), 
-                    max_date = max( as.Date( calendar_date, format = dateFormat ) ))%>% 
-  dplyr::arrange(disorder_group, year, distinct_patients )
-
-# save the file for QC
-save( bacterialCodesSummary, file = paste0(dir.output, 'bacterialCodesSummary.Rdata')) 
+source('./../R/summarize_bi_codes.R')
+summarize_bi_codes(all_codes)
+# outputs saved as bacterialCodesSummary.Rdata and bacterialCodesSummary_bycode.Rdata
 ```
 
 ## Add the bacterial infection ICD code description and filter
