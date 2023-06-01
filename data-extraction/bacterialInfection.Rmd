@@ -89,29 +89,36 @@ We will use as input the 2.2 data files. Specifically:
 ## Reading 4CE phase 2.2 files
 
 ```{r message=FALSE, warning=FALSE}
-### Read the CSV input files
+### Read the CSV input files without duplicating the data
+
 source("../R/readInputFiles_fread.R")
 
-print("Reading input files")
-files <- readInputFilesFread( path      = folder_4ce_files, 
-                         separator = ",",
-                         skip      = 0, 
-                         verbose   = TRUE )
+filecheck <- checkInputFilesFread( path = folder_4ce_files, separator = ",", skip = 0, verbose = TRUE )
 
-### Extract the patient summary and observation information. 
-# arrange in a consistent way to make sure we are not assuming the order of some sites
-demo_raw <- files[["patientSummary"]] %>% 
-  dplyr::filter(cohort == "AllAdm") %>%
-  dplyr::arrange(patient_num, as.Date(admission_date, format = dateFormat), days_since_admission)
-obs_raw <- files[["patientObservations"]] %>% 
-  dplyr::filter(cohort == "AllAdm") %>%
-  dplyr::arrange(patient_num, days_since_admission)
-clinical_raw <- files[["patientClinicalCourse"]] %>% 
-  dplyr::filter(cohort == "AllAdm") %>%
-  dplyr::arrange(patient_num, as.Date(calendar_date, format = dateFormat), days_since_admission)
-rm(files) # remove files object to not have unnecessary objects
+if(filecheck){
+  demo_raw <- read_delim_4ce("LocalPatientSummary.csv", folder_4ce_files, )
+  obs_raw <- read_delim_4ce("LocalPatientObservations.csv", folder_4ce_files)
+  clinical_raw <- read_delim_4ce("LocalPatientClinicalCourse.csv", folder_4ce_files)
 
-print('Input files successfully read, patient data extracted')
+  ### Extract the patient summary and observation information. 
+  # arrange in a consistent way to make sure we are not assuming the order of some sites
+  demo_raw <- demo_raw %>% 
+    dplyr::filter(cohort == "AllAdm") %>%
+    dplyr::arrange(patient_num, as.Date(admission_date, format = dateFormat), days_since_admission)
+  obs_raw <- obs_raw %>% 
+    dplyr::filter(cohort == "AllAdm") %>%
+    dplyr::arrange(patient_num, days_since_admission)
+  clinical_raw <- clinical_raw %>% 
+    dplyr::filter(cohort == "AllAdm") %>%
+    dplyr::arrange(patient_num, as.Date(calendar_date, format = dateFormat), days_since_admission)
+  
+  print('Input files successfully read, patient data extracted')
+  
+}else{
+  print('Error in reading files')
+}
+
+
 ```
 
 ## Select the ICD codes of interest
