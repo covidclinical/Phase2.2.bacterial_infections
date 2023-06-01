@@ -603,57 +603,39 @@ source("../R/ttest2.R")
 
 age_by_period <- all_codes_desc %>%
   dplyr::filter( icd_code_category == "bacterial") %>%
-  distinct(patient_num, age_time_diagnosis, period) %>% 
+  distinct(hospitalization_id, age_time_diagnosis, period) %>% 
   dplyr::group_by(period) %>%
   dplyr::summarise( mean = mean( age_time_diagnosis ),
                     sd = sd( age_time_diagnosis ),
-                    count = n_distinct(patient_num))
-
-
-age_test <- t.test2(m1 = age_by_period[[1, "mean"]],
-                    m2 = age_by_period[[2, "mean"]],
-                    s1 = age_by_period[[1, "sd"]],
-                    s2 = age_by_period[[2, "sd"]],
-                    n1 = age_by_period[[1, "count"]],
-                    n2 = age_by_period[[2, "count"]]) %>%
-  `[[`("p-value")
+                    count = n_distinct(hospitalization_id))
 ```
 
 ```{r}
 sex <- all_codes_desc %>%
   dplyr::filter( icd_code_category == "bacterial") %>%
-  dplyr::distinct(patient_num, sex) %>% 
+  dplyr::distinct(hospitalization_id, sex) %>% 
   dplyr::group_by( sex ) %>%
-  dplyr::summarise( count = n_distinct(patient_num) ) %>%
+  dplyr::summarise( count = n_distinct(hospitalization_id) ) %>%
   dplyr::mutate( count = ifelse( count > obfuscation, count, obfuscation * 0.5),
                  total = sum( count ), percentage = round( count/total*100, 2)  )
 
 sex_by_period <- all_codes_desc %>%
   dplyr::filter( icd_code_category == "bacterial") %>%
-  dplyr::distinct(patient_num, period, sex) %>% 
+  dplyr::distinct(hospitalization_id, period, sex) %>% 
   dplyr::group_by(period, sex ) %>%
-  dplyr::summarise(count = n_distinct(patient_num)) %>%
+  dplyr::summarise(count = n_distinct(hospitalization_id)) %>%
   dplyr::group_by(period, .add=TRUE) %>%
   dplyr::mutate( count = ifelse( count > obfuscation, count, obfuscation * 0.5),
           percentage=round(count/sum( count )*100, 2)) %>%
   tidyr::replace_na(list(male = 0, female = 0))
-
-
-sex_test <- sex_by_period %>%
-  select(-percentage) %>%
-  pivot_wider(names_from = sex, values_from = count) %>%
-  ungroup() %>%
-  select(male, female) %>%
-  chisq.test() %>%
-  `[[`("p.value")
 ```
 
 ```{r}
 summary_diagnosis <-  all_codes_desc %>%
   dplyr::filter( icd_code_category == "bacterial") %>%
-  dplyr::distinct( patient_num, description, period, time_p, concept_code ) %>%
+  dplyr::distinct( hospitalization_id, description, period, time_p, concept_code ) %>%
   dplyr::group_by( concept_code, description, period ) %>%
-  dplyr::count( patient_num ) %>%
+  dplyr::count( hospitalization_id ) %>%
   dplyr::tally(name = "count") %>%
   dplyr::mutate(count = ifelse( count > obfuscation, count, obfuscation * 0.5)) %>%
   dplyr::arrange( desc(count) ) %>%
@@ -665,16 +647,16 @@ summary_diagnosis <-  all_codes_desc %>%
 summary_disorder_group <-  all_codes_desc %>%
   dplyr::filter( icd_code_category == "bacterial") %>%
   dplyr::group_by( disorder_group ) %>%
-  dplyr::count( patient_num ) %>%
+  dplyr::count( hospitalization_id ) %>%
   dplyr::tally(name = "count") %>%
   dplyr::mutate(count = ifelse( count > obfuscation, count, obfuscation * 0.5)) %>%
   dplyr::arrange( desc( count ))
 
 summary_disorder_group_by_period <-  all_codes_desc %>%
   dplyr::filter( icd_code_category == "bacterial") %>%
-  dplyr::distinct( patient_num, disorder_group, period, time_p ) %>%
+  dplyr::distinct( hospitalization_id, disorder_group, period, time_p ) %>%
   dplyr::group_by( period, disorder_group ) %>%
-  dplyr::summarise(count = n_distinct(patient_num)) %>%
+  dplyr::summarise(count = n_distinct(hospitalization_id)) %>%
   dplyr::group_by(period, .add=TRUE) %>%
   dplyr::mutate(count = ifelse( count > obfuscation, count, obfuscation * 0.5),
          percentage = count/sum( count )*100)
@@ -718,34 +700,18 @@ disorder_table1 <- summary_disorder_group_by_period %>%
 ```
 
 ```{r}
-list_tests <- c("Sex" = sex_test,
-                "Age" = age_test,
-                "Diagnoses" = NA,
-                "Disorder groups" = NA
-)
-
 list_table1 <- list(
   "Sex" = sex_table1,
   "Age" = age_table1,
   "Disorder groups" = disorder_table1)
 
 
-tests <- list_tests %>%
-  data.frame() %>%
-  round(2)
-names(tests) <- "pvalue"
-tests["Category"] <- row.names(tests)
-
 table1 <- list_table1 %>%
   lapply(function(df) mutate(df, across(.fns = as.character))) %>%
   dplyr::bind_rows(.id = "Category") %>%
-  dplyr::left_join(tests, by = "Category")
-
+  dplyr::select( Category, name, `pre-NPI`, `full-NPI`, `partial-NPI`)
 
 table1 %>%
-  group_by(Category) %>%
-  mutate(pvalue = ifelse(duplicated(pvalue, fromLast = TRUE), "", as.character(pvalue))) %>%
-  ungroup() %>%
   mutate(Category = "") %>%
   mutate(across(.cols = c(`pre-NPI`, `full-NPI`, `partial-NPI`), .fns = replace_na, "0")) %>%
   rename_with(str_to_title) %>%
