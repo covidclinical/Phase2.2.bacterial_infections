@@ -269,6 +269,13 @@ stopifnot(length(unique(all_codes$patient_num)) == length(unique(obs_filtered_in
 # add the age groups
 ageGroups <- read.delim("../public-data/ageGroups.txt", sep="\t",  header = TRUE) 
 
+# flag any unexpected ages
+strange_ages <- all_codes %>% dplyr::filter(age_time_diagnosis<0 | age_time_diagnosis>18)
+if (nrow(strange_ages) != 0) {
+  print("Some strange ages were found for our patients:")
+  print(unique(strange_ages$age_time_diagnosis))
+}
+
 # Filtering hospitalizations where patient age is in inclusion criteria
 all_codes <- all_codes %>%
   dplyr::left_join( ageGroups, by = c("age_time_diagnosis" = "age")) %>%
@@ -278,6 +285,7 @@ all_codes <- all_codes %>%
 
 ### print checks
 print("Age summary")
+print(table(all_codes$age_group, useNA = 'ifany'))
 print(summary(all_codes$age_time_diagnosis))
 ```
 
