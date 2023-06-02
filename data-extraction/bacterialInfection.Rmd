@@ -621,7 +621,7 @@ Grouped by:
 - length of hospitalization
 - ICU admission (y/n)
 - mortality (y/n) 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 a1_age_all <- a1_tablesPerCohort( input_df = all_codes_desc, subcategory = "age_group", type = "all")
 a1_sex_all <- a1_tablesPerCohort( input_df = all_codes_desc, subcategory = "sex", type = "all")
 a1_season_all <- a1_tablesPerCohort( input_df = all_codes_desc, subcategory = "season", type = "all")
@@ -644,7 +644,7 @@ Grouped by:
 - length of hospitalization
 - ICU admission (y/n)
 - mortality (y/n) 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 a1_age_bacterial <- a1_tablesPerCohort( input_df = all_codes_desc, subcategory = "age_group", type = "bacterial")
 a1_sex_bacterial <- a1_tablesPerCohort( input_df = all_codes_desc, subcategory = "sex", type = "bacterial")
 a1_season_bacterial <- a1_tablesPerCohort( input_df = all_codes_desc, subcategory = "season", type = "bacterial")
@@ -668,7 +668,7 @@ Grouped by:
 - length of hospitalization
 - ICU admission (y/n)
 - mortality (y/n) 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 a1_age_subgroups <- a1_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "age_group")
 a1_sex_subgroups <- a1_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "sex")
 a1_season_subgroups <- a1_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "season")
@@ -689,7 +689,7 @@ Grouped by:
 - length of hospitalization
 - ICU admission (y/n)
 - mortality (y/n) 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 a1_age_bact_infection <- a1_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "age_group")
 a1_sex_bact_infection <- a1_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "sex")
 a1_season_bact_infection <- a1_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "season")
