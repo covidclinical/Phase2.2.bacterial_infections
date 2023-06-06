@@ -676,9 +676,9 @@ a1_lengthHosp_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc
 a1_icu_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "icu_in_hosp", time = "NPI period")
 a1_mortality_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "dead_in_hosp", time = "NPI period")
 ```
+
 ### By each bacterial infection
 ```{r}
-source("../R/A1_tablesPerCohort.R")
 a1_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "total", time = "NPI period")
 a1_bact_infection
 ```
@@ -792,6 +792,17 @@ a2_icu_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_co
 a2_mortality_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "dead_in_hosp", time = "month")
 ```
 
+### Save all the a1 and a2 data frames in RData files
+```{r}
+allVariables <- ls()
+a1_allTables <- allVariables[ grep("a1", allVariables)]
+a1_allTables <- a1_allTables[! a1_allTables %in% c("a1_tablesPerCohort_subgroup","a1_tablesPerCohort_bacterialInfection","a1_tablesPerCohort")]
+a2_allTables <- allVariables[ grep("a2", allVariables)] 
+a2_allTables <- a2_allTables[! a2_allTables %in% c("a2_tablesPerCohort_subgroup","a2_tablesPerCohort_bacterialInfection","a2_tablesPerCohort")]
+
+save( list = a1_allTables, file = paste0( dir.output, "a1Tables.RData") )
+save( list = a2_allTables, file = paste0( dir.output, "a2Tables.RData") )
+```
 
 
 
