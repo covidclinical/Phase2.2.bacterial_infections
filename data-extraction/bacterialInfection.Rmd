@@ -316,7 +316,15 @@ all_codes_desc <- all_codes %>%
   dplyr::left_join( icdCodes, by=c("concept_code") ) %>%
   dplyr::mutate(icd_code_category = ifelse(concept_code %in% icdCodes$concept_code, 
                                "bacterial", 
-                               "others")) 
+                               "others"),
+                disorder_group = tidyr::replace_na(disorder_group, 'non_bacterial'),
+                ICD10_Code = tidyr::replace_na(ICD10_Code, 'non_bacterial'),
+                description = tidyr::replace_na(description, 'non_bacterial'),
+                IBI_simple = tidyr::replace_na(IBI_simple, 'non_bacterial'),
+                IBI_extensive = tidyr::replace_na(IBI_extensive, 'non_bacterial'),
+                Respiratory = tidyr::replace_na(Respiratory, 'non_bacterial'),
+                Skin = tidyr::replace_na(Skin, 'non_bacterial'),
+                bacterial_syndrome = tidyr::replace_na(bacterial_syndrome, 'non_bacterial')) 
 
 print(table(all_codes_desc$icd_code_category))
 ```
