@@ -57,6 +57,17 @@ a_tablesPerCohort <- function( input_df, subcategory, type, time ){
         dplyr::group_by(timeToGroup) %>%
         dplyr::summarise( count = n_distinct(hospitalization_id) ) %>%
         dplyr::mutate( count = ifelse( count > obfuscation, count, obfuscation * 0.5)  )
+      
+      ### add the patient count as QC for the manuscript
+      patients_counts_qc <- input_df %>%
+        dplyr::distinct(patient_num, timeToGroup) %>% 
+        dplyr::group_by(timeToGroup) %>%
+        dplyr::summarise( count = n_distinct(patient_num) ) %>%
+        dplyr::mutate( count = ifelse( count > obfuscation, count, obfuscation * 0.5)  )
+      
+      print("Patient count QC")
+      print( patients_counts_qc )
+      
     }else if( type == "bacterial"){
       hospital_admissions <- input_df %>%
         dplyr::filter( icd_code_category == "bacterial") %>%
@@ -64,6 +75,18 @@ a_tablesPerCohort <- function( input_df, subcategory, type, time ){
         dplyr::group_by(timeToGroup) %>%
         dplyr::summarise( count = n_distinct(hospitalization_id) ) %>%
         dplyr::mutate( count = ifelse( count > obfuscation, count, obfuscation * 0.5)  )
+      
+      ### add the patient count as QC for the manuscript
+      patients_counts_qc <- input_df %>%
+        dplyr::filter( icd_code_category == "bacterial") %>%
+        dplyr::distinct(patient_num, timeToGroup) %>% 
+        dplyr::group_by(timeToGroup) %>%
+        dplyr::summarise( count = n_distinct(patient_num) ) %>%
+        dplyr::mutate( count = ifelse( count > obfuscation, count, obfuscation * 0.5)  )
+      
+      print("Patient count QC")
+      print( patients_counts_qc )
+      
     }
   }
   
