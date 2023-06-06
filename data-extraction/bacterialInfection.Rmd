@@ -326,6 +326,7 @@ all_codes_desc <- all_codes %>%
                 Skin = tidyr::replace_na(Skin, 'non_bacterial'),
                 bacterial_syndrome = tidyr::replace_na(bacterial_syndrome, 'non_bacterial')) 
 
+print('the following icd code categories are present:')
 print(table(all_codes_desc$icd_code_category))
 ```
 
@@ -939,4 +940,9 @@ table1 %>%
   kable( booktabs = T) %>%
   kableExtra::kable_styling(latex_options = "striped") %>%
   kableExtra::group_rows(index = setNames(rle(table1$Category)[[1]], rle(table1$Category)[[2]]))
+```
+Close sink
+```{r}
+sink()
+
 ```
