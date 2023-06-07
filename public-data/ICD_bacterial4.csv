@@ -1,655 +1,735 @@
-ICD10_Code,description,syndrome,bacterial_syndrome
-J86,Pyothorax,LRTI/empyema,yes
-J86.0,Pyothorax with fistula,LRTI/empyema,yes
-J86.9,Pyothorax without fistula,LRTI/empyema,yes
-L03,Cellulitis and acute lymphangitis,skin infections,yes
-L03.0,Cellulitis and acute lymphangitis of finger and toe,skin infections,yes
-L03.01,Cellulitis of finger,skin infections,yes
-L03.011,Cellulitis of right finger,skin infections,yes
-L03.012,Cellulitis of left finger,skin infections,yes
-L03.019,Cellulitis of unspecified finger,skin infections,yes
-L03.02,Acute lymphangitis of finger,skin infections,yes
-L03.021,Acute lymphangitis of right finger,skin infections,yes
-L03.022,Acute lymphangitis of left finger,skin infections,yes
-L03.029,Acute lymphangitis of unspecified finger,skin infections,yes
-L03.03,Cellulitis of toe,skin infections,yes
-L03.031,Cellulitis of right toe,skin infections,yes
-L03.032,Cellulitis of left toe,skin infections,yes
-L03.039,Cellulitis of unspecified toe,skin infections,yes
-L03.04,Acute lymphangitis of toe,skin infections,yes
-L03.041,Acute lymphangitis of right toe,skin infections,yes
-L03.042,Acute lymphangitis of left toe,skin infections,yes
-L03.049,Acute lymphangitis of unspecified toe,skin infections,yes
-L03.1,Cellulitis and acute lymphangitis of other parts of limb,skin infections,yes
-L03.11,Cellulitis of other parts of limb,skin infections,yes
-L03.111,Cellulitis of right axilla,skin infections,yes
-L03.112,Cellulitis of left axilla,skin infections,yes
-L03.113,Cellulitis of right upper limb,skin infections,yes
-L03.114,Cellulitis of left upper limb,skin infections,yes
-L03.115,Cellulitis of right lower limb,skin infections,yes
-L03.116,Cellulitis of left lower limb,skin infections,yes
-L03.119,Cellulitis of unspecified part of limb,skin infections,yes
-L03.12,Acute lymphangitis of other parts of limb,skin infections,yes
-L03.121,Acute lymphangitis of right axilla,skin infections,yes
-L03.122,Acute lymphangitis of left axilla,skin infections,yes
-L03.123,Acute lymphangitis of right upper limb,skin infections,yes
-L03.124,Acute lymphangitis of left upper limb,skin infections,yes
-L03.125,Acute lymphangitis of right lower limb,skin infections,yes
-L03.126,Acute lymphangitis of left lower limb,skin infections,yes
-L03.129,Acute lymphangitis of unspecified part of limb,skin infections,yes
-L03.2,Cellulitis and acute lymphangitis of face and neck,skin infections,yes
-L03.21,Cellulitis and acute lymphangitis of face,skin infections,yes
-L03.211,Cellulitis of face,skin infections,yes
-L03.212,Acute lymphangitis of face,skin infections,yes
-L03.213,Periorbital cellulitis,skin infections,yes
-L03.22,Cellulitis and acute lymphangitis of neck,skin infections,yes
-L03.221,Cellulitis of neck,skin infections,yes
-L03.222,Acute lymphangitis of neck,skin infections,yes
-L03.3,Cellulitis and acute lymphangitis of trunk,skin infections,yes
-L03.31,Cellulitis of trunk,skin infections,yes
-L03.311,Cellulitis of abdominal wall,skin infections,yes
-L03.312,Cellulitis of back [any part except buttock],skin infections,yes
-L03.313,Cellulitis of chest wall,skin infections,yes
-L03.314,Cellulitis of groin,skin infections,yes
-L03.315,Cellulitis of perineum,skin infections,yes
-L03.316,Cellulitis of umbilicus,skin infections,yes
-L03.317,Cellulitis of buttock,skin infections,yes
-L03.319,…… unspecified,skin infections,yes
-L03.32,Acute lymphangitis of trunk,skin infections,yes
-L03.321,Acute lymphangitis of abdominal wall,skin infections,yes
-L03.322,Acute lymphangitis of back [any part except buttock],skin infections,yes
-L03.323,Acute lymphangitis of chest wall,skin infections,yes
-L03.324,Acute lymphangitis of groin,skin infections,yes
-L03.325,Acute lymphangitis of perineum,skin infections,yes
-L03.326,Acute lymphangitis of umbilicus,skin infections,yes
-L03.327,Acute lymphangitis of buttock,skin infections,yes
-L03.329,…… unspecified,skin infections,yes
-L03.8,Cellulitis and acute lymphangitis of other sites,skin infections,yes
-L03.81 ,Cellulitis of other sites,skin infections,yes
-L03.811,"Cellulitis of head [any part, except face]",skin infections,yes
-L03.818,Cellulitis of other sites,skin infections,yes
-L03.89,Acute lymphangitis of other sites,skin infections,yes
-L03.891,"Acute lymphangitis of head [any part, except face]",skin infections,yes
-L03.898,Acute lymphangitis of other sites,skin infections,yes
-L03.9,"Cellulitis and acute lymphangitis, unspecified",skin infections,yes
-L03.90,"Cellulitis, unspecified",skin infections,yes
-L03.91,"Acute lymphangitis, unspecified",skin infections,yes
-A46,Erysipelas,skin infections,yes
-L01,Impetigo,skin infections,yes
-L01.0,Impetigo,skin infections,yes
-L01.00,…… unspecified,skin infections,yes
-L01.01,Non-bullous impetigo,skin infections,yes
-L01.02,Bockhart's impetigo,skin infections,yes
-L01.03,Bullous impetigo,skin infections,yes
-L01.09,Other impetigo,skin infections,yes
-L01.1,Impetiginization of other dermatoses,skin infections,yes
-M72.6,Necrotizing fasciitis,necrotizing fasciitis,yes
-N30,Cystitis,UTI/pyelonefritis,yes
-N30.0,Acute cystitis,UTI/pyelonefritis,yes
-N30.00,…… without hematuria,UTI/pyelonefritis,yes
-N30.01,…… with hematuria,UTI/pyelonefritis,yes
-N30.1,Interstitial cystitis (chronic),UTI/pyelonefritis,yes
-N30.10,…… without hematuria,UTI/pyelonefritis,yes
-N30.11,…… with hematuria,UTI/pyelonefritis,yes
-N30.2,Other chronic cystitis,UTI/pyelonefritis,yes
-N30.20,…… without hematuria,UTI/pyelonefritis,yes
-N30.21,…… with hematuria,UTI/pyelonefritis,yes
-N30.3,Trigonitis,UTI/pyelonefritis,yes
-N30.30,…… without hematuria,UTI/pyelonefritis,yes
-N30.31,…… with hematuria,UTI/pyelonefritis,yes
-N30.4,Irradiation cystitis,UTI/pyelonefritis,yes
-N30.40,…… without hematuria,UTI/pyelonefritis,yes
-N30.41,…… with hematuria,UTI/pyelonefritis,yes
-N30.8,Other cystitis,UTI/pyelonefritis,yes
-N30.80,…… without hematuria,UTI/pyelonefritis,yes
-N30.81,…… with hematuria,UTI/pyelonefritis,yes
-N30.9,"Cystitis, unspecified",UTI/pyelonefritis,yes
-N30.90,…… without hematuria,UTI/pyelonefritis,yes
-N30.91,…… with hematuria,UTI/pyelonefritis,yes
-N10,Acute tubulo-interstitial nephritis,UTI/pyelonefritis,yes
-N39.0,"Urinary tract infection, site not specified",UTI/pyelonefritis,yes
-P39.3,Neonatal urinary tract infection,UTI/pyelonefritis,yes
-M86,Osteomyelitis,bone infections,yes
-M86.0,Acute hematogenous osteomyelitis,bone infections,yes
-M86.00,…… unspecified site,bone infections,yes
-M86.01,"Acute hematogenous osteomyelitis, shoulder",bone infections,yes
-M86.011,"Acute hematogenous osteomyelitis, right shoulder",bone infections,yes
-M86.012,"Acute hematogenous osteomyelitis, left shoulder",bone infections,yes
-M86.019,"Acute hematogenous osteomyelitis, unspecified shoulder",bone infections,yes
-M86.02,"Acute hematogenous osteomyelitis, humerus",bone infections,yes
-M86.021,"Acute hematogenous osteomyelitis, right humerus",bone infections,yes
-M86.022,"Acute hematogenous osteomyelitis, left humerus",bone infections,yes
-M86.029,"Acute hematogenous osteomyelitis, unspecified humerus",bone infections,yes
-M86.03,"Acute hematogenous osteomyelitis, radius and ulna",bone infections,yes
-M86.031,"Acute hematogenous osteomyelitis, right radius and ulna",bone infections,yes
-M86.032,"Acute hematogenous osteomyelitis, left radius and ulna",bone infections,yes
-M86.039,"Acute hematogenous osteomyelitis, unspecified radius and ulna",bone infections,yes
-M86.04,"Acute hematogenous osteomyelitis, hand",bone infections,yes
-M86.041,"Acute hematogenous osteomyelitis, right hand",bone infections,yes
-M86.042,"Acute hematogenous osteomyelitis, left hand",bone infections,yes
-M86.049,"Acute hematogenous osteomyelitis, unspecified hand",bone infections,yes
-M86.05,"Acute hematogenous osteomyelitis, femur",bone infections,yes
-M86.051,"Acute hematogenous osteomyelitis, right femur",bone infections,yes
-M86.052,"Acute hematogenous osteomyelitis, left femur",bone infections,yes
-M86.059,"Acute hematogenous osteomyelitis, unspecified femur",bone infections,yes
-M86.06,"Acute hematogenous osteomyelitis, tibia and fibula",bone infections,yes
-M86.061,"Acute hematogenous osteomyelitis, right tibia and fibula",bone infections,yes
-M86.062,"Acute hematogenous osteomyelitis, left tibia and fibula",bone infections,yes
-M86.069,"Acute hematogenous osteomyelitis, unspecified tibia and fibula",bone infections,yes
-M86.07,"Acute hematogenous osteomyelitis, ankle and foot",bone infections,yes
-M86.071,"Acute hematogenous osteomyelitis, right ankle and foot",bone infections,yes
-M86.072,"Acute hematogenous osteomyelitis, left ankle and foot",bone infections,yes
-M86.079,"Acute hematogenous osteomyelitis, unspecified ankle and foot",bone infections,yes
-M86.08,…… other sites,bone infections,yes
-M86.09,…… multiple sites,bone infections,yes
-M86.1,Other acute osteomyelitis,bone infections,yes
-M86.10,…… unspecified site,bone infections,yes
-M86.11,"Other acute osteomyelitis, shoulder",bone infections,yes
-M86.111,"Other acute osteomyelitis, right shoulder",bone infections,yes
-M86.112,"Other acute osteomyelitis, left shoulder",bone infections,yes
-M86.119,"Other acute osteomyelitis, unspecified shoulder",bone infections,yes
-M86.12,"Other acute osteomyelitis, humerus",bone infections,yes
-M86.121,"Other acute osteomyelitis, right humerus",bone infections,yes
-M86.122,"Other acute osteomyelitis, left humerus",bone infections,yes
-M86.129,"Other acute osteomyelitis, unspecified humerus",bone infections,yes
-M86.13,"Other acute osteomyelitis, radius and ulna",bone infections,yes
-M86.131,"Other acute osteomyelitis, right radius and ulna",bone infections,yes
-M86.132,"Other acute osteomyelitis, left radius and ulna",bone infections,yes
-M86.139,"Other acute osteomyelitis, unspecified radius and ulna",bone infections,yes
-M86.14,"Other acute osteomyelitis, hand",bone infections,yes
-M86.141,"Other acute osteomyelitis, right hand",bone infections,yes
-M86.142,"Other acute osteomyelitis, left hand",bone infections,yes
-M86.149,"Other acute osteomyelitis, unspecified hand",bone infections,yes
-M86.15,"Other acute osteomyelitis, femur",bone infections,yes
-M86.151,"Other acute osteomyelitis, right femur",bone infections,yes
-M86.152,"Other acute osteomyelitis, left femur",bone infections,yes
-M86.159,"Other acute osteomyelitis, unspecified femur",bone infections,yes
-M86.16,"Other acute osteomyelitis, tibia and fibula",bone infections,yes
-M86.161,"Other acute osteomyelitis, right tibia and fibula",bone infections,yes
-M86.162,"Other acute osteomyelitis, left tibia and fibula",bone infections,yes
-M86.169,"Other acute osteomyelitis, unspecified tibia and fibula",bone infections,yes
-M86.17,"Other acute osteomyelitis, ankle and foot",bone infections,yes
-M86.171,"Other acute osteomyelitis, right ankle and foot",bone infections,yes
-M86.172,"Other acute osteomyelitis, left ankle and foot",bone infections,yes
-M86.179,"Other acute osteomyelitis, unspecified ankle and foot",bone infections,yes
-M86.18,…… other site,bone infections,yes
-M86.19,…… multiple sites,bone infections,yes
-M86.2,Subacute osteomyelitis,bone infections,yes
-M86.20,…… unspecified site,bone infections,yes
-M86.21,"Subacute osteomyelitis, shoulder",bone infections,yes
-M86.211,"Subacute osteomyelitis, right shoulder",bone infections,yes
-M86.212,"Subacute osteomyelitis, left shoulder",bone infections,yes
-M86.219,"Subacute osteomyelitis, unspecified shoulder",bone infections,yes
-M86.22,"Subacute osteomyelitis, humerus",bone infections,yes
-M86.221,"Subacute osteomyelitis, right humerus",bone infections,yes
-M86.222,"Subacute osteomyelitis, left humerus",bone infections,yes
-M86.229,"Subacute osteomyelitis, unspecified humerus",bone infections,yes
-M86.23,"Subacute osteomyelitis, radius and ulna",bone infections,yes
-M86.231,"Subacute osteomyelitis, right radius and ulna",bone infections,yes
-M86.232,"Subacute osteomyelitis, left radius and ulna",bone infections,yes
-M86.239,"Subacute osteomyelitis, unspecified radius and ulna",bone infections,yes
-M86.24,"Subacute osteomyelitis, hand",bone infections,yes
-M86.241,"Subacute osteomyelitis, right hand",bone infections,yes
-M86.242,"Subacute osteomyelitis, left hand",bone infections,yes
-M86.249,"Subacute osteomyelitis, unspecified hand",bone infections,yes
-M86.25,"Subacute osteomyelitis, femur",bone infections,yes
-M86.251,"Subacute osteomyelitis, right femur",bone infections,yes
-M86.252,"Subacute osteomyelitis, left femur",bone infections,yes
-M86.259,"Subacute osteomyelitis, unspecified femur",bone infections,yes
-M86.26,"Subacute osteomyelitis, tibia and fibula",bone infections,yes
-M86.261,"Subacute osteomyelitis, right tibia and fibula",bone infections,yes
-M86.262,"Subacute osteomyelitis, left tibia and fibula",bone infections,yes
-M86.269,"Subacute osteomyelitis, unspecified tibia and fibula",bone infections,yes
-M86.27,"Subacute osteomyelitis, ankle and foot",bone infections,yes
-M86.271,"Subacute osteomyelitis, right ankle and foot",bone infections,yes
-M86.272,"Subacute osteomyelitis, left ankle and foot",bone infections,yes
-M86.279,"Subacute osteomyelitis, unspecified ankle and foot",bone infections,yes
-M86.28,…… other site,bone infections,yes
-M86.29,…… multiple sites,bone infections,yes
-M86.3,Chronic multifocal osteomyelitis,bone infections,yes
-M86.30,…… unspecified site,bone infections,yes
-M86.31,"Chronic multifocal osteomyelitis, shoulder",bone infections,yes
-M86.311,"Chronic multifocal osteomyelitis, right shoulder",bone infections,yes
-M86.312,"Chronic multifocal osteomyelitis, left shoulder",bone infections,yes
-M86.319,"Chronic multifocal osteomyelitis, unspecified shoulder",bone infections,yes
-M86.32,"Chronic multifocal osteomyelitis, humerus",bone infections,yes
-M86.321,"Chronic multifocal osteomyelitis, right humerus",bone infections,yes
-M86.322,"Chronic multifocal osteomyelitis, left humerus",bone infections,yes
-M86.329,"Chronic multifocal osteomyelitis, unspecified humerus",bone infections,yes
-M86.33,"Chronic multifocal osteomyelitis, radius and ulna",bone infections,yes
-M86.331,"Chronic multifocal osteomyelitis, right radius and ulna",bone infections,yes
-M86.332,"Chronic multifocal osteomyelitis, left radius and ulna",bone infections,yes
-M86.339,"Chronic multifocal osteomyelitis, unspecified radius and ulna",bone infections,yes
-M86.34,"Chronic multifocal osteomyelitis, hand",bone infections,yes
-M86.341,"Chronic multifocal osteomyelitis, right hand",bone infections,yes
-M86.342,"Chronic multifocal osteomyelitis, left hand",bone infections,yes
-M86.349,"Chronic multifocal osteomyelitis, unspecified hand",bone infections,yes
-M86.35,"Chronic multifocal osteomyelitis, femur",bone infections,yes
-M86.351,"Chronic multifocal osteomyelitis, right femur",bone infections,yes
-M86.352,"Chronic multifocal osteomyelitis, left femur",bone infections,yes
-M86.359,"Chronic multifocal osteomyelitis, unspecified femur",bone infections,yes
-M86.36,"Chronic multifocal osteomyelitis, tibia and fibula",bone infections,yes
-M86.361,"Chronic multifocal osteomyelitis, right tibia and fibula",bone infections,yes
-M86.362,"Chronic multifocal osteomyelitis, left tibia and fibula",bone infections,yes
-M86.369,"Chronic multifocal osteomyelitis, unspecified tibia and fibula",bone infections,yes
-M86.37,"Chronic multifocal osteomyelitis, ankle and foot",bone infections,yes
-M86.371,"Chronic multifocal osteomyelitis, right ankle and foot",bone infections,yes
-M86.372,"Chronic multifocal osteomyelitis, left ankle and foot",bone infections,yes
-M86.379,"Chronic multifocal osteomyelitis, unspecified ankle and foot",bone infections,yes
-M86.38,…… other site,bone infections,yes
-M86.39,…… multiple sites,bone infections,yes
-M86.4,Chronic osteomyelitis with draining sinus,bone infections,yes
-M86.40,…… unspecified site,bone infections,yes
-M86.41,"Chronic osteomyelitis with draining sinus, shoulder",bone infections,yes
-M86.411,"Chronic osteomyelitis with draining sinus, right shoulder",bone infections,yes
-M86.412,"M86.412 Chronic osteomyelitis with draining sinus, left shoulder",bone infections,yes
-M86.419 ,"Chronic osteomyelitis with draining sinus, unspecified shoulder",bone infections,yes
-M86.42 ,"Chronic osteomyelitis with draining sinus, humerus",bone infections,yes
-M86.421,"Chronic osteomyelitis with draining sinus, right humerus",bone infections,yes
-M86.422,"Chronic osteomyelitis with draining sinus, left humerus",bone infections,yes
-M86.429,"Chronic osteomyelitis with draining sinus, unspecified humerus",bone infections,yes
-M86.43,"Chronic osteomyelitis with draining sinus, radius and ulna",bone infections,yes
-M86.431,"Chronic osteomyelitis with draining sinus, right radius and ulna",bone infections,yes
-M86.432,"Chronic osteomyelitis with draining sinus, left radius and ulna",bone infections,yes
-M86.439,"Chronic osteomyelitis with draining sinus, unspecified radius and ulna",bone infections,yes
-M86.44,"Chronic osteomyelitis with draining sinus, hand",bone infections,yes
-M86.441,"Chronic osteomyelitis with draining sinus, right hand",bone infections,yes
-M86.442,"Chronic osteomyelitis with draining sinus, left hand",bone infections,yes
-M86.449,"Chronic osteomyelitis with draining sinus, unspecified hand",bone infections,yes
-M86.45,"Chronic osteomyelitis with draining sinus, femur",bone infections,yes
-M86.451,"Chronic osteomyelitis with draining sinus, right femur",bone infections,yes
-M86.452,"Chronic osteomyelitis with draining sinus, left femur",bone infections,yes
-M86.459,"Chronic osteomyelitis with draining sinus, unspecified femur",bone infections,yes
-M86.46,"Chronic osteomyelitis with draining sinus, tibia and fibula",bone infections,yes
-M86.461,"Chronic osteomyelitis with draining sinus, right tibia and fibula",bone infections,yes
-M86.462,"Chronic osteomyelitis with draining sinus, left tibia and fibula",bone infections,yes
-M86.469,"Chronic osteomyelitis with draining sinus, unspecified tibia and fibula",bone infections,yes
-M86.47,"Chronic osteomyelitis with draining sinus, ankle and foot",bone infections,yes
-M86.471,"Chronic osteomyelitis with draining sinus, right ankle and foot",bone infections,yes
-M86.472,"Chronic osteomyelitis with draining sinus, left ankle and foot",bone infections,yes
-M86.479,"Chronic osteomyelitis with draining sinus, unspecified ankle and foot",bone infections,yes
-M86.48,…… other site,bone infections,yes
-M86.49,…… multiple sites,bone infections,yes
-M86.5,Other chronic hematogenous osteomyelitis,bone infections,yes
-M86.50,…… unspecified site,bone infections,yes
-M86.51,"Other chronic hematogenous osteomyelitis, shoulder",bone infections,yes
-M86.511,"Other chronic hematogenous osteomyelitis, right shoulder",bone infections,yes
-M86.512,"Other chronic hematogenous osteomyelitis, left shoulder",bone infections,yes
-M86.519,"Other chronic hematogenous osteomyelitis, unspecified shoulder",bone infections,yes
-M86.52,"Other chronic hematogenous osteomyelitis, humerus",bone infections,yes
-M86.521,"Other chronic hematogenous osteomyelitis, right humerus",bone infections,yes
-M86.522,"Other chronic hematogenous osteomyelitis, left humerus",bone infections,yes
-M86.529,"Other chronic hematogenous osteomyelitis, unspecified humerus",bone infections,yes
-M86.53,"Other chronic hematogenous osteomyelitis, radius and ulna",bone infections,yes
-M86.531,"Other chronic hematogenous osteomyelitis, right radius and ulna",bone infections,yes
-M86.532,"Other chronic hematogenous osteomyelitis, left radius and ulna",bone infections,yes
-M86.539,"Other chronic hematogenous osteomyelitis, unspecified radius and ulna",bone infections,yes
-M86.54,"Other chronic hematogenous osteomyelitis, hand",bone infections,yes
-M86.541,"Other chronic hematogenous osteomyelitis, right hand",bone infections,yes
-M86.542,"Other chronic hematogenous osteomyelitis, left hand",bone infections,yes
-M86.549,"Other chronic hematogenous osteomyelitis, unspecified hand",bone infections,yes
-M86.55,"Other chronic hematogenous osteomyelitis, femur",bone infections,yes
-M86.551,"Other chronic hematogenous osteomyelitis, right femur",bone infections,yes
-M86.552,"Other chronic hematogenous osteomyelitis, left femur",bone infections,yes
-M86.559,"Other chronic hematogenous osteomyelitis, unspecified femur",bone infections,yes
-M86.56,"Other chronic hematogenous osteomyelitis, tibia and fibula",bone infections,yes
-M86.561,"Other chronic hematogenous osteomyelitis, right tibia and fibula",bone infections,yes
-M86.562,"Other chronic hematogenous osteomyelitis, left tibia and fibula",bone infections,yes
-M86.569,"Other chronic hematogenous osteomyelitis, unspecified tibia and fibula",bone infections,yes
-M86.57,"Other chronic hematogenous osteomyelitis, ankle and foot",bone infections,yes
-M86.571,"Other chronic hematogenous osteomyelitis, right ankle and foot",bone infections,yes
-M86.572,"Other chronic hematogenous osteomyelitis, left ankle and foot",bone infections,yes
-M86.579,"Other chronic hematogenous osteomyelitis, unspecified ankle and foot",bone infections,yes
-M86.58,…… other site,bone infections,yes
-M86.59,…… multiple sites,bone infections,yes
-M86.6,Other chronic osteomyelitis,bone infections,yes
-M86.60,…… unspecified site,bone infections,yes
-M86.61,"Other chronic osteomyelitis, shoulder",bone infections,yes
-M86.611,"Other chronic osteomyelitis, right shoulder",bone infections,yes
-M86.612,"Other chronic osteomyelitis, left shoulder",bone infections,yes
-M86.619,"Other chronic osteomyelitis, unspecified shoulder",bone infections,yes
-M86.62,"Other chronic osteomyelitis, humerus",bone infections,yes
-M86.621,"Other chronic osteomyelitis, right humerus",bone infections,yes
-M86.622,"Other chronic osteomyelitis, left humerus",bone infections,yes
-M86.629,"Other chronic osteomyelitis, unspecified humerus",bone infections,yes
-M86.63,"Other chronic osteomyelitis, radius and ulna",bone infections,yes
-M86.631 ,"Other chronic osteomyelitis, right radius and ulna",bone infections,yes
-M86.632 ,"Other chronic osteomyelitis, left radius and ulna",bone infections,yes
-M86.639,"Other chronic osteomyelitis, unspecified radius and ulna",bone infections,yes
-M86.64,"Other chronic osteomyelitis, hand",bone infections,yes
-M86.641,"Other chronic osteomyelitis, right hand",bone infections,yes
-M86.642,"Other chronic osteomyelitis, left hand",bone infections,yes
-M86.649,"Other chronic osteomyelitis, unspecified hand",bone infections,yes
-M86.65,"Other chronic osteomyelitis, thigh",bone infections,yes
-M86.651,"Other chronic osteomyelitis, right thigh",bone infections,yes
-M86.652,"Other chronic osteomyelitis, left thigh",bone infections,yes
-M86.659,"Other chronic osteomyelitis, unspecified thigh",bone infections,yes
-M86.66,"Other chronic osteomyelitis, tibia and fibula",bone infections,yes
-M86.661,"Other chronic osteomyelitis, right tibia and fibula",bone infections,yes
-M86.662,"Other chronic osteomyelitis, left tibia and fibula",bone infections,yes
-M86.669,"Other chronic osteomyelitis, unspecified tibia and fibula",bone infections,yes
-M86.67,"Other chronic osteomyelitis, ankle and foot",bone infections,yes
-M86.671,"Other chronic osteomyelitis, right ankle and foot",bone infections,yes
-M86.672,"Other chronic osteomyelitis, left ankle and foot",bone infections,yes
-M86.679,"Other chronic osteomyelitis, unspecified ankle and foot",bone infections,yes
-M86.68,…… other site,bone infections,yes
-M86.69,…… multiple sites,bone infections,yes
-M86.8,Other osteomyelitis,bone infections,yes
-M86.8X,Other osteomyelitis,bone infections,yes
-M86.8X0,…… multiple sites,bone infections,yes
-M86.8X1,…… shoulder,bone infections,yes
-M86.8X2,…… upper arm,bone infections,yes
-M86.8X3,…… forearm,bone infections,yes
-M86.8X4,…… hand,bone infections,yes
-M86.8X5,…… thigh,bone infections,yes
-M86.8X6,…… lower leg,bone infections,yes
-M86.8X7,…… ankle and foot,bone infections,yes
-M86.8X8,…… other site,bone infections,yes
-M86.8X9,…… unspecified sites,bone infections,yes
-M86.9,"Osteomyelitis, unspecified",bone infections,yes
-M00,Pyogenic arthritis,bone infections,yes
-M00.0,Staphylococcal arthritis and polyarthritis,bone infections,yes
-M00.00,"Staphylococcal arthritis, unspecified joint",bone infections,yes
-M00.01,"Staphylococcal arthritis, shoulder",bone infections,yes
-M00.011,"Staphylococcal arthritis, right shoulder",bone infections,yes
-M00.012,"Staphylococcal arthritis, left shoulder",bone infections,yes
-M00.019,"Staphylococcal arthritis, unspecified shoulder",bone infections,yes
-M00.02,"Staphylococcal arthritis, elbow",bone infections,yes
-M00.021,"Staphylococcal arthritis, right elbow",bone infections,yes
-M00.022,"Staphylococcal arthritis, left elbow",bone infections,yes
-M00.029,"Staphylococcal arthritis, unspecified elbow",bone infections,yes
-M00.03,"Staphylococcal arthritis, wrist",bone infections,yes
-M00.031,"Staphylococcal arthritis, right wrist",bone infections,yes
-M00.032,"Staphylococcal arthritis, left wrist",bone infections,yes
-M00.039,"Staphylococcal arthritis, unspecified wrist",bone infections,yes
-M00.04,"Staphylococcal arthritis, hand",bone infections,yes
-M00.041,"Staphylococcal arthritis, right hand",bone infections,yes
-M00.042,"Staphylococcal arthritis, left hand",bone infections,yes
-M00.049,"Staphylococcal arthritis, unspecified hand",bone infections,yes
-M00.05,"Staphylococcal arthritis, hip",bone infections,yes
-M00.051,"Staphylococcal arthritis, right hip",bone infections,yes
-M00.052,"Staphylococcal arthritis, left hip",bone infections,yes
-M00.059,"Staphylococcal arthritis, unspecified hip",bone infections,yes
-M00.06,"Staphylococcal arthritis, knee",bone infections,yes
-M00.061,"Staphylococcal arthritis, right knee",bone infections,yes
-M00.062,"Staphylococcal arthritis, left knee",bone infections,yes
-M00.069,"Staphylococcal arthritis, unspecified knee",bone infections,yes
-M00.07,"Staphylococcal arthritis, ankle and foot",bone infections,yes
-M00.071,"Staphylococcal arthritis, right ankle and foot",bone infections,yes
-M00.072,"Staphylococcal arthritis, left ankle and foot",bone infections,yes
-M00.079,"Staphylococcal arthritis, unspecified ankle and foot",bone infections,yes
-M00.08,"Staphylococcal arthritis, vertebrae",bone infections,yes
-M00.09,Staphylococcal polyarthritis,bone infections,yes
-M00.1,Pneumococcal arthritis and polyarthritis,bone infections,yes
-M00.10,"Pneumococcal arthritis, unspecified joint",bone infections,yes
-M00.11,"Pneumococcal arthritis, shoulder",bone infections,yes
-M00.111,"Pneumococcal arthritis, right shoulder",bone infections,yes
-M00.112,"Pneumococcal arthritis, left shoulder",bone infections,yes
-M00.119,"Pneumococcal arthritis, unspecified shoulder",bone infections,yes
-M00.12,"Pneumococcal arthritis, elbow",bone infections,yes
-M00.121,"Pneumococcal arthritis, right elbow",bone infections,yes
-M00.122,"Pneumococcal arthritis, left elbow",bone infections,yes
-M00.129,"Pneumococcal arthritis, unspecified elbow",bone infections,yes
-M00.13,"Pneumococcal arthritis, wrist",bone infections,yes
-M00.131,"Pneumococcal arthritis, right wrist",bone infections,yes
-M00.132,"Pneumococcal arthritis, left wrist",bone infections,yes
-M00.139,"Pneumococcal arthritis, unspecified wrist",bone infections,yes
-M00.14,"Pneumococcal arthritis, hand",bone infections,yes
-M00.141,"Pneumococcal arthritis, right hand",bone infections,yes
-M00.142,"Pneumococcal arthritis, left hand",bone infections,yes
-M00.149,"Pneumococcal arthritis, unspecified hand",bone infections,yes
-M00.15,"Pneumococcal arthritis, hip",bone infections,yes
-M00.151,"Pneumococcal arthritis, right hip",bone infections,yes
-M00.152,"Pneumococcal arthritis, left hip",bone infections,yes
-M00.159,"Pneumococcal arthritis, unspecified hip",bone infections,yes
-M00.16,"Pneumococcal arthritis, knee",bone infections,yes
-M00.161,"Pneumococcal arthritis, right knee",bone infections,yes
-M00.162,"Pneumococcal arthritis, left knee",bone infections,yes
-M00.169,"Pneumococcal arthritis, unspecified knee",bone infections,yes
-M00.17,"Pneumococcal arthritis, ankle and foot",bone infections,yes
-M00.171,"Pneumococcal arthritis, right ankle and foot",bone infections,yes
-M00.172,"Pneumococcal arthritis, left ankle and foot",bone infections,yes
-M00.179 ,"Pneumococcal arthritis, unspecified ankle and foot",bone infections,yes
-M00.18,"Pneumococcal arthritis, vertebrae",bone infections,yes
-M00.19,Pneumococcal polyarthritis,bone infections,yes
-M00.2,Other streptococcal arthritis and polyarthritis,bone infections,yes
-M00.20,"Other streptococcal arthritis, unspecified joint",bone infections,yes
-M00.21,"Other streptococcal arthritis, shoulder",bone infections,yes
-M00.211,"Other streptococcal arthritis, right shoulder",bone infections,yes
-M00.212,"Other streptococcal arthritis, left shoulder",bone infections,yes
-M00.219,"Other streptococcal arthritis, unspecified shoulder",bone infections,yes
-M00.22,"Other streptococcal arthritis, elbow",bone infections,yes
-M00.221,"Other streptococcal arthritis, right elbow",bone infections,yes
-M00.222,"Other streptococcal arthritis, left elbow",bone infections,yes
-M00.229,"Other streptococcal arthritis, unspecified elbow",bone infections,yes
-M00.23,"Other streptococcal arthritis, wrist",bone infections,yes
-M00.231,"Other streptococcal arthritis, right wrist",bone infections,yes
-M00.232,"Other streptococcal arthritis, left wrist",bone infections,yes
-M00.239,"Other streptococcal arthritis, unspecified wrist",bone infections,yes
-M00.24,"Other streptococcal arthritis, hand",bone infections,yes
-M00.241,"Other streptococcal arthritis, right hand",bone infections,yes
-M00.242,"Other streptococcal arthritis, left hand",bone infections,yes
-M00.249,"Other streptococcal arthritis, unspecified hand",bone infections,yes
-M00.25,"Other streptococcal arthritis, hip",bone infections,yes
-M00.251,"Other streptococcal arthritis, right hip",bone infections,yes
-M00.252,"Other streptococcal arthritis, left hip",bone infections,yes
-M00.259,"Other streptococcal arthritis, unspecified hip",bone infections,yes
-M00.26,"Other streptococcal arthritis, knee",bone infections,yes
-M00.261,"Other streptococcal arthritis, right knee",bone infections,yes
-M00.262,"Other streptococcal arthritis, left knee",bone infections,yes
-M00.269,"Other streptococcal arthritis, unspecified knee",bone infections,yes
-M00.27,"Other streptococcal arthritis, ankle and foot",bone infections,yes
-M00.271,"Other streptococcal arthritis, right ankle and foot",bone infections,yes
-M00.272,"Other streptococcal arthritis, left ankle and foot",bone infections,yes
-M00.279,"Other streptococcal arthritis, unspecified ankle and foot",bone infections,yes
-M00.28,"Other streptococcal arthritis, vertebrae",bone infections,yes
-M00.29,Other streptococcal polyarthritis,bone infections,yes
-M00.8,Arthritis and polyarthritis due to other bacteria,bone infections,yes
-M00.80,"Arthritis due to other bacteria, unspecified joint",bone infections,yes
-M00.81,"Arthritis due to other bacteria, shoulder",bone infections,yes
-M00.811,"Arthritis due to other bacteria, right shoulder",bone infections,yes
-M00.812,"Arthritis due to other bacteria, left shoulder",bone infections,yes
-M00.819,"Arthritis due to other bacteria, unspecified shoulder",bone infections,yes
-M00.82,"Arthritis due to other bacteria, elbow",bone infections,yes
-M00.821,"Arthritis due to other bacteria, right elbow",bone infections,yes
-M00.822,"Arthritis due to other bacteria, left elbow",bone infections,yes
-M00.829,"Arthritis due to other bacteria, unspecified elbow",bone infections,yes
-M00.83,"Arthritis due to other bacteria, wrist",bone infections,yes
-M00.831,"Arthritis due to other bacteria, right wrist",bone infections,yes
-M00.832,"Arthritis due to other bacteria, left wrist",bone infections,yes
-M00.839,"Arthritis due to other bacteria, unspecified wrist",bone infections,yes
-M00.84,"Arthritis due to other bacteria, hand",bone infections,yes
-M00.841,"Arthritis due to other bacteria, right hand",bone infections,yes
-M00.842,"Arthritis due to other bacteria, left hand",bone infections,yes
-M00.849,"Arthritis due to other bacteria, unspecified hand",bone infections,yes
-M00.85,"Arthritis due to other bacteria, hip",bone infections,yes
-M00.851,"Arthritis due to other bacteria, right hip",bone infections,yes
-M00.852,"Arthritis due to other bacteria, left hip",bone infections,yes
-M00.859,"Arthritis due to other bacteria, unspecified hip",bone infections,yes
-M00.86,"Arthritis due to other bacteria, knee",bone infections,yes
-M00.861,"Arthritis due to other bacteria, right knee",bone infections,yes
-M00.862,"Arthritis due to other bacteria, left knee",bone infections,yes
-M00.869,"Arthritis due to other bacteria, unspecified knee",bone infections,yes
-M00.87,"Arthritis due to other bacteria, ankle and foot",bone infections,yes
-M00.871,"Arthritis due to other bacteria, right ankle and foot",bone infections,yes
-M00.872,"Arthritis due to other bacteria, left ankle and foot",bone infections,yes
-M00.879,"Arthritis due to other bacteria, unspecified ankle and foot",bone infections,yes
-M00.88,"Arthritis due to other bacteria, vertebrae",bone infections,yes
-M00.89,Polyarthritis due to other bacteria,bone infections,yes
-M00.9,"Pyogenic arthritis, unspecified",bone infections,yes
-H70,Mastoiditis and related conditions,mastoiditis,yes
-H70.0,Acute mastoiditis,mastoiditis,yes
-H70.00,Acute mastoiditis without complications,mastoiditis,yes
-H70.001,…… right ear,mastoiditis,yes
-H70.002,…… left ear,mastoiditis,yes
-H70.003,…… bilateral,mastoiditis,yes
-H70.01,…… unspecified ear,mastoiditis,yes
-H70.01,Subperiosteal abscess of mastoid,mastoiditis,yes
-H70.011,…… right ear,mastoiditis,yes
-H70.012,…… left ear,mastoiditis,yes
-H70.013,…… bilateral,mastoiditis,yes
-H70.019,…… unspecified ear,mastoiditis,yes
-H70.09,Acute mastoiditis with other complications,mastoiditis,yes
-H70.091,…… right ear,mastoiditis,yes
-H70.092,…… left ear,mastoiditis,yes
-H70.093,…… bilateral,mastoiditis,yes
-H70.099,…… unspecified ear,mastoiditis,yes
-H70.1,Chronic mastoiditis,mastoiditis,yes
-H70.10,…… unspecified ear,mastoiditis,yes
-H70.11,…… right ear,mastoiditis,yes
-H70.12,…… left ear,mastoiditis,yes
-H70.13,…… bilateral,mastoiditis,yes
-H70.2,Petrositis,mastoiditis,yes
-H70.20,Unspecified petrositis,mastoiditis,yes
-H70.201,…… right ear,mastoiditis,yes
-H70.202,…… left ear,mastoiditis,yes
-H70.203,…… bilateral,mastoiditis,yes
-H70.209,…… unspecified ear,mastoiditis,yes
-H70.21,Acute petrositis,mastoiditis,yes
-H70.211,…… right ear,mastoiditis,yes
-H70.212,…… left ear,mastoiditis,yes
-H70.213,…… bilateral,mastoiditis,yes
-H70.219,…… unspecified ear,mastoiditis,yes
-H70.22,Chronic petrositis,mastoiditis,yes
-H70.221,…… right ear,mastoiditis,yes
-H70.222,…… left ear,mastoiditis,yes
-H70.223,…… bilateral,mastoiditis,yes
-H70.229,…… unspecified ear,mastoiditis,yes
-H70.8,Other mastoiditis and related conditions,mastoiditis,yes
-H70.81,Postauricular fistula,mastoiditis,yes
-H70.811,…… right ear,mastoiditis,yes
-H70.812,…… left ear,mastoiditis,yes
-H70.813,…… bilateral,mastoiditis,yes
-H70.819,…… unspecified ear,mastoiditis,yes
-H70.89,Other mastoiditis and related conditions,mastoiditis,yes
-H70.891,…… right ear,mastoiditis,yes
-H70.892,…… left ear,mastoiditis,yes
-H70.893,…… bilateral,mastoiditis,yes
-H70.899,…… unspecified ear,mastoiditis,yes
-H70.9,Unspecified mastoiditis,mastoiditis,yes
-H70.90,…… unspecified ear,mastoiditis,yes
-H70.91,…… right ear,mastoiditis,yes
-H70.92,…… left ear,mastoiditis,yes
-H70.93,…… bilateral,mastoiditis,yes
-I33.0,acute and subacute infective endocarditis,endocarditis,yes
-I33.9,"acute and subacute endocarditis, unspecified",endocarditis,yes
-I38,"endocarditis, valve unspecified",endocarditis,yes
-I39,endocarditis and heart valve disorders in diseases classified elsewhere,endocarditis,yes
-A01.02,typhoid,endocarditis,yes
-A32.82,listerial,endocarditis,yes
-A39.51,meningococcal,endocarditis,yes
-A52.03,syphilitic,endocarditis,yes
-A54.83,gonococcal,endocarditis,yes
-T82.6,endocarditis on prosthetic cardiac valve.,endocarditis,yes
-A39.0,Meningococcal meningitis,bacterial meningitis,no
-G00,"Bacterial meningitis, not elsewhere classified",bacterial meningitis,no
-G00.0,Hemophilus meningitis,bacterial meningitis,no
-G00.1,Pneumococcal meningitis,bacterial meningitis,no
-G00.2,Streptococcal meningitis,bacterial meningitis,no
-G00.3,Staphylococcal meningitis,bacterial meningitis,no
-G00.8,Other bacterial meningitis,bacterial meningitis,no
-G00.9,"Bacterial meningitis, unspecified",bacterial meningitis,no
-G01,Meningitis in bacterial diseases classified elsewhere,bacterial meningitis,no
-J13,Pneumonia due to Streptococcus pneumoniae,bacterial pneumonia,no
-J14,Pneumonia due to Haemophilus influenzae,bacterial pneumonia,no
-J15,"Bacterial pneumonia, not elsewhere classified",bacterial pneumonia,no
-J15.0,Pneumonia due to Klebsiella pneumoniae,bacterial pneumonia,no
-J15.1,Pneumonia due to Pseudomonas,bacterial pneumonia,no
-J15.2,Pneumonia due to staphylococcus,bacterial pneumonia,no
-J15.20,…… unspecified,bacterial pneumonia,no
-J15.21,Pneumonia due to staphylococcus aureus,bacterial pneumonia,no
-J15.211,Pneumonia due to Methicillin susceptible Staphylococcus aureus,bacterial pneumonia,no
-J15.212,Pneumonia due to Methicillin resistant Staphylococcus aureus,bacterial pneumonia,no
-J15.29,Pneumonia due to other staphylococcus,bacterial pneumonia,no
-J15.3,"Pneumonia due to streptococcus, group B",bacterial pneumonia,no
-J15.4,Pneumonia due to other streptococci,bacterial pneumonia,no
-J15.5,Pneumonia due to Escherichia coli,bacterial pneumonia,no
-J15.6,Pneumonia due to other Gram-negative bacteria,bacterial pneumonia,no
-J15.7,Pneumonia due to Mycoplasma pneumoniae,bacterial pneumonia,no
-J15.8,Pneumonia due to other specified bacteria,bacterial pneumonia,no
-J15.9,Unspecified bacterial pneumonia,bacterial pneumonia,no
-J16,"Pneumonia due to other infectious organisms, not elsewhere classified",bacterial pneumonia,no
-J16.0,Chlamydial pneumonia,bacterial pneumonia,no
-J16.8,Pneumonia due to other specified infectious organisms,bacterial pneumonia,no
-A20.2,Pneumonic plague,bacterial pneumonia,no
-A21.2,Pulmonary tularaemia,bacterial pneumonia,no
-A22.1,Pulmonary anthrax,bacterial pneumonia,no
-A31.0,Pulmonary mycobacterial infection,bacterial pneumonia,no
-A42.0,Pulmonary actinomycosis,bacterial pneumonia,no
-A43.0,Pulmonary nocardiosis,bacterial pneumonia,no
-A48.1,Legionnaires disease,bacterial pneumonia,no
-A78,Q fever,bacterial pneumonia,no
-B96.0,Mycoplasma pneumoniae [M. pneumoniae] as the cause of diseases classified to other chapters,bacterial pneumonia,no
-B96.1,Klebsiella pneumoniae [K. pneumoniae] as the cause of diseases classified to other chapters,bacterial pneumonia,no
-A40,Streptococcal sepsis,sepsis,no
-A40.0,"Sepsis due to streptococcus, group A",sepsis,no
-A40.1,"Sepsis due to streptococcus, group B",sepsis,no
-A40.3,Sepsis due to Streptococcus pneumoniae,sepsis,no
-A40.8,Other streptococcal sepsis,sepsis,no
-A40.9,"Streptococcal sepsis, unspecified",sepsis,no
-A41,Other sepsis,sepsis,no
-A41.0,Sepsis due to Staphylococcus aureus,sepsis,no
-A41.01,Sepsis due to Methicillin susceptible Staphylococcus aureus,sepsis,no
-A41.02,Sepsis due to Methicillin resistant Staphylococcus aureus,sepsis,no
-A41.1,Sepsis due to other specified staphylococcus,sepsis,no
-A41.2,Sepsis due to unspecified staphylococcus,sepsis,no
-A41.3,Sepsis due to Hemophilus influenzae,sepsis,no
-A41.4,Sepsis due to anaerobes,sepsis,no
-A41.5,Sepsis due to other Gram-negative organisms,sepsis,no
-A41.50,"Gram-negative sepsis, unspecified",sepsis,no
-A41.51,Sepsis due to Escherichia coli [E. coli],sepsis,no
-A41.52,Sepsis due to Pseudomonas,sepsis,no
-A41.53,Sepsis due to Serratia,sepsis,no
-A41.59,Other Gram-negative sepsis,sepsis,no
-A41.8,Other specified sepsis,sepsis,no
-A41.81,Sepsis due to Enterococcus,sepsis,no
-A41.89 ,Other specified sepsis,sepsis,no
-A41.9,"Sepsis, unspecified organism",sepsis,no
-P36,Bacterial sepsis of newborn,sepsis,no
-P36.0,"Sepsis of newborn due to streptococcus, group B",sepsis,no
-P36.1,Sepsis of newborn due to other and unspecified streptococci,sepsis,no
-P36.10,Sepsis of newborn due to unspecified streptococci,sepsis,no
-P36.19,Sepsis of newborn due to other streptococci,sepsis,no
-P36.2,Sepsis of newborn due to Staphylococcus aureus,sepsis,no
-P36.3,Sepsis of newborn due to other and unspecified staphylococci,sepsis,no
-P36.30,Sepsis of newborn due to unspecified staphylococci,sepsis,no
-P36.39,Sepsis of newborn due to other staphylococci,sepsis,no
-P36.4,Sepsis of newborn due to Escherichia coli,sepsis,no
-P36.5,Sepsis of newborn due to anaerobes,sepsis,no
-P36.8,Other bacterial sepsis of newborn,sepsis,no
-P36.9,"Bacterial sepsis of newborn, unspecified",sepsis,no
-R65.2,Severe sepsis,sepsis,no
-R65.20,…… without septic shock,sepsis,no
-R65.21,…… with septic shock,sepsis,no
-A26.7,Erysipelothrix sepsis,sepsis,no
-A42.7,Actinomycotic sepsis,sepsis,no
-A02.0,Salmonella enteritis,bacterial enteritis,no
-A03,Shigellosis,bacterial enteritis,no
-A03.0,Shigellosis due to Shigella dysenteriae,bacterial enteritis,no
-A03.1,Shigellosis due to Shigella flexneri,bacterial enteritis,no
-A03.2,Shigellosis due to Shigella boydii,bacterial enteritis,no
-A03.3,Shigellosis due to Shigella sonnei,bacterial enteritis,no
-A03.8,Other shigellosis,bacterial enteritis,no
-A03.9,"Shigellosis, unspecified",bacterial enteritis,no
-A04,Other bacterial intestinal infections,bacterial enteritis,no
-A04.0,Enteropathogenic Escherichia coli infection,bacterial enteritis,no
-A04.1,Enterotoxigenic Escherichia coli infection,bacterial enteritis,no
-A04.2,Enteroinvasive Escherichia coli infection,bacterial enteritis,no
-A04.3,Enterohemorrhagic Escherichia coli infection,bacterial enteritis,no
-A04.4,Other intestinal Escherichia coli infections,bacterial enteritis,no
-A04.5,Campylobacter enteritis,bacterial enteritis,no
-A04.6,Enteritis due to Yersinia enterocolitica,bacterial enteritis,no
-A04.7,Enterocolitis due to Clostridium difficile,bacterial enteritis,no
-A04.71,…… recurrent,bacterial enteritis,no
-A04.72,…… not specified as recurrent,bacterial enteritis,no
-A04.8,Other specified bacterial intestinal infections,bacterial enteritis,no
-A04.9,"Bacterial intestinal infection, unspecified",bacterial enteritis,no
-A05,"Other bacterial foodborne intoxications, not elsewhere classified",bacterial enteritis,no
-A05.0,Foodborne staphylococcal intoxication,bacterial enteritis,no
-A05.1,Botulism food poisoning,bacterial enteritis,no
-A05.2,Foodborne Clostridium perfringens [Clostridium welchii] intoxication,bacterial enteritis,no
-A05.3,Foodborne Vibrio parahaemolyticus intoxication,bacterial enteritis,no
-A05.4,Foodborne Bacillus cereus intoxication,bacterial enteritis,no
-A05.5,Foodborne Vibrio vulnificus intoxication,bacterial enteritis,no
-A05.8,Other specified bacterial foodborne intoxications,bacterial enteritis,no
-A05.9,"Bacterial foodborne intoxication, unspecified",bacterial enteritis,no
+ICD10_Code,description,syndrome,IBI_simple,IBI_extensive,Respiratory,Skin,bacterial_syndrome
+J86,Pyothorax,LRTI/empyema,no,yes,yes,no,yes
+J86.0,Pyothorax with fistula,LRTI/empyema,no,yes,yes,no,yes
+J86.9,Pyothorax without fistula,LRTI/empyema,no,yes,yes,no,yes
+L03,Cellulitis and acute lymphangitis,skin infections,no,no,no,yes,yes
+L03.0,Cellulitis and acute lymphangitis of finger and toe,skin infections,no,no,no,yes,yes
+L03.01,Cellulitis of finger,skin infections,no,no,no,yes,yes
+L03.011,Cellulitis of right finger,skin infections,no,no,no,yes,yes
+L03.012,Cellulitis of left finger,skin infections,no,no,no,yes,yes
+L03.019,Cellulitis of unspecified finger,skin infections,no,no,no,yes,yes
+L03.02,Acute lymphangitis of finger,skin infections,no,no,no,yes,yes
+L03.021,Acute lymphangitis of right finger,skin infections,no,no,no,yes,yes
+L03.022,Acute lymphangitis of left finger,skin infections,no,no,no,yes,yes
+L03.029,Acute lymphangitis of unspecified finger,skin infections,no,no,no,yes,yes
+L03.03,Cellulitis of toe,skin infections,no,no,no,yes,yes
+L03.031,Cellulitis of right toe,skin infections,no,no,no,yes,yes
+L03.032,Cellulitis of left toe,skin infections,no,no,no,yes,yes
+L03.039,Cellulitis of unspecified toe,skin infections,no,no,no,yes,yes
+L03.04,Acute lymphangitis of toe,skin infections,no,no,no,yes,yes
+L03.041,Acute lymphangitis of right toe,skin infections,no,no,no,yes,yes
+L03.042,Acute lymphangitis of left toe,skin infections,no,no,no,yes,yes
+L03.049,Acute lymphangitis of unspecified toe,skin infections,no,no,no,yes,yes
+L03.1,Cellulitis and acute lymphangitis of other parts of limb,skin infections,no,no,no,yes,yes
+L03.11,Cellulitis of other parts of limb,skin infections,no,no,no,yes,yes
+L03.111,Cellulitis of right axilla,skin infections,no,no,no,yes,yes
+L03.112,Cellulitis of left axilla,skin infections,no,no,no,yes,yes
+L03.113,Cellulitis of right upper limb,skin infections,no,no,no,yes,yes
+L03.114,Cellulitis of left upper limb,skin infections,no,no,no,yes,yes
+L03.115,Cellulitis of right lower limb,skin infections,no,no,no,yes,yes
+L03.116,Cellulitis of left lower limb,skin infections,no,no,no,yes,yes
+L03.119,Cellulitis of unspecified part of limb,skin infections,no,no,no,yes,yes
+L03.12,Acute lymphangitis of other parts of limb,skin infections,no,no,no,yes,yes
+L03.121,Acute lymphangitis of right axilla,skin infections,no,no,no,yes,yes
+L03.122,Acute lymphangitis of left axilla,skin infections,no,no,no,yes,yes
+L03.123,Acute lymphangitis of right upper limb,skin infections,no,no,no,yes,yes
+L03.124,Acute lymphangitis of left upper limb,skin infections,no,no,no,yes,yes
+L03.125,Acute lymphangitis of right lower limb,skin infections,no,no,no,yes,yes
+L03.126,Acute lymphangitis of left lower limb,skin infections,no,no,no,yes,yes
+L03.129,Acute lymphangitis of unspecified part of limb,skin infections,no,no,no,yes,yes
+L03.2,Cellulitis and acute lymphangitis of face and neck,skin infections,no,no,no,yes,yes
+L03.21,Cellulitis and acute lymphangitis of face,skin infections,no,no,no,yes,yes
+L03.211,Cellulitis of face,skin infections,no,no,no,yes,yes
+L03.212,Acute lymphangitis of face,skin infections,no,no,no,yes,yes
+L03.213,Periorbital cellulitis,skin infections,no,no,no,yes,yes
+L03.22,Cellulitis and acute lymphangitis of neck,skin infections,no,no,no,yes,yes
+L03.221,Cellulitis of neck,skin infections,no,no,no,yes,yes
+L03.222,Acute lymphangitis of neck,skin infections,no,no,no,yes,yes
+L03.3,Cellulitis and acute lymphangitis of trunk,skin infections,no,no,no,yes,yes
+L03.31,Cellulitis of trunk,skin infections,no,no,no,yes,yes
+L03.311,Cellulitis of abdominal wall,skin infections,no,no,no,yes,yes
+L03.312,Cellulitis of back [any part except buttock],skin infections,no,no,no,yes,yes
+L03.313,Cellulitis of chest wall,skin infections,no,no,no,yes,yes
+L03.314,Cellulitis of groin,skin infections,no,no,no,yes,yes
+L03.315,Cellulitis of perineum,skin infections,no,no,no,yes,yes
+L03.316,Cellulitis of umbilicus,skin infections,no,no,no,yes,yes
+L03.317,Cellulitis of buttock,skin infections,no,no,no,yes,yes
+L03.319,…… unspecified,skin infections,no,no,no,yes,yes
+L03.32,Acute lymphangitis of trunk,skin infections,no,no,no,yes,yes
+L03.321,Acute lymphangitis of abdominal wall,skin infections,no,no,no,yes,yes
+L03.322,Acute lymphangitis of back [any part except buttock],skin infections,no,no,no,yes,yes
+L03.323,Acute lymphangitis of chest wall,skin infections,no,no,no,yes,yes
+L03.324,Acute lymphangitis of groin,skin infections,no,no,no,yes,yes
+L03.325,Acute lymphangitis of perineum,skin infections,no,no,no,yes,yes
+L03.326,Acute lymphangitis of umbilicus,skin infections,no,no,no,yes,yes
+L03.327,Acute lymphangitis of buttock,skin infections,no,no,no,yes,yes
+L03.329,…… unspecified,skin infections,no,no,no,yes,yes
+L03.8,Cellulitis and acute lymphangitis of other sites,skin infections,no,no,no,yes,yes
+L03.81 ,Cellulitis of other sites,skin infections,no,no,no,yes,yes
+L03.811,"Cellulitis of head [any part, except face]",skin infections,no,no,no,yes,yes
+L03.818,Cellulitis of other sites,skin infections,no,no,no,yes,yes
+L03.89,Acute lymphangitis of other sites,skin infections,no,no,no,yes,yes
+L03.891,"Acute lymphangitis of head [any part, except face]",skin infections,no,no,no,yes,yes
+L03.898,Acute lymphangitis of other sites,skin infections,no,no,no,yes,yes
+L03.9,"Cellulitis and acute lymphangitis, unspecified",skin infections,no,no,no,yes,yes
+L03.90,"Cellulitis, unspecified",skin infections,no,no,no,yes,yes
+L03.91,"Acute lymphangitis, unspecified",skin infections,no,no,no,yes,yes
+A46,Erysipelas,skin infections,no,no,no,yes,yes
+L01,Impetigo,skin infections,no,no,no,yes,yes
+L01.0,Impetigo,skin infections,no,no,no,yes,yes
+L01.00,…… unspecified,skin infections,no,no,no,yes,yes
+L01.01,Non-bullous impetigo,skin infections,no,no,no,yes,yes
+L01.02,Bockhart's impetigo,skin infections,no,no,no,yes,yes
+L01.03,Bullous impetigo,skin infections,no,no,no,yes,yes
+L01.09,Other impetigo,skin infections,no,no,no,yes,yes
+L01.1,Impetiginization of other dermatoses,skin infections,no,no,no,yes,yes
+A48.3,Gas gangrene,necrotizing soft tissue infection,no,no,no,yes,yes
+M72.6,Necrotizing fasciitis,necrotizing soft tissue infection,no,no,no,yes,yes
+N10,Acute tubulo-interstitial nephritis,UTI/pyelonefritis,no,no,no,no,yes
+N13.6,Pyonephrosis,UTI/pyelonefritis,no,no,no,no,yes
+N15.1,Renal and perinephric abscess,UTI/pyelonefritis,no,no,no,no,yes
+N30.0,Acute cystitis,UTI/pyelonefritis,no,no,no,no,yes
+N30.00,…… without hematuria,UTI/pyelonefritis,no,no,no,no,yes
+N30.01,…… with hematuria,UTI/pyelonefritis,no,no,no,no,yes
+N30.1,Interstitial cystitis (chronic),UTI/pyelonefritis,no,no,no,no,yes
+N30.10,…… without hematuria,UTI/pyelonefritis,no,no,no,no,yes
+N30.11,…… with hematuria,UTI/pyelonefritis,no,no,no,no,yes
+N30.2,Other chronic cystitis,UTI/pyelonefritis,no,no,no,no,yes
+N30.20,…… without hematuria,UTI/pyelonefritis,no,no,no,no,yes
+N30.21,…… with hematuria,UTI/pyelonefritis,no,no,no,no,yes
+N30.3,Trigonitis,UTI/pyelonefritis,no,no,no,no,yes
+N30.30,…… without hematuria,UTI/pyelonefritis,no,no,no,no,yes
+N30.31,…… with hematuria,UTI/pyelonefritis,no,no,no,no,yes
+N30.4,Irradiation cystitis,UTI/pyelonefritis,no,no,no,no,yes
+N30.40,…… without hematuria,UTI/pyelonefritis,no,no,no,no,yes
+N30.41,…… with hematuria,UTI/pyelonefritis,no,no,no,no,yes
+N30.8,Other cystitis,UTI/pyelonefritis,no,no,no,no,yes
+N30.80,…… without hematuria,UTI/pyelonefritis,no,no,no,no,yes
+N30.81,…… with hematuria,UTI/pyelonefritis,no,no,no,no,yes
+N30.9,"Cystitis, unspecified",UTI/pyelonefritis,no,no,no,no,yes
+N30.90,…… without hematuria,UTI/pyelonefritis,no,no,no,no,yes
+N30.91,…… with hematuria,UTI/pyelonefritis,no,no,no,no,yes
+N39.0,"Urinary tract infection, site not specified",UTI/pyelonefritis,no,no,no,no,yes
+P39.3,Neonatal urinary tract infection,UTI/pyelonefritis,no,no,no,no,yes
+K35,Acute appendicitis,Appendicitis/peritonitis,no,no,no,no,yes
+K35.2,Acute appendicitis with generalized peritonitis,Appendicitis/peritonitis,no,no,no,no,yes
+K35.20,…… without abscess,Appendicitis/peritonitis,no,no,no,no,yes
+K35.21,…… with abscess,Appendicitis/peritonitis,no,no,no,no,yes
+K35.3,Acute appendicitis with localized peritonitis,Appendicitis/peritonitis,no,no,no,no,yes
+K35.30,…… without perforation or gangrene,Appendicitis/peritonitis,no,no,no,no,yes
+K35.31,"…… and gangrene, without perforation",Appendicitis/peritonitis,no,no,no,no,yes
+K35.32,"Acute appendicitis with perforation, localized peritonitis, and gangrene, without abscess",Appendicitis/peritonitis,no,no,no,no,yes
+K35.33,"Acute appendicitis with perforation, localized peritonitis, and gangrene, with abscess",Appendicitis/peritonitis,no,no,no,no,yes
+K35.8,Other and unspecified acute appendicitis,Appendicitis/peritonitis,no,no,no,no,yes
+K35.80,Unspecified acute appendicitis,Appendicitis/peritonitis,no,no,no,no,yes
+K35.89,Other acute appendicitis,Appendicitis/peritonitis,no,no,no,no,yes
+K35.890,…… without perforation or gangrene,Appendicitis/peritonitis,no,no,no,no,yes
+K35.891,"…… without perforation, with gangrene",Appendicitis/peritonitis,no,no,no,no,yes
+K36,Other appendicitis,Appendicitis/peritonitis,no,no,no,no,yes
+K37,Unspecified appendicitis,Appendicitis/peritonitis,no,no,no,no,yes
+K65,Peritonitis,Appendicitis/peritonitis,no,no,no,no,yes
+K65.0,Generalized (acute) peritonitis,Appendicitis/peritonitis,no,no,no,no,yes
+K65.1,Peritoneal abscess,Appendicitis/peritonitis,no,no,no,no,yes
+K65.2,Spontaneous bacterial peritonitis,Appendicitis/peritonitis,no,no,no,no,yes
+K65.3,Choleperitonitis,Appendicitis/peritonitis,no,no,no,no,yes
+K65.8,Other peritonitis,Appendicitis/peritonitis,no,no,no,no,yes
+K65.9,"Peritonitis, unspecified",Appendicitis/peritonitis,no,no,no,no,yes
+A01.04,Typhoid arthritis,osteoarticular infections,no,yes,no,yes,yes
+A01.05,Typhoid osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
+A02.24,Salmonella osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
+M46.2,Osteomyelitis of vertebra,osteoarticular infections,no,yes,no,yes,yes
+M46.20,…… site unspecified,osteoarticular infections,no,yes,no,yes,yes
+M46.21,…… occipito-atlanto-axial region,osteoarticular infections,no,yes,no,yes,yes
+M46.22,…… cervical region,osteoarticular infections,no,yes,no,yes,yes
+M46.23,…… cervicothoracic region,osteoarticular infections,no,yes,no,yes,yes
+M46.24, …… thoracic region,osteoarticular infections,no,yes,no,yes,yes
+M46.25,…… thoracolumbar region,osteoarticular infections,no,yes,no,yes,yes
+M46.26,…… lumbar region,osteoarticular infections,no,yes,no,yes,yes
+M46.27,…… lumbosacral region,osteoarticular infections,no,yes,no,yes,yes
+M46.28,…… sacral and sacrococcygeal region,osteoarticular infections,no,yes,no,yes,yes
+M46.3,Infection of intervertebral disc (pyogenic),osteoarticular infections,no,yes,no,yes,yes
+M46.30 ,…… site unspecified,osteoarticular infections,no,yes,no,yes,yes
+M46.31,…… occipito-atlanto-axial region,osteoarticular infections,no,yes,no,yes,yes
+M46.32,…… cervical region,osteoarticular infections,no,yes,no,yes,yes
+M46.33,…… cervicothoracic region,osteoarticular infections,no,yes,no,yes,yes
+M46.34 ,…… thoracic region,osteoarticular infections,no,yes,no,yes,yes
+M46.35,…… thoracolumbar region,osteoarticular infections,no,yes,no,yes,yes
+M46.36,…… lumbar region,osteoarticular infections,no,yes,no,yes,yes
+M46.37,…… lumbosacral region,osteoarticular infections,no,yes,no,yes,yes
+M46.38,…… sacral and sacrococcygeal region,osteoarticular infections,no,yes,no,yes,yes
+M46.39,…… multiple sites in spine,osteoarticular infections,no,yes,no,yes,yes
+M46.4,"Discitis, unspecified",osteoarticular infections,no,yes,no,yes,yes
+M46.40,…… site unspecified,osteoarticular infections,no,yes,no,yes,yes
+M46.41,…… occipito-atlanto-axial region,osteoarticular infections,no,yes,no,yes,yes
+M46.42,…… cervical region,osteoarticular infections,no,yes,no,yes,yes
+M46.43,…… cervicothoracic region,osteoarticular infections,no,yes,no,yes,yes
+M46.44,…… thoracic region,osteoarticular infections,no,yes,no,yes,yes
+M46.45,…… thoracolumbar region,osteoarticular infections,no,yes,no,yes,yes
+M46.46,…… lumbar region,osteoarticular infections,no,yes,no,yes,yes
+M46.47,…… lumbosacral region,osteoarticular infections,no,yes,no,yes,yes
+M46.48,…… sacral and sacrococcygeal region,osteoarticular infections,no,yes,no,yes,yes
+M46.49,…… multiple sites in spine,osteoarticular infections,no,yes,no,yes,yes
+M46.5,Other infective spondylopathies,osteoarticular infections,no,yes,no,yes,yes
+M46.50,…… site unspecified,osteoarticular infections,no,yes,no,yes,yes
+M46.51,…… occipito-atlanto-axial region,osteoarticular infections,no,yes,no,yes,yes
+M46.52,…… cervical region,osteoarticular infections,no,yes,no,yes,yes
+M46.53,…… cervicothoracic region,osteoarticular infections,no,yes,no,yes,yes
+M46.54,…… thoracic region,osteoarticular infections,no,yes,no,yes,yes
+M46.55,…… thoracolumbar region,osteoarticular infections,no,yes,no,yes,yes
+M46.56,…… lumbar region,osteoarticular infections,no,yes,no,yes,yes
+M46.57,…… lumbosacral region,osteoarticular infections,no,yes,no,yes,yes
+M46.58,…… sacral and sacrococcygeal region,osteoarticular infections,no,yes,no,yes,yes
+M46.59,…… multiple sites in spine,osteoarticular infections,no,yes,no,yes,yes
+M86,Osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
+M86.0,Acute hematogenous osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
+M86.00,…… unspecified site,osteoarticular infections,no,yes,no,yes,yes
+M86.01,"Acute hematogenous osteomyelitis, shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.011,"Acute hematogenous osteomyelitis, right shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.012,"Acute hematogenous osteomyelitis, left shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.019,"Acute hematogenous osteomyelitis, unspecified shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.02,"Acute hematogenous osteomyelitis, humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.021,"Acute hematogenous osteomyelitis, right humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.022,"Acute hematogenous osteomyelitis, left humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.029,"Acute hematogenous osteomyelitis, unspecified humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.03,"Acute hematogenous osteomyelitis, radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.031,"Acute hematogenous osteomyelitis, right radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.032,"Acute hematogenous osteomyelitis, left radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.039,"Acute hematogenous osteomyelitis, unspecified radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.04,"Acute hematogenous osteomyelitis, hand",osteoarticular infections,no,yes,no,yes,yes
+M86.041,"Acute hematogenous osteomyelitis, right hand",osteoarticular infections,no,yes,no,yes,yes
+M86.042,"Acute hematogenous osteomyelitis, left hand",osteoarticular infections,no,yes,no,yes,yes
+M86.049,"Acute hematogenous osteomyelitis, unspecified hand",osteoarticular infections,no,yes,no,yes,yes
+M86.05,"Acute hematogenous osteomyelitis, femur",osteoarticular infections,no,yes,no,yes,yes
+M86.051,"Acute hematogenous osteomyelitis, right femur",osteoarticular infections,no,yes,no,yes,yes
+M86.052,"Acute hematogenous osteomyelitis, left femur",osteoarticular infections,no,yes,no,yes,yes
+M86.059,"Acute hematogenous osteomyelitis, unspecified femur",osteoarticular infections,no,yes,no,yes,yes
+M86.06,"Acute hematogenous osteomyelitis, tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.061,"Acute hematogenous osteomyelitis, right tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.062,"Acute hematogenous osteomyelitis, left tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.069,"Acute hematogenous osteomyelitis, unspecified tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.07,"Acute hematogenous osteomyelitis, ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.071,"Acute hematogenous osteomyelitis, right ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.072,"Acute hematogenous osteomyelitis, left ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.079,"Acute hematogenous osteomyelitis, unspecified ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.08,…… other sites,osteoarticular infections,no,yes,no,yes,yes
+M86.09,…… multiple sites,osteoarticular infections,no,yes,no,yes,yes
+M86.1,Other acute osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
+M86.10,…… unspecified site,osteoarticular infections,no,yes,no,yes,yes
+M86.11,"Other acute osteomyelitis, shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.111,"Other acute osteomyelitis, right shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.112,"Other acute osteomyelitis, left shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.119,"Other acute osteomyelitis, unspecified shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.12,"Other acute osteomyelitis, humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.121,"Other acute osteomyelitis, right humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.122,"Other acute osteomyelitis, left humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.129,"Other acute osteomyelitis, unspecified humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.13,"Other acute osteomyelitis, radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.131,"Other acute osteomyelitis, right radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.132,"Other acute osteomyelitis, left radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.139,"Other acute osteomyelitis, unspecified radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.14,"Other acute osteomyelitis, hand",osteoarticular infections,no,yes,no,yes,yes
+M86.141,"Other acute osteomyelitis, right hand",osteoarticular infections,no,yes,no,yes,yes
+M86.142,"Other acute osteomyelitis, left hand",osteoarticular infections,no,yes,no,yes,yes
+M86.149,"Other acute osteomyelitis, unspecified hand",osteoarticular infections,no,yes,no,yes,yes
+M86.15,"Other acute osteomyelitis, femur",osteoarticular infections,no,yes,no,yes,yes
+M86.151,"Other acute osteomyelitis, right femur",osteoarticular infections,no,yes,no,yes,yes
+M86.152,"Other acute osteomyelitis, left femur",osteoarticular infections,no,yes,no,yes,yes
+M86.159,"Other acute osteomyelitis, unspecified femur",osteoarticular infections,no,yes,no,yes,yes
+M86.16,"Other acute osteomyelitis, tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.161,"Other acute osteomyelitis, right tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.162,"Other acute osteomyelitis, left tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.169,"Other acute osteomyelitis, unspecified tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.17,"Other acute osteomyelitis, ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.171,"Other acute osteomyelitis, right ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.172,"Other acute osteomyelitis, left ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.179,"Other acute osteomyelitis, unspecified ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.18,…… other site,osteoarticular infections,no,yes,no,yes,yes
+M86.19,…… multiple sites,osteoarticular infections,no,yes,no,yes,yes
+M86.2,Subacute osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
+M86.20,…… unspecified site,osteoarticular infections,no,yes,no,yes,yes
+M86.21,"Subacute osteomyelitis, shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.211,"Subacute osteomyelitis, right shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.212,"Subacute osteomyelitis, left shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.219,"Subacute osteomyelitis, unspecified shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.22,"Subacute osteomyelitis, humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.221,"Subacute osteomyelitis, right humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.222,"Subacute osteomyelitis, left humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.229,"Subacute osteomyelitis, unspecified humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.23,"Subacute osteomyelitis, radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.231,"Subacute osteomyelitis, right radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.232,"Subacute osteomyelitis, left radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.239,"Subacute osteomyelitis, unspecified radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.24,"Subacute osteomyelitis, hand",osteoarticular infections,no,yes,no,yes,yes
+M86.241,"Subacute osteomyelitis, right hand",osteoarticular infections,no,yes,no,yes,yes
+M86.242,"Subacute osteomyelitis, left hand",osteoarticular infections,no,yes,no,yes,yes
+M86.249,"Subacute osteomyelitis, unspecified hand",osteoarticular infections,no,yes,no,yes,yes
+M86.25,"Subacute osteomyelitis, femur",osteoarticular infections,no,yes,no,yes,yes
+M86.251,"Subacute osteomyelitis, right femur",osteoarticular infections,no,yes,no,yes,yes
+M86.252,"Subacute osteomyelitis, left femur",osteoarticular infections,no,yes,no,yes,yes
+M86.259,"Subacute osteomyelitis, unspecified femur",osteoarticular infections,no,yes,no,yes,yes
+M86.26,"Subacute osteomyelitis, tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.261,"Subacute osteomyelitis, right tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.262,"Subacute osteomyelitis, left tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.269,"Subacute osteomyelitis, unspecified tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.27,"Subacute osteomyelitis, ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.271,"Subacute osteomyelitis, right ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.272,"Subacute osteomyelitis, left ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.279,"Subacute osteomyelitis, unspecified ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.28,…… other site,osteoarticular infections,no,yes,no,yes,yes
+M86.29,…… multiple sites,osteoarticular infections,no,yes,no,yes,yes
+M86.3,Chronic multifocal osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
+M86.30,…… unspecified site,osteoarticular infections,no,yes,no,yes,yes
+M86.31,"Chronic multifocal osteomyelitis, shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.311,"Chronic multifocal osteomyelitis, right shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.312,"Chronic multifocal osteomyelitis, left shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.319,"Chronic multifocal osteomyelitis, unspecified shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.32,"Chronic multifocal osteomyelitis, humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.321,"Chronic multifocal osteomyelitis, right humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.322,"Chronic multifocal osteomyelitis, left humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.329,"Chronic multifocal osteomyelitis, unspecified humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.33,"Chronic multifocal osteomyelitis, radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.331,"Chronic multifocal osteomyelitis, right radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.332,"Chronic multifocal osteomyelitis, left radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.339,"Chronic multifocal osteomyelitis, unspecified radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.34,"Chronic multifocal osteomyelitis, hand",osteoarticular infections,no,yes,no,yes,yes
+M86.341,"Chronic multifocal osteomyelitis, right hand",osteoarticular infections,no,yes,no,yes,yes
+M86.342,"Chronic multifocal osteomyelitis, left hand",osteoarticular infections,no,yes,no,yes,yes
+M86.349,"Chronic multifocal osteomyelitis, unspecified hand",osteoarticular infections,no,yes,no,yes,yes
+M86.35,"Chronic multifocal osteomyelitis, femur",osteoarticular infections,no,yes,no,yes,yes
+M86.351,"Chronic multifocal osteomyelitis, right femur",osteoarticular infections,no,yes,no,yes,yes
+M86.352,"Chronic multifocal osteomyelitis, left femur",osteoarticular infections,no,yes,no,yes,yes
+M86.359,"Chronic multifocal osteomyelitis, unspecified femur",osteoarticular infections,no,yes,no,yes,yes
+M86.36,"Chronic multifocal osteomyelitis, tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.361,"Chronic multifocal osteomyelitis, right tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.362,"Chronic multifocal osteomyelitis, left tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.369,"Chronic multifocal osteomyelitis, unspecified tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.37,"Chronic multifocal osteomyelitis, ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.371,"Chronic multifocal osteomyelitis, right ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.372,"Chronic multifocal osteomyelitis, left ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.379,"Chronic multifocal osteomyelitis, unspecified ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.38,…… other site,osteoarticular infections,no,yes,no,yes,yes
+M86.39,…… multiple sites,osteoarticular infections,no,yes,no,yes,yes
+M86.4,Chronic osteomyelitis with draining sinus,osteoarticular infections,no,yes,no,yes,yes
+M86.40,…… unspecified site,osteoarticular infections,no,yes,no,yes,yes
+M86.41,"Chronic osteomyelitis with draining sinus, shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.411,"Chronic osteomyelitis with draining sinus, right shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.412,"M86.412 Chronic osteomyelitis with draining sinus, left shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.419 ,"Chronic osteomyelitis with draining sinus, unspecified shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.42 ,"Chronic osteomyelitis with draining sinus, humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.421,"Chronic osteomyelitis with draining sinus, right humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.422,"Chronic osteomyelitis with draining sinus, left humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.429,"Chronic osteomyelitis with draining sinus, unspecified humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.43,"Chronic osteomyelitis with draining sinus, radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.431,"Chronic osteomyelitis with draining sinus, right radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.432,"Chronic osteomyelitis with draining sinus, left radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.439,"Chronic osteomyelitis with draining sinus, unspecified radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.44,"Chronic osteomyelitis with draining sinus, hand",osteoarticular infections,no,yes,no,yes,yes
+M86.441,"Chronic osteomyelitis with draining sinus, right hand",osteoarticular infections,no,yes,no,yes,yes
+M86.442,"Chronic osteomyelitis with draining sinus, left hand",osteoarticular infections,no,yes,no,yes,yes
+M86.449,"Chronic osteomyelitis with draining sinus, unspecified hand",osteoarticular infections,no,yes,no,yes,yes
+M86.45,"Chronic osteomyelitis with draining sinus, femur",osteoarticular infections,no,yes,no,yes,yes
+M86.451,"Chronic osteomyelitis with draining sinus, right femur",osteoarticular infections,no,yes,no,yes,yes
+M86.452,"Chronic osteomyelitis with draining sinus, left femur",osteoarticular infections,no,yes,no,yes,yes
+M86.459,"Chronic osteomyelitis with draining sinus, unspecified femur",osteoarticular infections,no,yes,no,yes,yes
+M86.46,"Chronic osteomyelitis with draining sinus, tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.461,"Chronic osteomyelitis with draining sinus, right tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.462,"Chronic osteomyelitis with draining sinus, left tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.469,"Chronic osteomyelitis with draining sinus, unspecified tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.47,"Chronic osteomyelitis with draining sinus, ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.471,"Chronic osteomyelitis with draining sinus, right ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.472,"Chronic osteomyelitis with draining sinus, left ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.479,"Chronic osteomyelitis with draining sinus, unspecified ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.48,…… other site,osteoarticular infections,no,yes,no,yes,yes
+M86.49,…… multiple sites,osteoarticular infections,no,yes,no,yes,yes
+M86.5,Other chronic hematogenous osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
+M86.50,…… unspecified site,osteoarticular infections,no,yes,no,yes,yes
+M86.51,"Other chronic hematogenous osteomyelitis, shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.511,"Other chronic hematogenous osteomyelitis, right shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.512,"Other chronic hematogenous osteomyelitis, left shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.519,"Other chronic hematogenous osteomyelitis, unspecified shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.52,"Other chronic hematogenous osteomyelitis, humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.521,"Other chronic hematogenous osteomyelitis, right humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.522,"Other chronic hematogenous osteomyelitis, left humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.529,"Other chronic hematogenous osteomyelitis, unspecified humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.53,"Other chronic hematogenous osteomyelitis, radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.531,"Other chronic hematogenous osteomyelitis, right radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.532,"Other chronic hematogenous osteomyelitis, left radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.539,"Other chronic hematogenous osteomyelitis, unspecified radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.54,"Other chronic hematogenous osteomyelitis, hand",osteoarticular infections,no,yes,no,yes,yes
+M86.541,"Other chronic hematogenous osteomyelitis, right hand",osteoarticular infections,no,yes,no,yes,yes
+M86.542,"Other chronic hematogenous osteomyelitis, left hand",osteoarticular infections,no,yes,no,yes,yes
+M86.549,"Other chronic hematogenous osteomyelitis, unspecified hand",osteoarticular infections,no,yes,no,yes,yes
+M86.55,"Other chronic hematogenous osteomyelitis, femur",osteoarticular infections,no,yes,no,yes,yes
+M86.551,"Other chronic hematogenous osteomyelitis, right femur",osteoarticular infections,no,yes,no,yes,yes
+M86.552,"Other chronic hematogenous osteomyelitis, left femur",osteoarticular infections,no,yes,no,yes,yes
+M86.559,"Other chronic hematogenous osteomyelitis, unspecified femur",osteoarticular infections,no,yes,no,yes,yes
+M86.56,"Other chronic hematogenous osteomyelitis, tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.561,"Other chronic hematogenous osteomyelitis, right tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.562,"Other chronic hematogenous osteomyelitis, left tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.569,"Other chronic hematogenous osteomyelitis, unspecified tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.57,"Other chronic hematogenous osteomyelitis, ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.571,"Other chronic hematogenous osteomyelitis, right ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.572,"Other chronic hematogenous osteomyelitis, left ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.579,"Other chronic hematogenous osteomyelitis, unspecified ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.58,…… other site,osteoarticular infections,no,yes,no,yes,yes
+M86.59,…… multiple sites,osteoarticular infections,no,yes,no,yes,yes
+M86.6,Other chronic osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
+M86.60,…… unspecified site,osteoarticular infections,no,yes,no,yes,yes
+M86.61,"Other chronic osteomyelitis, shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.611,"Other chronic osteomyelitis, right shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.612,"Other chronic osteomyelitis, left shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.619,"Other chronic osteomyelitis, unspecified shoulder",osteoarticular infections,no,yes,no,yes,yes
+M86.62,"Other chronic osteomyelitis, humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.621,"Other chronic osteomyelitis, right humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.622,"Other chronic osteomyelitis, left humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.629,"Other chronic osteomyelitis, unspecified humerus",osteoarticular infections,no,yes,no,yes,yes
+M86.63,"Other chronic osteomyelitis, radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.631 ,"Other chronic osteomyelitis, right radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.632 ,"Other chronic osteomyelitis, left radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.639,"Other chronic osteomyelitis, unspecified radius and ulna",osteoarticular infections,no,yes,no,yes,yes
+M86.64,"Other chronic osteomyelitis, hand",osteoarticular infections,no,yes,no,yes,yes
+M86.641,"Other chronic osteomyelitis, right hand",osteoarticular infections,no,yes,no,yes,yes
+M86.642,"Other chronic osteomyelitis, left hand",osteoarticular infections,no,yes,no,yes,yes
+M86.649,"Other chronic osteomyelitis, unspecified hand",osteoarticular infections,no,yes,no,yes,yes
+M86.65,"Other chronic osteomyelitis, thigh",osteoarticular infections,no,yes,no,yes,yes
+M86.651,"Other chronic osteomyelitis, right thigh",osteoarticular infections,no,yes,no,yes,yes
+M86.652,"Other chronic osteomyelitis, left thigh",osteoarticular infections,no,yes,no,yes,yes
+M86.659,"Other chronic osteomyelitis, unspecified thigh",osteoarticular infections,no,yes,no,yes,yes
+M86.66,"Other chronic osteomyelitis, tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.661,"Other chronic osteomyelitis, right tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.662,"Other chronic osteomyelitis, left tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.669,"Other chronic osteomyelitis, unspecified tibia and fibula",osteoarticular infections,no,yes,no,yes,yes
+M86.67,"Other chronic osteomyelitis, ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.671,"Other chronic osteomyelitis, right ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.672,"Other chronic osteomyelitis, left ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.679,"Other chronic osteomyelitis, unspecified ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M86.68,…… other site,osteoarticular infections,no,yes,no,yes,yes
+M86.69,…… multiple sites,osteoarticular infections,no,yes,no,yes,yes
+M86.8,Other osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
+M86.8X,Other osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
+M86.8X0,…… multiple sites,osteoarticular infections,no,yes,no,yes,yes
+M86.8X1,…… shoulder,osteoarticular infections,no,yes,no,yes,yes
+M86.8X2,…… upper arm,osteoarticular infections,no,yes,no,yes,yes
+M86.8X3,…… forearm,osteoarticular infections,no,yes,no,yes,yes
+M86.8X4,…… hand,osteoarticular infections,no,yes,no,yes,yes
+M86.8X5,…… thigh,osteoarticular infections,no,yes,no,yes,yes
+M86.8X6,…… lower leg,osteoarticular infections,no,yes,no,yes,yes
+M86.8X7,…… ankle and foot,osteoarticular infections,no,yes,no,yes,yes
+M86.8X8,…… other site,osteoarticular infections,no,yes,no,yes,yes
+M86.8X9,…… unspecified sites,osteoarticular infections,no,yes,no,yes,yes
+M86.9,"Osteomyelitis, unspecified",osteoarticular infections,no,yes,no,yes,yes
+M00,Pyogenic arthritis,osteoarticular infections,no,yes,no,yes,yes
+M00.0,Staphylococcal arthritis and polyarthritis,osteoarticular infections,no,yes,no,yes,yes
+M00.00,"Staphylococcal arthritis, unspecified joint",osteoarticular infections,no,yes,no,yes,yes
+M00.01,"Staphylococcal arthritis, shoulder",osteoarticular infections,no,yes,no,yes,yes
+M00.011,"Staphylococcal arthritis, right shoulder",osteoarticular infections,no,yes,no,yes,yes
+M00.012,"Staphylococcal arthritis, left shoulder",osteoarticular infections,no,yes,no,yes,yes
+M00.019,"Staphylococcal arthritis, unspecified shoulder",osteoarticular infections,no,yes,no,yes,yes
+M00.02,"Staphylococcal arthritis, elbow",osteoarticular infections,no,yes,no,yes,yes
+M00.021,"Staphylococcal arthritis, right elbow",osteoarticular infections,no,yes,no,yes,yes
+M00.022,"Staphylococcal arthritis, left elbow",osteoarticular infections,no,yes,no,yes,yes
+M00.029,"Staphylococcal arthritis, unspecified elbow",osteoarticular infections,no,yes,no,yes,yes
+M00.03,"Staphylococcal arthritis, wrist",osteoarticular infections,no,yes,no,yes,yes
+M00.031,"Staphylococcal arthritis, right wrist",osteoarticular infections,no,yes,no,yes,yes
+M00.032,"Staphylococcal arthritis, left wrist",osteoarticular infections,no,yes,no,yes,yes
+M00.039,"Staphylococcal arthritis, unspecified wrist",osteoarticular infections,no,yes,no,yes,yes
+M00.04,"Staphylococcal arthritis, hand",osteoarticular infections,no,yes,no,yes,yes
+M00.041,"Staphylococcal arthritis, right hand",osteoarticular infections,no,yes,no,yes,yes
+M00.042,"Staphylococcal arthritis, left hand",osteoarticular infections,no,yes,no,yes,yes
+M00.049,"Staphylococcal arthritis, unspecified hand",osteoarticular infections,no,yes,no,yes,yes
+M00.05,"Staphylococcal arthritis, hip",osteoarticular infections,no,yes,no,yes,yes
+M00.051,"Staphylococcal arthritis, right hip",osteoarticular infections,no,yes,no,yes,yes
+M00.052,"Staphylococcal arthritis, left hip",osteoarticular infections,no,yes,no,yes,yes
+M00.059,"Staphylococcal arthritis, unspecified hip",osteoarticular infections,no,yes,no,yes,yes
+M00.06,"Staphylococcal arthritis, knee",osteoarticular infections,no,yes,no,yes,yes
+M00.061,"Staphylococcal arthritis, right knee",osteoarticular infections,no,yes,no,yes,yes
+M00.062,"Staphylococcal arthritis, left knee",osteoarticular infections,no,yes,no,yes,yes
+M00.069,"Staphylococcal arthritis, unspecified knee",osteoarticular infections,no,yes,no,yes,yes
+M00.07,"Staphylococcal arthritis, ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M00.071,"Staphylococcal arthritis, right ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M00.072,"Staphylococcal arthritis, left ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M00.079,"Staphylococcal arthritis, unspecified ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M00.08,"Staphylococcal arthritis, vertebrae",osteoarticular infections,no,yes,no,yes,yes
+M00.09,Staphylococcal polyarthritis,osteoarticular infections,no,yes,no,yes,yes
+M00.1,Pneumococcal arthritis and polyarthritis,osteoarticular infections,no,yes,no,yes,yes
+M00.10,"Pneumococcal arthritis, unspecified joint",osteoarticular infections,no,yes,no,yes,yes
+M00.11,"Pneumococcal arthritis, shoulder",osteoarticular infections,no,yes,no,yes,yes
+M00.111,"Pneumococcal arthritis, right shoulder",osteoarticular infections,no,yes,no,yes,yes
+M00.112,"Pneumococcal arthritis, left shoulder",osteoarticular infections,no,yes,no,yes,yes
+M00.119,"Pneumococcal arthritis, unspecified shoulder",osteoarticular infections,no,yes,no,yes,yes
+M00.12,"Pneumococcal arthritis, elbow",osteoarticular infections,no,yes,no,yes,yes
+M00.121,"Pneumococcal arthritis, right elbow",osteoarticular infections,no,yes,no,yes,yes
+M00.122,"Pneumococcal arthritis, left elbow",osteoarticular infections,no,yes,no,yes,yes
+M00.129,"Pneumococcal arthritis, unspecified elbow",osteoarticular infections,no,yes,no,yes,yes
+M00.13,"Pneumococcal arthritis, wrist",osteoarticular infections,no,yes,no,yes,yes
+M00.131,"Pneumococcal arthritis, right wrist",osteoarticular infections,no,yes,no,yes,yes
+M00.132,"Pneumococcal arthritis, left wrist",osteoarticular infections,no,yes,no,yes,yes
+M00.139,"Pneumococcal arthritis, unspecified wrist",osteoarticular infections,no,yes,no,yes,yes
+M00.14,"Pneumococcal arthritis, hand",osteoarticular infections,no,yes,no,yes,yes
+M00.141,"Pneumococcal arthritis, right hand",osteoarticular infections,no,yes,no,yes,yes
+M00.142,"Pneumococcal arthritis, left hand",osteoarticular infections,no,yes,no,yes,yes
+M00.149,"Pneumococcal arthritis, unspecified hand",osteoarticular infections,no,yes,no,yes,yes
+M00.15,"Pneumococcal arthritis, hip",osteoarticular infections,no,yes,no,yes,yes
+M00.151,"Pneumococcal arthritis, right hip",osteoarticular infections,no,yes,no,yes,yes
+M00.152,"Pneumococcal arthritis, left hip",osteoarticular infections,no,yes,no,yes,yes
+M00.159,"Pneumococcal arthritis, unspecified hip",osteoarticular infections,no,yes,no,yes,yes
+M00.16,"Pneumococcal arthritis, knee",osteoarticular infections,no,yes,no,yes,yes
+M00.161,"Pneumococcal arthritis, right knee",osteoarticular infections,no,yes,no,yes,yes
+M00.162,"Pneumococcal arthritis, left knee",osteoarticular infections,no,yes,no,yes,yes
+M00.169,"Pneumococcal arthritis, unspecified knee",osteoarticular infections,no,yes,no,yes,yes
+M00.17,"Pneumococcal arthritis, ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M00.171,"Pneumococcal arthritis, right ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M00.172,"Pneumococcal arthritis, left ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M00.179 ,"Pneumococcal arthritis, unspecified ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M00.18,"Pneumococcal arthritis, vertebrae",osteoarticular infections,no,yes,no,yes,yes
+M00.19,Pneumococcal polyarthritis,osteoarticular infections,no,yes,no,yes,yes
+M00.2,Other streptococcal arthritis and polyarthritis,osteoarticular infections,no,yes,no,yes,yes
+M00.20,"Other streptococcal arthritis, unspecified joint",osteoarticular infections,no,yes,no,yes,yes
+M00.21,"Other streptococcal arthritis, shoulder",osteoarticular infections,no,yes,no,yes,yes
+M00.211,"Other streptococcal arthritis, right shoulder",osteoarticular infections,no,yes,no,yes,yes
+M00.212,"Other streptococcal arthritis, left shoulder",osteoarticular infections,no,yes,no,yes,yes
+M00.219,"Other streptococcal arthritis, unspecified shoulder",osteoarticular infections,no,yes,no,yes,yes
+M00.22,"Other streptococcal arthritis, elbow",osteoarticular infections,no,yes,no,yes,yes
+M00.221,"Other streptococcal arthritis, right elbow",osteoarticular infections,no,yes,no,yes,yes
+M00.222,"Other streptococcal arthritis, left elbow",osteoarticular infections,no,yes,no,yes,yes
+M00.229,"Other streptococcal arthritis, unspecified elbow",osteoarticular infections,no,yes,no,yes,yes
+M00.23,"Other streptococcal arthritis, wrist",osteoarticular infections,no,yes,no,yes,yes
+M00.231,"Other streptococcal arthritis, right wrist",osteoarticular infections,no,yes,no,yes,yes
+M00.232,"Other streptococcal arthritis, left wrist",osteoarticular infections,no,yes,no,yes,yes
+M00.239,"Other streptococcal arthritis, unspecified wrist",osteoarticular infections,no,yes,no,yes,yes
+M00.24,"Other streptococcal arthritis, hand",osteoarticular infections,no,yes,no,yes,yes
+M00.241,"Other streptococcal arthritis, right hand",osteoarticular infections,no,yes,no,yes,yes
+M00.242,"Other streptococcal arthritis, left hand",osteoarticular infections,no,yes,no,yes,yes
+M00.249,"Other streptococcal arthritis, unspecified hand",osteoarticular infections,no,yes,no,yes,yes
+M00.25,"Other streptococcal arthritis, hip",osteoarticular infections,no,yes,no,yes,yes
+M00.251,"Other streptococcal arthritis, right hip",osteoarticular infections,no,yes,no,yes,yes
+M00.252,"Other streptococcal arthritis, left hip",osteoarticular infections,no,yes,no,yes,yes
+M00.259,"Other streptococcal arthritis, unspecified hip",osteoarticular infections,no,yes,no,yes,yes
+M00.26,"Other streptococcal arthritis, knee",osteoarticular infections,no,yes,no,yes,yes
+M00.261,"Other streptococcal arthritis, right knee",osteoarticular infections,no,yes,no,yes,yes
+M00.262,"Other streptococcal arthritis, left knee",osteoarticular infections,no,yes,no,yes,yes
+M00.269,"Other streptococcal arthritis, unspecified knee",osteoarticular infections,no,yes,no,yes,yes
+M00.27,"Other streptococcal arthritis, ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M00.271,"Other streptococcal arthritis, right ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M00.272,"Other streptococcal arthritis, left ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M00.279,"Other streptococcal arthritis, unspecified ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M00.28,"Other streptococcal arthritis, vertebrae",osteoarticular infections,no,yes,no,yes,yes
+M00.29,Other streptococcal polyarthritis,osteoarticular infections,no,yes,no,yes,yes
+M00.8,Arthritis and polyarthritis due to other bacteria,osteoarticular infections,no,yes,no,yes,yes
+M00.80,"Arthritis due to other bacteria, unspecified joint",osteoarticular infections,no,yes,no,yes,yes
+M00.81,"Arthritis due to other bacteria, shoulder",osteoarticular infections,no,yes,no,yes,yes
+M00.811,"Arthritis due to other bacteria, right shoulder",osteoarticular infections,no,yes,no,yes,yes
+M00.812,"Arthritis due to other bacteria, left shoulder",osteoarticular infections,no,yes,no,yes,yes
+M00.819,"Arthritis due to other bacteria, unspecified shoulder",osteoarticular infections,no,yes,no,yes,yes
+M00.82,"Arthritis due to other bacteria, elbow",osteoarticular infections,no,yes,no,yes,yes
+M00.821,"Arthritis due to other bacteria, right elbow",osteoarticular infections,no,yes,no,yes,yes
+M00.822,"Arthritis due to other bacteria, left elbow",osteoarticular infections,no,yes,no,yes,yes
+M00.829,"Arthritis due to other bacteria, unspecified elbow",osteoarticular infections,no,yes,no,yes,yes
+M00.83,"Arthritis due to other bacteria, wrist",osteoarticular infections,no,yes,no,yes,yes
+M00.831,"Arthritis due to other bacteria, right wrist",osteoarticular infections,no,yes,no,yes,yes
+M00.832,"Arthritis due to other bacteria, left wrist",osteoarticular infections,no,yes,no,yes,yes
+M00.839,"Arthritis due to other bacteria, unspecified wrist",osteoarticular infections,no,yes,no,yes,yes
+M00.84,"Arthritis due to other bacteria, hand",osteoarticular infections,no,yes,no,yes,yes
+M00.841,"Arthritis due to other bacteria, right hand",osteoarticular infections,no,yes,no,yes,yes
+M00.842,"Arthritis due to other bacteria, left hand",osteoarticular infections,no,yes,no,yes,yes
+M00.849,"Arthritis due to other bacteria, unspecified hand",osteoarticular infections,no,yes,no,yes,yes
+M00.85,"Arthritis due to other bacteria, hip",osteoarticular infections,no,yes,no,yes,yes
+M00.851,"Arthritis due to other bacteria, right hip",osteoarticular infections,no,yes,no,yes,yes
+M00.852,"Arthritis due to other bacteria, left hip",osteoarticular infections,no,yes,no,yes,yes
+M00.859,"Arthritis due to other bacteria, unspecified hip",osteoarticular infections,no,yes,no,yes,yes
+M00.86,"Arthritis due to other bacteria, knee",osteoarticular infections,no,yes,no,yes,yes
+M00.861,"Arthritis due to other bacteria, right knee",osteoarticular infections,no,yes,no,yes,yes
+M00.862,"Arthritis due to other bacteria, left knee",osteoarticular infections,no,yes,no,yes,yes
+M00.869,"Arthritis due to other bacteria, unspecified knee",osteoarticular infections,no,yes,no,yes,yes
+M00.87,"Arthritis due to other bacteria, ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M00.871,"Arthritis due to other bacteria, right ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M00.872,"Arthritis due to other bacteria, left ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M00.879,"Arthritis due to other bacteria, unspecified ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+M00.88,"Arthritis due to other bacteria, vertebrae",osteoarticular infections,no,yes,no,yes,yes
+M00.89,Polyarthritis due to other bacteria,osteoarticular infections,no,yes,no,yes,yes
+M00.9,"Pyogenic arthritis, unspecified",osteoarticular infections,no,yes,no,yes,yes
+H70,Mastoiditis and related conditions,mastoiditis,no,no,yes,no,yes
+H70.0,Acute mastoiditis,mastoiditis,no,no,yes,no,yes
+H70.00,Acute mastoiditis without complications,mastoiditis,no,no,yes,no,yes
+H70.001,…… right ear,mastoiditis,no,no,yes,no,yes
+H70.002,…… left ear,mastoiditis,no,no,yes,no,yes
+H70.003,…… bilateral,mastoiditis,no,no,yes,no,yes
+H70.01,…… unspecified ear,mastoiditis,no,no,yes,no,yes
+H70.01,Subperiosteal abscess of mastoid,mastoiditis,no,no,yes,no,yes
+H70.011,…… right ear,mastoiditis,no,no,yes,no,yes
+H70.012,…… left ear,mastoiditis,no,no,yes,no,yes
+H70.013,…… bilateral,mastoiditis,no,no,yes,no,yes
+H70.019,…… unspecified ear,mastoiditis,no,no,yes,no,yes
+H70.09,Acute mastoiditis with other complications,mastoiditis,no,no,yes,no,yes
+H70.091,…… right ear,mastoiditis,no,no,yes,no,yes
+H70.092,…… left ear,mastoiditis,no,no,yes,no,yes
+H70.093,…… bilateral,mastoiditis,no,no,yes,no,yes
+H70.099,…… unspecified ear,mastoiditis,no,no,yes,no,yes
+H70.1,Chronic mastoiditis,mastoiditis,no,no,yes,no,yes
+H70.10,…… unspecified ear,mastoiditis,no,no,yes,no,yes
+H70.11,…… right ear,mastoiditis,no,no,yes,no,yes
+H70.12,…… left ear,mastoiditis,no,no,yes,no,yes
+H70.13,…… bilateral,mastoiditis,no,no,yes,no,yes
+H70.2,Petrositis,mastoiditis,no,no,yes,no,yes
+H70.20,Unspecified petrositis,mastoiditis,no,no,yes,no,yes
+H70.201,…… right ear,mastoiditis,no,no,yes,no,yes
+H70.202,…… left ear,mastoiditis,no,no,yes,no,yes
+H70.203,…… bilateral,mastoiditis,no,no,yes,no,yes
+H70.209,…… unspecified ear,mastoiditis,no,no,yes,no,yes
+H70.21,Acute petrositis,mastoiditis,no,no,yes,no,yes
+H70.211,…… right ear,mastoiditis,no,no,yes,no,yes
+H70.212,…… left ear,mastoiditis,no,no,yes,no,yes
+H70.213,…… bilateral,mastoiditis,no,no,yes,no,yes
+H70.219,…… unspecified ear,mastoiditis,no,no,yes,no,yes
+H70.22,Chronic petrositis,mastoiditis,no,no,yes,no,yes
+H70.221,…… right ear,mastoiditis,no,no,yes,no,yes
+H70.222,…… left ear,mastoiditis,no,no,yes,no,yes
+H70.223,…… bilateral,mastoiditis,no,no,yes,no,yes
+H70.229,…… unspecified ear,mastoiditis,no,no,yes,no,yes
+H70.8,Other mastoiditis and related conditions,mastoiditis,no,no,yes,no,yes
+H70.81,Postauricular fistula,mastoiditis,no,no,yes,no,yes
+H70.811,…… right ear,mastoiditis,no,no,yes,no,yes
+H70.812,…… left ear,mastoiditis,no,no,yes,no,yes
+H70.813,…… bilateral,mastoiditis,no,no,yes,no,yes
+H70.819,…… unspecified ear,mastoiditis,no,no,yes,no,yes
+H70.89,Other mastoiditis and related conditions,mastoiditis,no,no,yes,no,yes
+H70.891,…… right ear,mastoiditis,no,no,yes,no,yes
+H70.892,…… left ear,mastoiditis,no,no,yes,no,yes
+H70.893,…… bilateral,mastoiditis,no,no,yes,no,yes
+H70.899,…… unspecified ear,mastoiditis,no,no,yes,no,yes
+H70.9,Unspecified mastoiditis,mastoiditis,no,no,yes,no,yes
+H70.90,…… unspecified ear,mastoiditis,no,no,yes,no,yes
+H70.91,…… right ear,mastoiditis,no,no,yes,no,yes
+H70.92,…… left ear,mastoiditis,no,no,yes,no,yes
+H70.93,…… bilateral,mastoiditis,no,no,yes,no,yes
+A32.82,Listerial endocarditis,endocarditis,no,yes,no,no,yes
+A39.51,Meningococcal endocarditis,endocarditis,no,yes,no,no,yes
+A52.03,Syphilitic endocarditis,endocarditis,no,yes,no,no,yes
+I33.0,acute and subacute infective endocarditis,endocarditis,no,yes,no,no,yes
+I33.9,"acute and subacute endocarditis, unspecified",endocarditis,no,yes,no,no,yes
+I38,"endocarditis, valve unspecified",endocarditis,no,yes,no,no,yes
+I39,endocarditis and heart valve disorders in diseases classified elsewhere,endocarditis,no,yes,no,no,yes
+A01.01,Typhoid meningitis,bacterial meningitis,yes,yes,no,no,no
+A02.21,Salmonella meningitis,bacterial meningitis,yes,yes,no,no,no
+A39.0,Meningococcal meningitis,bacterial meningitis,yes,yes,no,no,no
+G00,"Bacterial meningitis, not elsewhere classified",bacterial meningitis,yes,yes,no,no,no
+G00.0,Hemophilus meningitis,bacterial meningitis,yes,yes,no,no,no
+G00.1,Pneumococcal meningitis,bacterial meningitis,yes,yes,no,no,no
+G00.2,Streptococcal meningitis,bacterial meningitis,yes,yes,no,no,no
+G00.3,Staphylococcal meningitis,bacterial meningitis,yes,yes,no,no,no
+G00.8,Other bacterial meningitis,bacterial meningitis,yes,yes,no,no,no
+G00.9,"Bacterial meningitis, unspecified",bacterial meningitis,yes,yes,no,no,no
+G01,Meningitis in bacterial diseases classified elsewhere,bacterial meningitis,yes,yes,no,no,no
+G04.2,"Bacterial meningoencephalitis and meningomyelitis, not elsewhere classified",bacterial meningitis,yes,yes,no,no,no
+A01.03,Typhoid pneumonia,bacterial pneumonia,no,no,yes,no,no
+A02.22,Salmonella pneumonia,bacterial pneumonia,no,no,yes,no,no
+A20.2,Pneumonic plague,bacterial pneumonia,no,no,yes,no,no
+A21.2,Pulmonary tularaemia,bacterial pneumonia,no,no,yes,no,no
+A22.1,Pulmonary anthrax,bacterial pneumonia,no,no,yes,no,no
+A31.0,Pulmonary mycobacterial infection,bacterial pneumonia,no,no,yes,no,no
+A37.11,Whooping cough due to Bordetella pertussis with pneumonia,bacterial pneumonia,no,no,yes,no,no
+A37.11,Whooping cough due to Bordetella parapertussis with pneumonia,bacterial pneumonia,no,no,yes,no,no
+A37.81,Whooping cough due to other Bordetella species with pneumonia,bacterial pneumonia,no,no,yes,no,no
+A37.91,"Whooping cough, unspecified species with pneumonia",bacterial pneumonia,no,no,yes,no,no
+A42.0,Pulmonary actinomycosis,bacterial pneumonia,no,no,yes,no,no
+A43.0,Pulmonary nocardiosis,bacterial pneumonia,no,no,yes,no,no
+A48.1,Legionnaires disease,bacterial pneumonia,no,no,yes,no,no
+A78,Q fever,bacterial pneumonia,no,no,yes,no,no
+B96.0,Mycoplasma pneumoniae [M. pneumoniae] as the cause of diseases classified to other chapters,bacterial pneumonia,no,no,yes,no,no
+B96.1,Klebsiella pneumoniae [K. pneumoniae] as the cause of diseases classified to other chapters,bacterial pneumonia,no,no,yes,no,no
+J13,Pneumonia due to Streptococcus pneumoniae,bacterial pneumonia,no,no,yes,no,no
+J14,Pneumonia due to Haemophilus influenzae,bacterial pneumonia,no,no,yes,no,no
+J15,"Bacterial pneumonia, not elsewhere classified",bacterial pneumonia,no,no,yes,no,no
+J15.0,Pneumonia due to Klebsiella pneumoniae,bacterial pneumonia,no,no,yes,no,no
+J15.1,Pneumonia due to Pseudomonas,bacterial pneumonia,no,no,yes,no,no
+J15.2,Pneumonia due to staphylococcus,bacterial pneumonia,no,no,yes,no,no
+J15.20,…… unspecified,bacterial pneumonia,no,no,yes,no,no
+J15.21,Pneumonia due to staphylococcus aureus,bacterial pneumonia,no,no,yes,no,no
+J15.211,Pneumonia due to Methicillin susceptible Staphylococcus aureus,bacterial pneumonia,no,no,yes,no,no
+J15.212,Pneumonia due to Methicillin resistant Staphylococcus aureus,bacterial pneumonia,no,no,yes,no,no
+J15.29,Pneumonia due to other staphylococcus,bacterial pneumonia,no,no,yes,no,no
+J15.3,"Pneumonia due to streptococcus, group B",bacterial pneumonia,no,no,yes,no,no
+J15.4,Pneumonia due to other streptococci,bacterial pneumonia,no,no,yes,no,no
+J15.5,Pneumonia due to Escherichia coli,bacterial pneumonia,no,no,yes,no,no
+J15.6,Pneumonia due to other Gram-negative bacteria,bacterial pneumonia,no,no,yes,no,no
+J15.7,Pneumonia due to Mycoplasma pneumoniae,bacterial pneumonia,no,no,yes,no,no
+J15.8,Pneumonia due to other specified bacteria,bacterial pneumonia,no,no,yes,no,no
+J15.9,Unspecified bacterial pneumonia,bacterial pneumonia,no,no,yes,no,no
+J16,"Pneumonia due to other infectious organisms, not elsewhere classified",bacterial pneumonia,no,no,yes,no,no
+J16.0,Chlamydial pneumonia,bacterial pneumonia,no,no,yes,no,no
+J16.8,Pneumonia due to other specified infectious organisms,bacterial pneumonia,no,no,yes,no,no
+A26.7,Erysipelothrix sepsis,sepsis,yes,yes,no,no,no
+A32.7,Listerial sepsis,sepsis,yes,yes,no,no,no
+A40,Streptococcal sepsis,sepsis,yes,yes,no,no,no
+A40.0,"Sepsis due to streptococcus, group A",sepsis,yes,yes,no,no,no
+A40.1,"Sepsis due to streptococcus, group B",sepsis,yes,yes,no,no,no
+A40.3,Sepsis due to Streptococcus pneumoniae,sepsis,yes,yes,no,no,no
+A40.8,Other streptococcal sepsis,sepsis,yes,yes,no,no,no
+A40.9,"Streptococcal sepsis, unspecified",sepsis,yes,yes,no,no,no
+A41,Other sepsis,sepsis,yes,yes,no,no,no
+A41.0,Sepsis due to Staphylococcus aureus,sepsis,yes,yes,no,no,no
+A41.01,Sepsis due to Methicillin susceptible Staphylococcus aureus,sepsis,yes,yes,no,no,no
+A41.02,Sepsis due to Methicillin resistant Staphylococcus aureus,sepsis,yes,yes,no,no,no
+A41.1,Sepsis due to other specified staphylococcus,sepsis,yes,yes,no,no,no
+A41.2,Sepsis due to unspecified staphylococcus,sepsis,yes,yes,no,no,no
+A41.3,Sepsis due to Hemophilus influenzae,sepsis,yes,yes,no,no,no
+A41.4,Sepsis due to anaerobes,sepsis,yes,yes,no,no,no
+A41.5,Sepsis due to other Gram-negative organisms,sepsis,yes,yes,no,no,no
+A41.50,"Gram-negative sepsis, unspecified",sepsis,yes,yes,no,no,no
+A41.51,Sepsis due to Escherichia coli [E. coli],sepsis,yes,yes,no,no,no
+A41.52,Sepsis due to Pseudomonas,sepsis,yes,yes,no,no,no
+A41.53,Sepsis due to Serratia,sepsis,yes,yes,no,no,no
+A41.59,Other Gram-negative sepsis,sepsis,yes,yes,no,no,no
+A41.8,Other specified sepsis,sepsis,yes,yes,no,no,no
+A41.81,Sepsis due to Enterococcus,sepsis,yes,yes,no,no,no
+A41.89 ,Other specified sepsis,sepsis,yes,yes,no,no,no
+A41.9,"Sepsis, unspecified organism",sepsis,yes,yes,no,no,no
+A42.7,Actinomycotic sepsis,sepsis,yes,yes,no,no,no
+A48.3,Toxic shock syndrome,sepsis,yes,yes,no,no,no
+A54.86,Gonococcal sepsis,sepsis,yes,yes,no,no,no
+P36,Bacterial sepsis of newborn,sepsis,yes,yes,no,no,no
+P36.0,"Sepsis of newborn due to streptococcus, group B",sepsis,yes,yes,no,no,no
+P36.1,Sepsis of newborn due to other and unspecified streptococci,sepsis,yes,yes,no,no,no
+P36.10,Sepsis of newborn due to unspecified streptococci,sepsis,yes,yes,no,no,no
+P36.19,Sepsis of newborn due to other streptococci,sepsis,yes,yes,no,no,no
+P36.2,Sepsis of newborn due to Staphylococcus aureus,sepsis,yes,yes,no,no,no
+P36.3,Sepsis of newborn due to other and unspecified staphylococci,sepsis,yes,yes,no,no,no
+P36.30,Sepsis of newborn due to unspecified staphylococci,sepsis,yes,yes,no,no,no
+P36.39,Sepsis of newborn due to other staphylococci,sepsis,yes,yes,no,no,no
+P36.4,Sepsis of newborn due to Escherichia coli,sepsis,yes,yes,no,no,no
+P36.5,Sepsis of newborn due to anaerobes,sepsis,yes,yes,no,no,no
+P36.8,Other bacterial sepsis of newborn,sepsis,yes,yes,no,no,no
+P36.9,"Bacterial sepsis of newborn, unspecified",sepsis,yes,yes,no,no,no
+R65.2,Severe sepsis,sepsis,yes,yes,no,no,no
+R65.20,…… without septic shock,sepsis,yes,yes,no,no,no
+R65.21,…… with septic shock,sepsis,yes,yes,no,no,no
+A02.0,Salmonella enteritis,bacterial enteritis,no,no,no,no,no
+A03,Shigellosis,bacterial enteritis,no,no,no,no,no
+A03.0,Shigellosis due to Shigella dysenteriae,bacterial enteritis,no,no,no,no,no
+A03.1,Shigellosis due to Shigella flexneri,bacterial enteritis,no,no,no,no,no
+A03.2,Shigellosis due to Shigella boydii,bacterial enteritis,no,no,no,no,no
+A03.3,Shigellosis due to Shigella sonnei,bacterial enteritis,no,no,no,no,no
+A03.8,Other shigellosis,bacterial enteritis,no,no,no,no,no
+A03.9,"Shigellosis, unspecified",bacterial enteritis,no,no,no,no,no
+A04,Other bacterial intestinal infections,bacterial enteritis,no,no,no,no,no
+A04.0,Enteropathogenic Escherichia coli infection,bacterial enteritis,no,no,no,no,no
+A04.1,Enterotoxigenic Escherichia coli infection,bacterial enteritis,no,no,no,no,no
+A04.2,Enteroinvasive Escherichia coli infection,bacterial enteritis,no,no,no,no,no
+A04.3,Enterohemorrhagic Escherichia coli infection,bacterial enteritis,no,no,no,no,no
+A04.4,Other intestinal Escherichia coli infections,bacterial enteritis,no,no,no,no,no
+A04.5,Campylobacter enteritis,bacterial enteritis,no,no,no,no,no
+A04.6,Enteritis due to Yersinia enterocolitica,bacterial enteritis,no,no,no,no,no
+A04.7,Enterocolitis due to Clostridium difficile,bacterial enteritis,no,no,no,no,no
+A04.71,…… recurrent,bacterial enteritis,no,no,no,no,no
+A04.72,…… not specified as recurrent,bacterial enteritis,no,no,no,no,no
+A04.8,Other specified bacterial intestinal infections,bacterial enteritis,no,no,no,no,no
+A04.9,"Bacterial intestinal infection, unspecified",bacterial enteritis,no,no,no,no,no
+A05,"Other bacterial foodborne intoxications, not elsewhere classified",bacterial enteritis,no,no,no,no,no
+A05.0,Foodborne staphylococcal intoxication,bacterial enteritis,no,no,no,no,no
+A05.1,Botulism food poisoning,bacterial enteritis,no,no,no,no,no
+A05.2,Foodborne Clostridium perfringens [Clostridium welchii] intoxication,bacterial enteritis,no,no,no,no,no
+A05.3,Foodborne Vibrio parahaemolyticus intoxication,bacterial enteritis,no,no,no,no,no
+A05.4,Foodborne Bacillus cereus intoxication,bacterial enteritis,no,no,no,no,no
+A05.5,Foodborne Vibrio vulnificus intoxication,bacterial enteritis,no,no,no,no,no
+A05.8,Other specified bacterial foodborne intoxications,bacterial enteritis,no,no,no,no,no
+A05.9,"Bacterial foodborne intoxication, unspecified",bacterial enteritis,no,no,no,no,no

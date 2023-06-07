@@ -89,29 +89,36 @@ We will use as input the 2.2 data files. Specifically:
 ## Reading 4CE phase 2.2 files
 
 ```{r message=FALSE, warning=FALSE}
-### Read the CSV input files
-source("../R/readInputFiles.R")
+### Read the CSV input files without duplicating the data
 
-print("Reading input files")
-files <- readInputFiles( path      = folder_4ce_files, 
-                         separator = ",",
-                         skip      = 0, 
-                         verbose   = FALSE )
+source("../R/readInputFiles_fread.R")
 
-### Extract the patient summary and observation information. 
-# arrange in a consistent way to make sure we are not assuming the order of some sites
-demo_raw <- files[["patientSummary"]] %>% 
-  dplyr::filter(cohort == "AllAdm") %>%
-  dplyr::arrange(patient_num, as.Date(admission_date, format = dateFormat), days_since_admission)
-obs_raw <- files[["patientObservations"]] %>% 
-  dplyr::filter(cohort == "AllAdm") %>%
-  dplyr::arrange(patient_num, days_since_admission)
-clinical_raw <- files[["patientClinicalCourse"]] %>% 
-  dplyr::filter(cohort == "AllAdm") %>%
-  dplyr::arrange(patient_num, as.Date(calendar_date, format = dateFormat), days_since_admission)
-rm(files) # remove files object to not have unnecessary objects
+filecheck <- checkInputFilesFread( path = folder_4ce_files, separator = ",", skip = 0, verbose = TRUE )
 
-print('Input files successfully read, patient data extracted')
+if(filecheck){
+  demo_raw <- read_delim_4ce("LocalPatientSummary.csv", folder_4ce_files, )
+  obs_raw <- read_delim_4ce("LocalPatientObservations.csv", folder_4ce_files)
+  clinical_raw <- read_delim_4ce("LocalPatientClinicalCourse.csv", folder_4ce_files)
+
+  ### Extract the patient summary and observation information. 
+  # arrange in a consistent way to make sure we are not assuming the order of some sites
+  demo_raw <- demo_raw %>% 
+    dplyr::filter(cohort == "AllAdm") %>%
+    dplyr::arrange(patient_num, as.Date(admission_date, format = dateFormat), days_since_admission)
+  obs_raw <- obs_raw %>% 
+    dplyr::filter(cohort == "AllAdm") %>%
+    dplyr::arrange(patient_num, days_since_admission)
+  clinical_raw <- clinical_raw %>% 
+    dplyr::filter(cohort == "AllAdm") %>%
+    dplyr::arrange(patient_num, as.Date(calendar_date, format = dateFormat), days_since_admission)
+  
+  print('Input files successfully read, patient data extracted')
+  
+}else{
+  print('Error in reading files')
+}
+
+
 ```
 
 ## Select the ICD codes of interest
@@ -120,7 +127,8 @@ print('Input files successfully read, patient data extracted')
 print('Reading ICD bacterial codes')
 icdCodes <- read.csv("../public-data/ICD_bacterial4.csv", header = TRUE, colClasses = "character") %>%
    dplyr::mutate( concept_code = gsub("\\.", "",ICD10_Code)) %>%
-   dplyr::select( disorder_group = syndrome, ICD10_Code, concept_code, description, bacterial_syndrome )
+   dplyr::select( disorder_group = syndrome, ICD10_Code, concept_code, description, 
+                  syndrome, IBI_simple, IBI_extensive, Respiratory, Skin, bacterial_syndrome )
 ```
 
 # Data-management
@@ -134,12 +142,15 @@ clinical_raw <- dplyr::filter(clinical_raw, in_hospital == 1)
 
 ## Calculating duration of individual hospitalizations
 
-Adding columns with hospitalization number and hospitalization length to
+- Adding columns with hospitalization number and hospitalization length to
 the clinical raw file
+- Calculate 'admit date': date of admission for each hospitalization
 
 ```{r}
 source("../R/count_sequences_hospitalisation.R")
 clinical_raw <- count_hosp(clinical_raw)
+
+print('Hospitalization sequences have been counted.')
 ```
 
 ## Calculating age at hospitalization time
@@ -147,6 +158,10 @@ clinical_raw <- count_hosp(clinical_raw)
 ```{r}
 # Calculating patient age at the time of visit, assuming the age used is the patients' age at the time of extraction (last discharge date available in the data)
 # removing the dots from the ICD codes (if any)
+obs_raw <- as.data.frame( obs_raw )
+demo_raw <- as.data.frame( demo_raw )
+clinical_raw <- as.data.frame( clinical_raw )
+
 obs_raw_age <- left_join(obs_raw, demo_raw[c("patient_num", "age")], by = c("patient_num")) %>%
   dplyr::mutate( concept_code = gsub("\\.", "",concept_code )) %>%
   dplyr::inner_join(clinical_raw[, c("patient_num", "days_since_admission", "calendar_date")], 
@@ -154,6 +169,8 @@ obs_raw_age <- left_join(obs_raw, demo_raw[c("patient_num", "age")], by = c("pat
 
 # estimate age at each diagnosis
 obs_raw_age$age_time_diagnosis <- obs_raw_age$age - floor(as.numeric(as.Date(data_update_date, format = dateFormat) - as.Date(obs_raw_age$calendar_date, format = dateFormat)) / 365.25)
+
+print('Patient age calculated')
 ```
 
 ## Applying inclusion criteria to filter and format the data
@@ -175,22 +192,23 @@ obs_filtered_inclusion_criteria <- obs_raw_age %>%
                 days_since_admission >= 0, 
                 age_time_diagnosis < 18 )
 
+if (!time_period %in% c('day', 'week', 'month')) {
+  print(paste0('unidentified time period: ', time_period))
+  print(paste0('possible time periods: ', c('day', 'week', 'month')))
+} else {
+  print(paste0('time period: ', time_period))
+}
+
+# base the time period on admit date, not calendar date
 clinical_filtered  <- clinical_raw %>%
   dplyr::filter( length_hospitalization >= min_hosp_days, 
           cohort  %in% c("AllAdm")) %>%
-  dplyr::mutate( date = as.Date( calendar_date, format = dateFormat),
-                 weeks = as.Date(cut( date, breaks = "week")),
-                 month = as.Date(cut( date, breaks = "month")),
-                 year = format( date, "%Y"), 
-                 period = ifelse( date <= pre_NPI,
-                           "pre-NPI", ifelse( date > full_NPI, "partial-NPI", "full-NPI")))
-if( time_period == "weeks"){
-  clinical_filtered$time_p <- clinical_filtered$weeks
-}else if(time_period == "days"){
-  clinical_filtered$time_p <- clinical_filtered$date
-}else if(time_period == "months"){
-  clinical_filtered$time_p <- clinical_filtered$month
-}
+  dplyr::mutate( calendar_date = as.Date( calendar_date, format = dateFormat),
+                 admit_date = as.Date( admit_date, format = dateFormat),
+                 time_p = as.Date(cut( admit_date, breaks = time_period)),
+                 period = ifelse( admit_date <= pre_NPI, "pre-NPI", 
+                                  ifelse( admit_date > full_NPI, "partial-NPI", "full-NPI")))
+
 
 # we create a hospitalization id and select only the columns of interest
 clinical_filtered <- clinical_filtered %>%
@@ -215,8 +233,7 @@ all_codes <- obs_filtered_inclusion_criteria %>%
    dplyr::inner_join( clinical_filtered, 
                      by = c("patient_num", "days_since_admission")) %>% 
    dplyr::inner_join(demographic_filtered_inclusion_criteria, 
-                     by = "patient_num") %>%
-  select( -cohort.x, -cohort.y)
+                     by = "patient_num")
 ```
 
 ## Adding ICU and dead status by hospitalization
@@ -231,15 +248,11 @@ all_codes <- all_codes %>%
 
 ```
 
-## Assign to each hospitalization the date of admission / first date of diagnosis in that visit
-```{r}
-all_codes <- all_codes %>%
-  dplyr::group_by( hospitalization_id ) %>%
-  dplyr::mutate( time_p = min(as.Date( time_p )))
-```
+
 
 
 ### QC
+# from here only use all_codes combined data structure? remove other dataframes?
 ```{r}
 print("Starting QC")
 source("../R/qc_summary.R")
@@ -258,6 +271,13 @@ stopifnot(length(unique(all_codes$patient_num)) == length(unique(obs_filtered_in
 # add the age groups
 ageGroups <- read.delim("../public-data/ageGroups.txt", sep="\t",  header = TRUE) 
 
+# flag any unexpected ages
+strange_ages <- all_codes %>% dplyr::filter(age_time_diagnosis<0 | age_time_diagnosis>18)
+if (nrow(strange_ages) != 0) {
+  print("Some strange ages were found for our patients:")
+  print(unique(strange_ages$age_time_diagnosis))
+}
+
 # Filtering hospitalizations where patient age is in inclusion criteria
 all_codes <- all_codes %>%
   dplyr::left_join( ageGroups, by = c("age_time_diagnosis" = "age")) %>%
@@ -267,6 +287,7 @@ all_codes <- all_codes %>%
 
 ### print checks
 print("Age summary")
+print(table(all_codes$age_group, useNA = 'ifany'))
 print(summary(all_codes$age_time_diagnosis))
 ```
 
@@ -278,47 +299,9 @@ which the code was used.
 
 
 ```{r}
-#filter the whole dataset to only bacterial infection codes
-bacteria_infection_codes_qc <- all_codes %>% 
-  dplyr::filter( concept_code %in% icdCodes$concept_code )
-
-# count the number of patients with each code and the min and max dates
-# this will help to identify codes that were only used for specific periods 
-bacteria_infection_codes_qc_output <- bacteria_infection_codes_qc %>%
-  dplyr::group_by( concept_code ) %>%
-  dplyr::summarise( distinct_patients = ifelse(length(unique(patient_num)) > obfuscation | isFALSE(obfuscation),
-                               length(unique(patient_num)), 
-                               0.5),
-                    distinct_observations = ifelse(length(patient_num) > obfuscation | isFALSE(obfuscation),
-                               length(patient_num), 
-                               0.5),                           
-                    min_date = min( as.Date( calendar_date, format = dateFormat ) ), 
-                    max_date = max( as.Date( calendar_date, format = dateFormat ) ))%>% 
-  dplyr::arrange(desc(distinct_observations))
-
-# add the descriptions to the codes
-bacteria_infection_codes_qc_output <- bacteria_infection_codes_qc_output %>%
-  dplyr::left_join( icdCodes, by="concept_code")  %>%
-  dplyr::select( "disorder_group", "description", "concept_code", "distinct_patients", 
-          "distinct_observations", "min_date", "max_date")
-
-### counts per disorder group and year 
-bacterialCodesSummary <-bacteria_infection_codes_qc %>%
-  dplyr::left_join( icdCodes ) %>%
-  dplyr::mutate( year = format( as.Date(calendar_date, format = dateFormat), "%Y")) %>%
-  dplyr::group_by( disorder_group, year ) %>%
-  dplyr::summarise( distinct_patients = ifelse(length(unique(patient_num)) > obfuscation | isFALSE(obfuscation),
-                               length(unique(patient_num)), 
-                               0.5),
-                    distinct_observations = ifelse(length(patient_num) > obfuscation | isFALSE(obfuscation),
-                               length(patient_num), 
-                               0.5),                           
-                    min_date = min( as.Date( calendar_date, format = dateFormat ) ), 
-                    max_date = max( as.Date( calendar_date, format = dateFormat ) ))%>% 
-  dplyr::arrange(disorder_group, year, distinct_patients )
-
-# save the file for QC
-save( bacterialCodesSummary, file = paste0(dir.output, 'bacterialCodesSummary.Rdata')) 
+source('./../R/summarize_bi_codes.R')
+summarize_bi_codes(all_codes, icdCodes)
+# outputs saved as bacterialCodesSummary.Rdata and bacterialCodesSummary_bycode.Rdata
 ```
 
 ## Add the bacterial infection ICD code description and filter
@@ -326,14 +309,50 @@ save( bacterialCodesSummary, file = paste0(dir.output, 'bacterialCodesSummary.Rd
 ```{r message=FALSE, warning=FALSE}
 # Getting site name, will be used later in the analysis
 site <- unique(as.character(demo_raw$siteid))
+print(paste0('site id: ', site))
 
 # add a column that will allow us to identify if the code belongs to any of the bacterial infections or not
 all_codes_desc <- all_codes %>% 
   dplyr::left_join( icdCodes, by=c("concept_code") ) %>%
   dplyr::mutate(icd_code_category = ifelse(concept_code %in% icdCodes$concept_code, 
                                "bacterial", 
-                               "others")) 
+                               "others"),
+                disorder_group = tidyr::replace_na(disorder_group, 'non_bacterial'),
+                ICD10_Code = tidyr::replace_na(ICD10_Code, 'non_bacterial'),
+                description = tidyr::replace_na(description, 'non_bacterial'),
+                IBI_simple = tidyr::replace_na(IBI_simple, 'non_bacterial'),
+                IBI_extensive = tidyr::replace_na(IBI_extensive, 'non_bacterial'),
+                Respiratory = tidyr::replace_na(Respiratory, 'non_bacterial'),
+                Skin = tidyr::replace_na(Skin, 'non_bacterial'),
+                bacterial_syndrome = tidyr::replace_na(bacterial_syndrome, 'non_bacterial')) 
+
+print('the following icd code categories are present:')
+print(table(all_codes_desc$icd_code_category))
 ```
+
+## Bacterial pneumonia and LRTI/empyema
+Bacterial pneumonia and empyema is a special case. 
+- If the patient in the hospitalization presents both,bacterial pneumonia and empyema we only want to keep empyema. 
+- If the patient in the hospitalization only has bacterial pneumonia we keep it is
+- If the patient in the hospitalization only presents empyema, then we keep it as it is.
+![Example](./empyemaCase.png)
+Identify which is the subset of patients in the first scenario (having both in the same hospitalization), and remove bacterial pneumonia. 
+
+```{r}
+all_codes_desc <- all_codes_desc %>%
+  dplyr::group_by(hospitalization_id) %>%
+  dplyr::mutate(has_both = "LRTI/empyema" %in% disorder_group & "bacterial pneumonia" %in% disorder_group) %>%
+  dplyr::filter(!(disorder_group == "bacterial pneumonia" & !is.na(disorder_group) & has_both)) %>% # remove the bacterial pneumonia rows if the hospitalization has both 
+  dplyr::select(-has_both)
+```
+
+## Add the season
+```{r}
+source("../R/assign_season.R")
+all_codes_desc <- all_codes_desc %>%
+    dplyr::mutate( season = sapply(time_p, assign_season))
+```
+
 
 # Monthly hospitalizations
 
@@ -593,6 +612,209 @@ hospitalizations_visualization_subcategories( input_df = by_dead_in_hosp,
                                               subtitle_plot = "Monthly Percentages")
 ```
 
+## Table A1 hospitalization counts per NPI period: 
+
+### Any hospital admissions
+
+Total counts: 
+```{r}
+source("../R/A_tablesPerCohort.R")
+a1_total_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "total", type = "all", time = "NPI period")
+a1_total_all
+```
+
+Grouped by: 
+- age category
+- sex
+- season
+- length of hospitalization
+- ICU admission (y/n)
+- mortality (y/n) 
+```{r, warning=FALSE, message=FALSE}
+a1_age_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "age_group", type = "all", time = "NPI period")
+a1_sex_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "sex", type = "all", time = "NPI period")
+a1_season_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "season", type = "all", time = "NPI period")
+a1_lengthHosp_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "length_hospitalization_category", type = "all", time = "NPI period")
+a1_icu_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "icu_in_hosp", type = "all", time = "NPI period")
+a1_mortality_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "dead_in_hosp", type = "all", time = "NPI period")
+```
+### Bacterial Infection hospital admissions
+
+Total counts: 
+```{r}
+a1_total_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "total", type = "bacterial", time = "NPI period")
+a1_total_bacterial
+```
+
+Grouped by: 
+- age category
+- sex
+- season
+- length of hospitalization
+- ICU admission (y/n)
+- mortality (y/n) 
+```{r, warning=FALSE, message=FALSE}
+a1_age_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "age_group", type = "bacterial", time = "NPI period")
+a1_sex_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "sex", type = "bacterial", time = "NPI period")
+a1_season_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "season", type = "bacterial", time = "NPI period")
+a1_lengthHosp_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "length_hospitalization_category", type = "bacterial", time = "NPI period")
+a1_icu_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "icu_in_hosp", type = "bacterial", time = "NPI period")
+a1_mortality_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "dead_in_hosp", type = "bacterial", time = "NPI period")
+```
+### Subgroup of bacterial infection
+- invasive simple
+- invasive extensive
+- sink associated
+- respiratory 
+```{r}
+a1_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "total", time = "NPI period")
+a1_subgroups
+```
+Grouped by: 
+- age category
+- sex
+- season
+- length of hospitalization
+- ICU admission (y/n)
+- mortality (y/n) 
+```{r, warning=FALSE, message=FALSE}
+a1_age_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "age_group", time = "NPI period")
+a1_sex_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "sex", time = "NPI period")
+a1_season_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "season", time = "NPI period")
+a1_lengthHosp_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "length_hospitalization_category", time = "NPI period")
+a1_icu_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "icu_in_hosp", time = "NPI period")
+a1_mortality_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "dead_in_hosp", time = "NPI period")
+```
+
+### By each bacterial infection
+```{r}
+a1_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "total", time = "NPI period")
+a1_bact_infection
+```
+Grouped by: 
+- age category
+- sex
+- season
+- length of hospitalization
+- ICU admission (y/n)
+- mortality (y/n) 
+```{r, warning=FALSE, message=FALSE}
+a1_age_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "age_group", time = "NPI period")
+a1_sex_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "sex", time = "NPI period")
+a1_season_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "season", time = "NPI period")
+a1_lengthHosp_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "length_hospitalization_category", time = "NPI period")
+a1_icu_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "icu_in_hosp", time = "NPI period")
+a1_mortality_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "dead_in_hosp", time = "NPI period")
+```
+
+## Table A2 hospitalization counts per month: 
+
+### Any hospital admissions
+
+Total counts: 
+```{r}
+a2_total_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "total", type = "all", time = "month")
+head(a2_total_all)
+```
+
+Grouped by: 
+- age category
+- sex
+- season
+- length of hospitalization
+- ICU admission (y/n)
+- mortality (y/n) 
+```{r, warning=FALSE, message=FALSE}
+a2_age_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "age_group", type = "all", time = "month")
+a2_sex_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "sex", type = "all", time = "month")
+a2_season_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "season", type = "all", time = "month")
+a2_lengthHosp_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "length_hospitalization_category", type = "all", time = "month")
+a2_icu_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "icu_in_hosp", type = "all", time = "month")
+a2_mortality_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "dead_in_hosp", type = "all", time = "month")
+```
+### Bacterial Infection hospital admissions
+
+Total counts: 
+```{r}
+a2_total_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "total", type = "bacterial", time = "month")
+a2_total_bacterial
+```
+
+Grouped by: 
+- age category
+- sex
+- season
+- length of hospitalization
+- ICU admission (y/n)
+- mortality (y/n) 
+```{r, warning=FALSE, message=FALSE}
+a2_age_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "age_group", type = "bacterial", time = "month")
+a2_sex_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "sex", type = "bacterial", time = "month")
+a2_season_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "season", type = "bacterial", time = "month")
+a2_lengthHosp_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "length_hospitalization_category", type = "bacterial", time = "month")
+a2_icu_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "icu_in_hosp", type = "bacterial", time = "month")
+a2_mortality_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "dead_in_hosp", type = "bacterial", time = "month")
+```
+### Subgroup of bacterial infection
+- invasive simple
+- invasive extensive
+- sink associated
+- respiratory 
+```{r}
+a2_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "total", time = "month")
+head(a2_subgroups)
+```
+Grouped by: 
+- age category
+- sex
+- season
+- length of hospitalization
+- ICU admission (y/n)
+- mortality (y/n) 
+```{r, warning=FALSE, message=FALSE}
+a2_age_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "age_group", time = "month")
+a2_sex_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "sex", time = "month")
+a2_season_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "season", time = "month")
+a2_lengthHosp_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "length_hospitalization_category", time = "month")
+a2_icu_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "icu_in_hosp", time = "month")
+a2_mortality_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "dead_in_hosp", time = "month")
+```
+
+### By each bacterial infection
+```{r}
+a2_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "total", time = "month")
+head(a2_bact_infection)
+```
+Grouped by: 
+- age category
+- sex
+- season
+- length of hospitalization
+- ICU admission (y/n)
+- mortality (y/n) 
+```{r, warning=FALSE, message=FALSE}
+a2_age_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "age_group", time = "month")
+a2_sex_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "sex", time = "month")
+a2_season_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "season", time = "month")
+a2_lengthHosp_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "length_hospitalization_category", time = "month")
+a2_icu_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "icu_in_hosp", time = "month")
+a2_mortality_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "dead_in_hosp", time = "month")
+```
+
+### Save all the a1 and a2 data frames in RData files
+```{r}
+allVariables <- ls()
+a1_allTables <- allVariables[ grep("a1", allVariables)]
+a1_allTables <- a1_allTables[! a1_allTables %in% c("a1_tablesPerCohort_subgroup","a1_tablesPerCohort_bacterialInfection","a1_tablesPerCohort")]
+a2_allTables <- allVariables[ grep("a2", allVariables)] 
+a2_allTables <- a2_allTables[! a2_allTables %in% c("a2_tablesPerCohort_subgroup","a2_tablesPerCohort_bacterialInfection","a2_tablesPerCohort")]
+
+save( list = a1_allTables, file = paste0( dir.output, "a1Tables.RData") )
+save( list = a2_allTables, file = paste0( dir.output, "a2Tables.RData") )
+```
+
+
+
 ## Table 1
 
 ```{r}
@@ -600,57 +822,39 @@ source("../R/ttest2.R")
 
 age_by_period <- all_codes_desc %>%
   dplyr::filter( icd_code_category == "bacterial") %>%
-  distinct(patient_num, age_time_diagnosis, period) %>% 
+  distinct(hospitalization_id, age_time_diagnosis, period) %>% 
   dplyr::group_by(period) %>%
   dplyr::summarise( mean = mean( age_time_diagnosis ),
                     sd = sd( age_time_diagnosis ),
-                    count = n_distinct(patient_num))
-
-
-age_test <- t.test2(m1 = age_by_period[[1, "mean"]],
-                    m2 = age_by_period[[2, "mean"]],
-                    s1 = age_by_period[[1, "sd"]],
-                    s2 = age_by_period[[2, "sd"]],
-                    n1 = age_by_period[[1, "count"]],
-                    n2 = age_by_period[[2, "count"]]) %>%
-  `[[`("p-value")
+                    count = n_distinct(hospitalization_id))
 ```
 
 ```{r}
 sex <- all_codes_desc %>%
   dplyr::filter( icd_code_category == "bacterial") %>%
-  dplyr::distinct(patient_num, sex) %>% 
+  dplyr::distinct(hospitalization_id, sex) %>% 
   dplyr::group_by( sex ) %>%
-  dplyr::summarise( count = n_distinct(patient_num) ) %>%
+  dplyr::summarise( count = n_distinct(hospitalization_id) ) %>%
   dplyr::mutate( count = ifelse( count > obfuscation, count, obfuscation * 0.5),
                  total = sum( count ), percentage = round( count/total*100, 2)  )
 
 sex_by_period <- all_codes_desc %>%
   dplyr::filter( icd_code_category == "bacterial") %>%
-  dplyr::distinct(patient_num, period, sex) %>% 
+  dplyr::distinct(hospitalization_id, period, sex) %>% 
   dplyr::group_by(period, sex ) %>%
-  dplyr::summarise(count = n_distinct(patient_num)) %>%
+  dplyr::summarise(count = n_distinct(hospitalization_id)) %>%
   dplyr::group_by(period, .add=TRUE) %>%
   dplyr::mutate( count = ifelse( count > obfuscation, count, obfuscation * 0.5),
           percentage=round(count/sum( count )*100, 2)) %>%
   tidyr::replace_na(list(male = 0, female = 0))
-
-
-sex_test <- sex_by_period %>%
-  select(-percentage) %>%
-  pivot_wider(names_from = sex, values_from = count) %>%
-  ungroup() %>%
-  select(male, female) %>%
-  chisq.test() %>%
-  `[[`("p.value")
 ```
 
 ```{r}
 summary_diagnosis <-  all_codes_desc %>%
   dplyr::filter( icd_code_category == "bacterial") %>%
-  dplyr::distinct( patient_num, description, period, time_p, concept_code ) %>%
+  dplyr::distinct( hospitalization_id, description, period, time_p, concept_code ) %>%
   dplyr::group_by( concept_code, description, period ) %>%
-  dplyr::count( patient_num ) %>%
+  dplyr::count( hospitalization_id ) %>%
   dplyr::tally(name = "count") %>%
   dplyr::mutate(count = ifelse( count > obfuscation, count, obfuscation * 0.5)) %>%
   dplyr::arrange( desc(count) ) %>%
@@ -662,16 +866,16 @@ summary_diagnosis <-  all_codes_desc %>%
 summary_disorder_group <-  all_codes_desc %>%
   dplyr::filter( icd_code_category == "bacterial") %>%
   dplyr::group_by( disorder_group ) %>%
-  dplyr::count( patient_num ) %>%
+  dplyr::count( hospitalization_id ) %>%
   dplyr::tally(name = "count") %>%
   dplyr::mutate(count = ifelse( count > obfuscation, count, obfuscation * 0.5)) %>%
   dplyr::arrange( desc( count ))
 
 summary_disorder_group_by_period <-  all_codes_desc %>%
   dplyr::filter( icd_code_category == "bacterial") %>%
-  dplyr::distinct( patient_num, disorder_group, period, time_p ) %>%
+  dplyr::distinct( hospitalization_id, disorder_group, period, time_p ) %>%
   dplyr::group_by( period, disorder_group ) %>%
-  dplyr::summarise(count = n_distinct(patient_num)) %>%
+  dplyr::summarise(count = n_distinct(hospitalization_id)) %>%
   dplyr::group_by(period, .add=TRUE) %>%
   dplyr::mutate(count = ifelse( count > obfuscation, count, obfuscation * 0.5),
          percentage = count/sum( count )*100)
@@ -715,34 +919,18 @@ disorder_table1 <- summary_disorder_group_by_period %>%
 ```
 
 ```{r}
-list_tests <- c("Sex" = sex_test,
-                "Age" = age_test,
-                "Diagnoses" = NA,
-                "Disorder groups" = NA
-)
-
 list_table1 <- list(
   "Sex" = sex_table1,
   "Age" = age_table1,
   "Disorder groups" = disorder_table1)
 
 
-tests <- list_tests %>%
-  data.frame() %>%
-  round(2)
-names(tests) <- "pvalue"
-tests["Category"] <- row.names(tests)
-
 table1 <- list_table1 %>%
   lapply(function(df) mutate(df, across(.fns = as.character))) %>%
   dplyr::bind_rows(.id = "Category") %>%
-  dplyr::left_join(tests, by = "Category")
-
+  dplyr::select( Category, name, `pre-NPI`, `full-NPI`, `partial-NPI`)
 
 table1 %>%
-  group_by(Category) %>%
-  mutate(pvalue = ifelse(duplicated(pvalue, fromLast = TRUE), "", as.character(pvalue))) %>%
-  ungroup() %>%
   mutate(Category = "") %>%
   mutate(across(.cols = c(`pre-NPI`, `full-NPI`, `partial-NPI`), .fns = replace_na, "0")) %>%
   rename_with(str_to_title) %>%
@@ -752,4 +940,9 @@ table1 %>%
   kable( booktabs = T) %>%
   kableExtra::kable_styling(latex_options = "striped") %>%
   kableExtra::group_rows(index = setNames(rle(table1$Category)[[1]], rle(table1$Category)[[2]]))
+```
+Close sink
+```{r}
+sink()
+
 ```

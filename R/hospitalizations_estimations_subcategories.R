@@ -24,9 +24,8 @@ hospitalizations_estimation_subcategories <- function( input_df, subcategory ){
 
   # get the denominator count
   counts_subcategory_denominator <- input_df %>%
-    dplyr::filter( icd_code_category == "bacterial" & #check with joany if this is relative to bacterial or total
-                     time_p < end_date_plots &
-                     time_p >= start_date_plots ) %>%
+    dplyr::filter(  time_p < end_date_plots &
+                    time_p >= start_date_plots ) %>%
     dplyr::group_by( time_p  ) %>%
     summarise(count_hosp_total =  ifelse(n_distinct(hospitalization_id) > obfuscation | isFALSE(obfuscation),
                                    n_distinct(hospitalization_id), 
