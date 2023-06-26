@@ -24,15 +24,13 @@ count_helper <- function(x) {
 count_hosp <- function(df){
   
   # use the group by summarise approach to:
-    # 1) not lose the severe, in_icu, dead information (no need to left join later)
+    # 1) not lose the in_icu, dead information (no need to left join later)
     # 2) ensure there are not multiple non-distinct entries for some reason  
   df2 <- df %>% 
     dplyr::group_by(cohort, patient_num, days_since_admission, in_hospital) %>% 
-    dplyr::summarise(severe = paste0(severe, collapse = ','),
-                     in_icu = paste0(in_icu, collapse = ','),
-                     dead = paste0(dead, collapse = ','), 
+    dplyr::summarise(in_icu = paste0(unique(in_icu), collapse = ','),
+                     dead = paste0(unique(dead), collapse = ','), 
                      calendar_date = paste0(calendar_date, collapse = ','))
-    stopifnot(n_distinct(df2$severe) %in% c(1,2))
     stopifnot(n_distinct(df2$in_icu) %in% c(1,2))
     stopifnot(n_distinct(df2$dead) %in% c(1,2))
 
