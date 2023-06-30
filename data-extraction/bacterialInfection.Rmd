@@ -356,7 +356,6 @@ Bacterial pneumonia and empyema is a special case.
 - If the patient in the hospitalization presents both,bacterial pneumonia and empyema we only want to keep empyema. 
 - If the patient in the hospitalization only has bacterial pneumonia we keep it is
 - If the patient in the hospitalization only presents empyema, then we keep it as it is.
-![Example](./empyemaCase.png)
 Identify which is the subset of patients in the first scenario (having both in the same hospitalization), and remove bacterial pneumonia. 
 
 ```{r}
