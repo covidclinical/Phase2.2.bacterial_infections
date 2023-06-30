@@ -103,7 +103,9 @@ if(filecheck){
   ### Extract the patient summary and observation information. 
   # arrange in a consistent way to make sure we are not assuming the order of some sites
   demo_raw <- demo_raw %>% 
-    dplyr::filter(cohort == "AllAdm") %>%
+    dplyr::mutate( age = trunc( age ) ) %>%
+    dplyr::filter(cohort == "AllAdm", 
+                  age >= 0 ) %>%
     dplyr::arrange(patient_num, as.Date(admission_date, format = dateFormat), days_since_admission)
   obs_raw <- obs_raw %>% 
     dplyr::filter(cohort == "AllAdm") %>%
