@@ -44,6 +44,7 @@ obfuscation =  FALSE
 dateFormat <- "%Y-%m-%d"
 data_update_date <- "2022-12-01"
 dir.output <- "/4ceData/bacterialInfection_outputs/"
+age_estimation_variability <- FALSE
 ```
 
 
@@ -164,13 +165,31 @@ obs_raw <- as.data.frame( obs_raw )
 demo_raw <- as.data.frame( demo_raw )
 clinical_raw <- as.data.frame( clinical_raw )
 
-obs_raw_age <- left_join(obs_raw, demo_raw[c("patient_num", "age")], by = c("patient_num")) %>%
+obs_raw_age <- left_join(obs_raw, demo_raw[c("patient_num", "age", "dead", "death_date")], by = c("patient_num")) %>%
   dplyr::mutate( concept_code = gsub("\\.", "",concept_code )) %>%
   dplyr::inner_join(clinical_raw[, c("patient_num", "days_since_admission", "calendar_date")], 
             by = c("patient_num", "days_since_admission"))
 
 # estimate age at each diagnosis
-obs_raw_age$age_time_diagnosis <- obs_raw_age$age - floor(as.numeric(as.Date(data_update_date, format = dateFormat) - as.Date(obs_raw_age$calendar_date, format = dateFormat)) / 365.25)
+if( age_estimation_variability == FALSE ){
+  
+  obs_raw_age <- obs_raw_age %>%
+    dplyr::mutate( age_time_diagnosis = age - floor(as.numeric(as.Date(data_update_date, format = dateFormat) - as.Date(calendar_date, format = dateFormat)) / 365.25)) %>%
+    dplyr::select( -dead, -death_date )
+  
+}else if( age_estimation_variability == TRUE ){
+  
+  alive<- obs_raw_age %>%
+    dplyr::filter( dead == 0 ) %>%
+    dplyr::mutate( age_time_diagnosis = age - floor(as.numeric(as.Date(data_update_date, format = dateFormat) - as.Date(calendar_date, format = dateFormat)) / 365.25 )) %>%
+    dplyr::select( -dead, -death_date )
+  
+  dead<- obs_raw_age %>%
+    dplyr::filter( dead == 1 ) %>%
+    dplyr::mutate( age_time_diagnosis = age - floor(as.numeric(as.Date(death_date, format = dateFormat) - as.Date(calendar_date, format = dateFormat)) / 365.25 )) %>%
+    dplyr::select( -dead, -death_date )
+ obs_raw_age <- rbind( alive, dead )
+}
 
 print('Patient age calculated')
 ```
