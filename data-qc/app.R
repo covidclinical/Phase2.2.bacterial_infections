@@ -30,7 +30,7 @@ ui <- fluidPage(
                
                tabPanel("ICD QC",
                         fluidRow(p(
-                                "Coding can be different across sites and countries. To review all the different ICD codes associated to MISC patients, we develop a table to compare the percentages of patients per site and code."
+                                "Coding can be different across sites and countries. To review all the different ICD codes associated to bacterial infection patients, we develop a table to compare the number of patients per site and code."
                         ),
                         br(),
                         sidebarLayout(
@@ -82,7 +82,7 @@ ui <- fluidPage(
                         sidebarLayout(
                             sidebarPanel(
                                 
-                                radioButtons("type", label = h3("Count types:"),
+                                radioButtons("type", "Count types:",
                                              choices = list("Total" = "all", "Bacterial" = "bacterial"), 
                                              selected = "all"),
                                 
