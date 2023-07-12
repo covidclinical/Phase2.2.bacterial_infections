@@ -38,11 +38,11 @@ Change the values of the following variables according to your site:
     at data update.
     
 ```{r message=FALSE, warning=FALSE}
-folder_4ce_files <- "/4ceData/Input/AllAdmin2023/"
+folder_4ce_files <- "/4ceData/Input/AllAdminJuly2023/"
 obfuscation =  FALSE
 #obfuscation = 3
 dateFormat <- "%Y-%m-%d"
-data_update_date <- "2022-12-01"
+data_update_date <- "2023-01-07"
 dir.output <- "/4ceData/bacterialInfection_outputs/"
 age_estimation_variability <- FALSE
 ```

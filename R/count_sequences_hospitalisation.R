@@ -41,7 +41,8 @@ count_hosp <- function(df){
       dplyr::mutate(n_hospitalization = count_helper(days_since_admission)) %>%
       dplyr::group_by(cohort, patient_num, n_hospitalization) %>%
       dplyr::mutate(length_hospitalization = length(n_hospitalization)) %>%
-      dplyr::mutate(admit_date = min(calendar_date))
+      dplyr::mutate(admit_date = min(calendar_date)) %>%
+      dplyr::mutate(dead = max(dead))
     return(out)
   
 }
