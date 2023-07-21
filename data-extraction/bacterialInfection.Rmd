@@ -36,14 +36,15 @@ Change the values of the following variables according to your site:
     local datawarehouse. Used to estimate patient age at time of visit,
     since patients age in the 4CE demographic file is expected the age
     at data update.
-    
+5. Site ID
+# SITE ID: BCH
 ```{r message=FALSE, warning=FALSE}
 folder_4ce_files <- "/4ceData/Input/AllAdminJuly2023/"
 obfuscation =  FALSE
 #obfuscation = 3
 dateFormat <- "%Y-%m-%d"
 data_update_date <- "2023-01-07"
-dir.output <- "/4ceData/bacterialInfection_outputs/"
+dir.output <- "/4ceData/bacterialInfection_outputs/dev"
 age_estimation_variability <- FALSE
 ```
 
