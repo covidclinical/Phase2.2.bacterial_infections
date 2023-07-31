@@ -104,16 +104,21 @@ if(filecheck){
 
   ### Extract the patient summary and observation information. 
   # arrange in a consistent way to make sure we are not assuming the order of some sites
+  # select only the study period
   demo_raw <- demo_raw %>% 
     dplyr::mutate( age = trunc( age ) ) %>%
     dplyr::filter(cohort == "AllAdm", 
-                  age >= 0 ) %>%
+                  age >= 0,
+                  admission_date >= ymd('2019-01-01'),
+                  admission_date <= ymd('2023-03-31')) %>%
     dplyr::arrange(patient_num, as.Date(admission_date, format = dateFormat), days_since_admission)
   obs_raw <- obs_raw %>% 
     dplyr::filter(cohort == "AllAdm") %>%
     dplyr::arrange(patient_num, days_since_admission)
   clinical_raw <- clinical_raw %>% 
-    dplyr::filter(cohort == "AllAdm") %>%
+    dplyr::filter(cohort == "AllAdm",
+                  calendar_date >= ymd('2019-01-01'),
+                  calendar_date <= ymd('2023-03-31')) %>%
     dplyr::arrange(patient_num, as.Date(calendar_date, format = dateFormat), days_since_admission)
   
   print('Input files successfully read, patient data extracted')
