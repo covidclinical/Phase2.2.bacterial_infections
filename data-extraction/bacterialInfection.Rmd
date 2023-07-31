@@ -754,7 +754,7 @@ Grouped by:
 ```{r, warning=FALSE, message=FALSE}
 a2_age_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "age_group", type = "all", time = "month")
 a2_sex_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "sex", type = "all", time = "month")
-a2_season_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "season", type = "all", time = "month")
+#a2_season_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "season", type = "all", time = "month")
 a2_lengthHosp_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "length_hospitalization_category", type = "all", time = "month")
 a2_icu_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "icu_in_hosp", type = "all", time = "month")
 a2_mortality_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "dead_in_hosp", type = "all", time = "month")
@@ -777,7 +777,7 @@ Grouped by:
 ```{r, warning=FALSE, message=FALSE}
 a2_age_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "age_group", type = "bacterial", time = "month")
 a2_sex_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "sex", type = "bacterial", time = "month")
-a2_season_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "season", type = "bacterial", time = "month")
+#a2_season_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "season", type = "bacterial", time = "month")
 a2_lengthHosp_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "length_hospitalization_category", type = "bacterial", time = "month")
 a2_icu_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "icu_in_hosp", type = "bacterial", time = "month")
 a2_mortality_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "dead_in_hosp", type = "bacterial", time = "month")
@@ -801,7 +801,7 @@ Grouped by:
 ```{r, warning=FALSE, message=FALSE}
 a2_age_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "age_group", time = "month")
 a2_sex_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "sex", time = "month")
-a2_season_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "season", time = "month")
+#a2_season_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "season", time = "month")
 a2_lengthHosp_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "length_hospitalization_category", time = "month")
 a2_icu_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "icu_in_hosp", time = "month")
 a2_mortality_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "dead_in_hosp", time = "month")
@@ -822,7 +822,7 @@ Grouped by:
 ```{r, warning=FALSE, message=FALSE}
 a2_age_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "age_group", time = "month")
 a2_sex_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "sex", time = "month")
-a2_season_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "season", time = "month")
+#a2_season_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "season", time = "month")
 a2_lengthHosp_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "length_hospitalization_category", time = "month")
 a2_icu_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "icu_in_hosp", time = "month")
 a2_mortality_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "dead_in_hosp", time = "month")
