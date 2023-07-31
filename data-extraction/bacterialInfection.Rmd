@@ -134,10 +134,11 @@ if(filecheck){
 ```{r}
 #### ICD codes bacterial conditions ####
 print('Reading ICD bacterial codes')
-icdCodes <- read.csv("../public-data/ICD_bacterial4.csv", header = TRUE, colClasses = "character") %>%
+icdCodes <- read.csv("../public-data/ICD_bacterial5.csv", header = TRUE, colClasses = "character") %>%
    dplyr::mutate( concept_code = gsub("\\.", "",ICD10_Code)) %>%
    dplyr::select( disorder_group = syndrome, ICD10_Code, concept_code, description, 
                   syndrome, IBI_simple, IBI_extensive, Respiratory, Skin, bacterial_syndrome )
+
 ```
 
 # Data-management
