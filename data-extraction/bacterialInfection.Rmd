@@ -43,7 +43,7 @@ folder_4ce_files <- "/4ceData/Input/AllAdminJuly2023/"
 obfuscation =  FALSE
 #obfuscation = 3
 dateFormat <- "%Y-%m-%d"
-data_update_date <- "2023-01-07"
+data_update_date <- "2023-07-01"
 dir.output <- "/4ceData/bacterialInfection_outputs/"
 age_estimation_variability <- FALSE
 ```
