@@ -18,7 +18,7 @@ qc_summary <- function(input_df, obfuscation_threshold, dir.output){
     mutate( n_patients = ifelse( n_patients > obfuscation_threshold | isFALSE( obfuscation_threshold), n_patients, 0.5)) %>%
     arrange( desc(n_patients))
   
-  save( diag_sum, file=paste0( dir.output, "ICDdiagnosisCodes.RData"))
+  save( diag_sum, file=paste0( dir.output, "/ICDdiagnosisCodes.RData"))
   ###
   
   outcome_summary <- input_df %>%

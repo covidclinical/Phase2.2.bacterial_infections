@@ -36,7 +36,8 @@ Change the values of the following variables according to your site:
     local datawarehouse. Used to estimate patient age at time of visit,
     since patients age in the 4CE demographic file is expected the age
     at data update.
-    
+5. Site ID
+# SITE ID: BCH
 ```{r message=FALSE, warning=FALSE}
 folder_4ce_files <- "/4ceData/Input/AllAdminJuly2023/"
 obfuscation =  FALSE
@@ -53,6 +54,16 @@ age_estimation_variability <- FALSE
 This includes:
 1. create the output directory if it does not exist 
 2. create the logs file. 
+
+First reset the sink. 
+```{r}
+sink.reset <- function(){
+    for(i in seq_len(sink.number())){
+        sink(NULL)
+    }
+}
+```
+
 
 ```{r}
 print("Creating the output folder if it doesn't exist")
@@ -103,16 +114,21 @@ if(filecheck){
 
   ### Extract the patient summary and observation information. 
   # arrange in a consistent way to make sure we are not assuming the order of some sites
+  # select only the study period
   demo_raw <- demo_raw %>% 
     dplyr::mutate( age = trunc( age ) ) %>%
     dplyr::filter(cohort == "AllAdm", 
-                  age >= 0 ) %>%
+                  age >= 0,
+                  admission_date >= ymd('2019-01-01'),
+                  admission_date <= ymd('2023-03-31')) %>%
     dplyr::arrange(patient_num, as.Date(admission_date, format = dateFormat), days_since_admission)
   obs_raw <- obs_raw %>% 
     dplyr::filter(cohort == "AllAdm") %>%
     dplyr::arrange(patient_num, days_since_admission)
   clinical_raw <- clinical_raw %>% 
-    dplyr::filter(cohort == "AllAdm") %>%
+    dplyr::filter(cohort == "AllAdm",
+                  calendar_date >= ymd('2019-01-01'),
+                  calendar_date <= ymd('2023-03-31')) %>%
     dplyr::arrange(patient_num, as.Date(calendar_date, format = dateFormat), days_since_admission)
   
   print('Input files successfully read, patient data extracted')
@@ -128,10 +144,11 @@ if(filecheck){
 ```{r}
 #### ICD codes bacterial conditions ####
 print('Reading ICD bacterial codes')
-icdCodes <- read.csv("../public-data/ICD_bacterial4.csv", header = TRUE, colClasses = "character") %>%
+icdCodes <- read.csv("../public-data/ICD_bacterial5.csv", header = TRUE, colClasses = "character") %>%
    dplyr::mutate( concept_code = gsub("\\.", "",ICD10_Code)) %>%
    dplyr::select( disorder_group = syndrome, ICD10_Code, concept_code, description, 
                   syndrome, IBI_simple, IBI_extensive, Respiratory, Skin, bacterial_syndrome )
+
 ```
 
 # Data-management
@@ -747,7 +764,7 @@ Grouped by:
 ```{r, warning=FALSE, message=FALSE}
 a2_age_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "age_group", type = "all", time = "month")
 a2_sex_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "sex", type = "all", time = "month")
-a2_season_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "season", type = "all", time = "month")
+#a2_season_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "season", type = "all", time = "month")
 a2_lengthHosp_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "length_hospitalization_category", type = "all", time = "month")
 a2_icu_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "icu_in_hosp", type = "all", time = "month")
 a2_mortality_all <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "dead_in_hosp", type = "all", time = "month")
@@ -770,7 +787,7 @@ Grouped by:
 ```{r, warning=FALSE, message=FALSE}
 a2_age_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "age_group", type = "bacterial", time = "month")
 a2_sex_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "sex", type = "bacterial", time = "month")
-a2_season_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "season", type = "bacterial", time = "month")
+#a2_season_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "season", type = "bacterial", time = "month")
 a2_lengthHosp_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "length_hospitalization_category", type = "bacterial", time = "month")
 a2_icu_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "icu_in_hosp", type = "bacterial", time = "month")
 a2_mortality_bacterial <- a_tablesPerCohort( input_df = all_codes_desc, subcategory = "dead_in_hosp", type = "bacterial", time = "month")
@@ -794,7 +811,7 @@ Grouped by:
 ```{r, warning=FALSE, message=FALSE}
 a2_age_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "age_group", time = "month")
 a2_sex_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "sex", time = "month")
-a2_season_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "season", time = "month")
+#a2_season_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "season", time = "month")
 a2_lengthHosp_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "length_hospitalization_category", time = "month")
 a2_icu_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "icu_in_hosp", time = "month")
 a2_mortality_subgroups <- a_tablesPerCohort_subgroup( input_df = all_codes_desc, subcategory = "dead_in_hosp", time = "month")
@@ -815,7 +832,7 @@ Grouped by:
 ```{r, warning=FALSE, message=FALSE}
 a2_age_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "age_group", time = "month")
 a2_sex_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "sex", time = "month")
-a2_season_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "season", time = "month")
+#a2_season_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "season", time = "month")
 a2_lengthHosp_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "length_hospitalization_category", time = "month")
 a2_icu_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "icu_in_hosp", time = "month")
 a2_mortality_bact_infection <- a_tablesPerCohort_bacterialInfection( input_df = all_codes_desc, subcategory = "dead_in_hosp", time = "month")
@@ -829,8 +846,8 @@ a1_allTables <- a1_allTables[! a1_allTables %in% c("a1_tablesPerCohort_subgroup"
 a2_allTables <- allVariables[ grep("a2", allVariables)] 
 a2_allTables <- a2_allTables[! a2_allTables %in% c("a2_tablesPerCohort_subgroup","a2_tablesPerCohort_bacterialInfection","a2_tablesPerCohort")]
 
-save( list = a1_allTables, file = paste0( dir.output, "a1Tables.RData") )
-save( list = a2_allTables, file = paste0( dir.output, "a2Tables.RData") )
+save( list = a1_allTables, file = paste0( dir.output, "/a1Tables.RData") )
+save( list = a2_allTables, file = paste0( dir.output, "/a2Tables.RData") )
 ```
 
 
@@ -963,6 +980,9 @@ table1 %>%
 ```
 Close sink
 ```{r}
-sink()
-
+sink.reset <- function(){
+    for(i in seq_len(sink.number())){
+        sink(NULL)
+    }
+}
 ```
