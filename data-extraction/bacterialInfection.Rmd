@@ -44,7 +44,7 @@ obfuscation =  FALSE
 #obfuscation = 3
 dateFormat <- "%Y-%m-%d"
 data_update_date <- "2023-01-07"
-dir.output <- "/4ceData/bacterialInfection_outputs/dev"
+dir.output <- "/4ceData/bacterialInfection_outputs/"
 age_estimation_variability <- FALSE
 ```
 
@@ -54,6 +54,16 @@ age_estimation_variability <- FALSE
 This includes:
 1. create the output directory if it does not exist 
 2. create the logs file. 
+
+First reset the sink. 
+```{r}
+sink.reset <- function(){
+    for(i in seq_len(sink.number())){
+        sink(NULL)
+    }
+}
+```
+
 
 ```{r}
 print("Creating the output folder if it doesn't exist")
@@ -836,8 +846,8 @@ a1_allTables <- a1_allTables[! a1_allTables %in% c("a1_tablesPerCohort_subgroup"
 a2_allTables <- allVariables[ grep("a2", allVariables)] 
 a2_allTables <- a2_allTables[! a2_allTables %in% c("a2_tablesPerCohort_subgroup","a2_tablesPerCohort_bacterialInfection","a2_tablesPerCohort")]
 
-save( list = a1_allTables, file = paste0( dir.output, "a1Tables.RData") )
-save( list = a2_allTables, file = paste0( dir.output, "a2Tables.RData") )
+save( list = a1_allTables, file = paste0( dir.output, "/a1Tables.RData") )
+save( list = a2_allTables, file = paste0( dir.output, "/a2Tables.RData") )
 ```
 
 
@@ -970,6 +980,9 @@ table1 %>%
 ```
 Close sink
 ```{r}
-sink()
-
+sink.reset <- function(){
+    for(i in seq_len(sink.number())){
+        sink(NULL)
+    }
+}
 ```
