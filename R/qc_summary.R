@@ -41,6 +41,26 @@ qc_summary <- function(input_df, obfuscation_threshold, dir.output){
   
   print( paste0("There are ", length(unique(bacterialInfectionCodes$concept_code)), " ICD10 bacterial infection codes in this site out of the total ",length(unique(icdCodes$ICD10_Code)), " in the dataset"))
   
-
+  ### add a print of the summary of length of hospitalization
+  length_hospitalization_check <- input_df %>%
+    dplyr::group_by( hospitalization_id ) %>%
+    dplyr::select( hospitalization_id, length_hospitalization) %>%
+    unique()
+  
+  summary(length_hospitalization_check$length_hospitalization )
+  print(paste0("The min days hospitalized is ", min( length_hospitalization_check$length_hospitalization)))
+  print(paste0("The mean days hospitalized is ", round(mean( length_hospitalization_check$length_hospitalization), 2)))
+  print(paste0("The max days hospitalized is ", max( length_hospitalization_check$length_hospitalization)))
+  
+  #number of hospitalizations of more than 3 months
+  moreThan3months <- length_hospitalization_check %>%
+    dplyr::filter( length_hospitalization > 90 )
+  print(paste0("There are ", length( unique(moreThan3months$hospitalization_id)), " hospitalizations of length > 90 days"))
+  
+  #number of hospitalizations of more than 1 year
+  moreThan1year <- length_hospitalization_check %>%
+    dplyr::filter( length_hospitalization > 365 )
+  print(paste0("There are ", length( unique(moreThan1year$hospitalization_id)), " hospitalizations of length > 365 days"))
+  
 }
 
