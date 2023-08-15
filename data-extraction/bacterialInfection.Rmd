@@ -119,16 +119,16 @@ if(filecheck){
     dplyr::mutate( age = trunc( age ) ) %>%
     dplyr::filter(cohort == "AllAdm", 
                   age >= 0,
-                  admission_date >= ymd('2019-01-01'),
-                  admission_date <= ymd('2023-03-31')) %>%
+                  as.Date(admission_date, format = dateFormat) >= ymd('2019-01-01'),
+                  as.Date(admission_date, format = dateFormat) <= ymd('2023-03-31')) %>%
     dplyr::arrange(patient_num, as.Date(admission_date, format = dateFormat), days_since_admission)
   obs_raw <- obs_raw %>% 
     dplyr::filter(cohort == "AllAdm") %>%
     dplyr::arrange(patient_num, days_since_admission)
   clinical_raw <- clinical_raw %>% 
     dplyr::filter(cohort == "AllAdm",
-                  calendar_date >= ymd('2019-01-01'),
-                  calendar_date <= ymd('2023-03-31')) %>%
+                  as.Date(calendar_date, format = dateFormat) >= ymd('2019-01-01'),
+                  as.Date(calendar_date, format = dateFormat) <= ymd('2023-03-31')) %>%
     dplyr::arrange(patient_num, as.Date(calendar_date, format = dateFormat), days_since_admission)
   
   print('Input files successfully read, patient data extracted')
