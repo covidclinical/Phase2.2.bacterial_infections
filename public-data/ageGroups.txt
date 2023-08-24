@@ -1,4 +1,5 @@
 age_group	age
+infancy	-1
 infancy	0
 infancy	1
 infancy	2
