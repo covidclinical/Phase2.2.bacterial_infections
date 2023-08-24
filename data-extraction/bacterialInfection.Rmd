@@ -318,6 +318,7 @@ if (nrow(strange_ages) != 0) {
 
 # Filtering hospitalizations where patient age is in inclusion criteria
 all_codes <- all_codes %>%
+  dplyr::filter( age_time_diagnosis >= -1 & age_time_diagnosis < 18) %>%
   dplyr::left_join( ageGroups, by = c("age_time_diagnosis" = "age")) %>%
   dplyr::mutate( length_hospitalization_category = ifelse( length_hospitalization < 3, "less than 3 days", 
                                                            ifelse( length_hospitalization > 7, "more than 7 days", 
@@ -326,7 +327,7 @@ all_codes <- all_codes %>%
 ### print checks
 print("Age summary")
 print(table(all_codes$age_group, useNA = 'ifany'))
-print(summary(all_codes$age_time_diagnosis))
+print(summary(as.factor(all_codes$age_time_diagnosis)))
 ```
 
 ### QC: do a summary of the bacterial infection ICD codes present in each site
@@ -858,6 +859,7 @@ save( list = a2_allTables, file = paste0( dir.output, "/a2Tables.RData") )
 source("../R/ttest2.R")
 
 age_by_period <- all_codes_desc %>%
+  dplyr::mutate( age_time_diagnosis = ifelse( age_time_diagnosis == -1, 0, age_time_diagnosis )) %>%
   dplyr::filter( icd_code_category == "bacterial") %>%
   distinct(hospitalization_id, age_time_diagnosis, period) %>% 
   dplyr::group_by(period) %>%
