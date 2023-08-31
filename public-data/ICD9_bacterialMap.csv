@@ -1,0 +1,218 @@
+icd9cm,syndrome,IBI_simple,IBI_extensive,Respiratory,Skin,bacterial_syndrome
+0020,bacterial meningitis,yes,yes,no,no,no
+0030,bacterial enteritis,no,no,no,no,no
+0031,sepsis,yes,yes,no,no,no
+99591,sepsis,yes,yes,no,no,no
+00321,bacterial meningitis,yes,yes,no,no,no
+00322,bacterial pneumonia,no,no,yes,no,no
+00324,osteoarticular infections,no,yes,no,yes,yes
+0040,bacterial enteritis,no,no,no,no,no
+0041,bacterial enteritis,no,no,no,no,no
+0042,bacterial enteritis,no,no,no,no,no
+0043,bacterial enteritis,no,no,no,no,no
+0048,bacterial enteritis,no,no,no,no,no
+0049,bacterial enteritis,no,no,no,no,no
+00801,bacterial enteritis,no,no,no,no,no
+00802,bacterial enteritis,no,no,no,no,no
+00803,bacterial enteritis,no,no,no,no,no
+00804,bacterial enteritis,no,no,no,no,no
+00800,bacterial enteritis,no,no,no,no,no
+00809,bacterial enteritis,no,no,no,no,no
+00843,bacterial enteritis,no,no,no,no,no
+00844,bacterial enteritis,no,no,no,no,no
+00845,bacterial enteritis,no,no,no,no,no
+0082,bacterial enteritis,no,no,no,no,no
+00841,bacterial enteritis,no,no,no,no,no
+00849,bacterial enteritis,no,no,no,no,no
+0085,bacterial enteritis,no,no,no,no,no
+0050,bacterial enteritis,no,no,no,no,no
+0051,bacterial enteritis,no,no,no,no,no
+0052,bacterial enteritis,no,no,no,no,no
+0054,bacterial enteritis,no,no,no,no,no
+00589,bacterial enteritis,no,no,no,no,no
+00581,bacterial enteritis,no,no,no,no,no
+0059,bacterial enteritis,no,no,no,no,no
+0203,bacterial pneumonia,no,no,yes,no,no
+0204,bacterial pneumonia,no,no,yes,no,no
+0205,bacterial pneumonia,no,no,yes,no,no
+0212,bacterial pneumonia,no,no,yes,no,no
+0221,bacterial pneumonia,no,no,yes,no,no
+4845,bacterial pneumonia,no,no,yes,no,no
+0271,sepsis,yes,yes,no,no,no
+0310,bacterial pneumonia,no,no,yes,no,no
+0270,sepsis,yes,yes,no,no,no
+0330,bacterial pneumonia,no,no,yes,no,no
+4843,bacterial pneumonia,no,no,yes,no,no
+0331,bacterial pneumonia,no,no,yes,no,no
+0338,bacterial pneumonia,no,no,yes,no,no
+0339,bacterial pneumonia,no,no,yes,no,no
+0360,bacterial meningitis,yes,yes,no,no,no
+03642,endocarditis,no,yes,no,no,yes
+0380,sepsis,yes,yes,no,no,no
+0382,sepsis,yes,yes,no,no,no
+03811,sepsis,yes,yes,no,no,no
+03812,sepsis,yes,yes,no,no,no
+03819,sepsis,yes,yes,no,no,no
+03810,sepsis,yes,yes,no,no,no
+03841,sepsis,yes,yes,no,no,no
+0383,sepsis,yes,yes,no,no,no
+03840,sepsis,yes,yes,no,no,no
+03842,sepsis,yes,yes,no,no,no
+03843,sepsis,yes,yes,no,no,no
+03844,sepsis,yes,yes,no,no,no
+03849,sepsis,yes,yes,no,no,no
+0388,sepsis,yes,yes,no,no,no
+0389,sepsis,yes,yes,no,no,no
+0391,bacterial pneumonia,no,no,yes,no,no
+035,skin infections,no,no,no,yes,yes
+0400,necrotizing soft tissue infection,no,no,no,yes,yes
+48284,bacterial pneumonia,no,no,yes,no,no
+04082,sepsis,yes,yes,no,no,no
+09320,endocarditis,no,yes,no,no,yes
+09321,endocarditis,no,yes,no,no,yes
+09322,endocarditis,no,yes,no,no,yes
+09323,endocarditis,no,yes,no,no,yes
+09324,endocarditis,no,yes,no,no,yes
+09889,sepsis,yes,yes,no,no,no
+0830,bacterial pneumonia,no,no,yes,no,no
+04181,bacterial pneumonia,no,no,yes,no,no
+0796,RSV infection other,no,no,no,no,no
+3200,bacterial meningitis,yes,yes,no,no,no
+3201,bacterial meningitis,yes,yes,no,no,no
+3202,bacterial meningitis,yes,yes,no,no,no
+3203,bacterial meningitis,yes,yes,no,no,no
+32089,bacterial meningitis,yes,yes,no,no,no
+32082,bacterial meningitis,yes,yes,no,no,no
+3209,bacterial meningitis,yes,yes,no,no,no
+3207,bacterial meningitis,yes,yes,no,no,no
+38300,mastoiditis,no,no,yes,no,yes
+38301,mastoiditis,no,no,yes,no,yes
+38302,mastoiditis,no,no,yes,no,yes
+3831,mastoiditis,no,no,yes,no,yes
+38320,mastoiditis,no,no,yes,no,yes
+38321,mastoiditis,no,no,yes,no,yes
+38322,mastoiditis,no,no,yes,no,yes
+38381,mastoiditis,no,no,yes,no,yes
+38389,mastoiditis,no,no,yes,no,yes
+3839,mastoiditis,no,no,yes,no,yes
+4210,endocarditis,no,yes,no,no,yes
+4219,endocarditis,no,yes,no,no,yes
+42490,endocarditis,no,yes,no,no,yes
+42499,endocarditis,no,yes,no,no,yes
+4211,endocarditis,no,yes,no,no,yes
+42491,endocarditis,no,yes,no,no,yes
+4801,RSV infection other,no,no,no,no,no
+481,bacterial pneumonia,no,no,yes,no,no
+4822,bacterial pneumonia,no,no,yes,no,no
+4820,bacterial pneumonia,no,no,yes,no,no
+4821,bacterial pneumonia,no,no,yes,no,no
+48240,bacterial pneumonia,no,no,yes,no,no
+48241,bacterial pneumonia,no,no,yes,no,no
+48242,bacterial pneumonia,no,no,yes,no,no
+48249,bacterial pneumonia,no,no,yes,no,no
+48232,bacterial pneumonia,no,no,yes,no,no
+48231,bacterial pneumonia,no,no,yes,no,no
+48239,bacterial pneumonia,no,no,yes,no,no
+48282,bacterial pneumonia,no,no,yes,no,no
+48283,bacterial pneumonia,no,no,yes,no,no
+4830,bacterial pneumonia,no,no,yes,no,no
+48281,bacterial pneumonia,no,no,yes,no,no
+48289,bacterial pneumonia,no,no,yes,no,no
+4829,bacterial pneumonia,no,no,yes,no,no
+4831,bacterial pneumonia,no,no,yes,no,no
+4838,bacterial pneumonia,no,no,yes,no,no
+4660,RSV infection other,no,no,no,no,no
+46611,RSV bronchiolitis,no,no,no,no,no
+5100,LRTI/empyema,no,yes,yes,no,yes
+53084,LRTI/empyema,no,yes,yes,no,yes
+5109,LRTI/empyema,no,yes,yes,no,yes
+5110,LRTI/empyema,no,yes,yes,no,yes
+5400,Appendicitis/peritonitis,no,no,no,no,yes
+5401,Appendicitis/peritonitis,no,no,no,no,yes
+5409,Appendicitis/peritonitis,no,no,no,no,yes
+542,Appendicitis/peritonitis,no,no,no,no,yes
+541,Appendicitis/peritonitis,no,no,no,no,yes
+56721,Appendicitis/peritonitis,no,no,no,no,yes
+56729,Appendicitis/peritonitis,no,no,no,no,yes
+56722,Appendicitis/peritonitis,no,no,no,no,yes
+56723,Appendicitis/peritonitis,no,no,no,no,yes
+56781,Appendicitis/peritonitis,no,no,no,no,yes
+56789,Appendicitis/peritonitis,no,no,no,no,yes
+5679,Appendicitis/peritonitis,no,no,no,no,yes
+684,skin infections,no,no,no,yes,yes
+68100,skin infections,no,no,no,yes,yes
+68101,skin infections,no,no,no,yes,yes
+68102,skin infections,no,no,no,yes,yes
+6819,skin infections,no,no,no,yes,yes
+68110,skin infections,no,no,no,yes,yes
+68111,skin infections,no,no,no,yes,yes
+6823,skin infections,no,no,no,yes,yes
+6824,skin infections,no,no,no,yes,yes
+6826,skin infections,no,no,no,yes,yes
+6827,skin infections,no,no,no,yes,yes
+6820,skin infections,no,no,no,yes,yes
+6821,skin infections,no,no,no,yes,yes
+6822,skin infections,no,no,no,yes,yes
+6825,skin infections,no,no,no,yes,yes
+6828,skin infections,no,no,no,yes,yes
+6829,skin infections,no,no,no,yes,yes
+71100,osteoarticular infections,no,yes,no,yes,yes
+71101,osteoarticular infections,no,yes,no,yes,yes
+71102,osteoarticular infections,no,yes,no,yes,yes
+71103,osteoarticular infections,no,yes,no,yes,yes
+71104,osteoarticular infections,no,yes,no,yes,yes
+71105,osteoarticular infections,no,yes,no,yes,yes
+71106,osteoarticular infections,no,yes,no,yes,yes
+71107,osteoarticular infections,no,yes,no,yes,yes
+71108,osteoarticular infections,no,yes,no,yes,yes
+71109,osteoarticular infections,no,yes,no,yes,yes
+0412,osteoarticular infections,no,yes,no,yes,yes
+73028,osteoarticular infections,no,yes,no,yes,yes
+73098,osteoarticular infections,no,yes,no,yes,yes
+72290,osteoarticular infections,no,yes,no,yes,yes
+72291,osteoarticular infections,no,yes,no,yes,yes
+72292,osteoarticular infections,no,yes,no,yes,yes
+72293,osteoarticular infections,no,yes,no,yes,yes
+72089,osteoarticular infections,no,yes,no,yes,yes
+72886,necrotizing soft tissue infection,no,no,no,yes,yes
+73000,osteoarticular infections,no,yes,no,yes,yes
+73001,osteoarticular infections,no,yes,no,yes,yes
+73002,osteoarticular infections,no,yes,no,yes,yes
+73003,osteoarticular infections,no,yes,no,yes,yes
+73004,osteoarticular infections,no,yes,no,yes,yes
+73005,osteoarticular infections,no,yes,no,yes,yes
+73006,osteoarticular infections,no,yes,no,yes,yes
+73007,osteoarticular infections,no,yes,no,yes,yes
+73008,osteoarticular infections,no,yes,no,yes,yes
+73009,osteoarticular infections,no,yes,no,yes,yes
+73010,osteoarticular infections,no,yes,no,yes,yes
+73011,osteoarticular infections,no,yes,no,yes,yes
+73012,osteoarticular infections,no,yes,no,yes,yes
+73013,osteoarticular infections,no,yes,no,yes,yes
+73014,osteoarticular infections,no,yes,no,yes,yes
+73015,osteoarticular infections,no,yes,no,yes,yes
+73016,osteoarticular infections,no,yes,no,yes,yes
+73017,osteoarticular infections,no,yes,no,yes,yes
+73018,osteoarticular infections,no,yes,no,yes,yes
+73019,osteoarticular infections,no,yes,no,yes,yes
+73020,osteoarticular infections,no,yes,no,yes,yes
+73030,osteoarticular infections,no,yes,no,yes,yes
+73090,osteoarticular infections,no,yes,no,yes,yes
+59010,UTI/pyelonefritis,no,no,no,no,yes
+59011,UTI/pyelonefritis,no,no,no,no,yes
+59080,UTI/pyelonefritis,no,no,no,no,yes
+5902,UTI/pyelonefritis,no,no,no,no,yes
+5950,UTI/pyelonefritis,no,no,no,no,yes
+5951,UTI/pyelonefritis,no,no,no,no,yes
+5952,UTI/pyelonefritis,no,no,no,no,yes
+5953,UTI/pyelonefritis,no,no,no,no,yes
+59582,UTI/pyelonefritis,no,no,no,no,yes
+59589,UTI/pyelonefritis,no,no,no,no,yes
+5954,UTI/pyelonefritis,no,no,no,no,yes
+59581,UTI/pyelonefritis,no,no,no,no,yes
+5959,UTI/pyelonefritis,no,no,no,no,yes
+5990,UTI/pyelonefritis,no,no,no,no,yes
+77181,sepsis,yes,yes,no,no,no
+77182,UTI/pyelonefritis,no,no,no,no,yes
+99592,sepsis,yes,yes,no,no,no
+78552,sepsis,yes,yes,no,no,no
