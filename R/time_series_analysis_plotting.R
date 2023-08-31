@@ -33,7 +33,7 @@ time_series_analysis_plotting <- function(model, df_count_bacterial, count_col, 
                                                                    "full&partial_NPI" = "black",
                                                                    "during_clearance" = "white")) +
     annotate("text", x = as.Date("2019-01-01"), y = max(pred_model[[count_col]]) + 5, label = annotation) +
-    theme(legend.position = "bottom")
+    ggplot2::theme(legend.position = "bottom")
   
   if (clearance_period) {
     plot +
