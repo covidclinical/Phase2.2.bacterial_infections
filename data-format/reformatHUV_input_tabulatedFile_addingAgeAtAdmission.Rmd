@@ -1,0 +1,246 @@
+---
+title: "Reformat HCUV"
+author: "Alba Gutierrez Sacristan"
+date: "2023-08-11"
+output: html_document
+---
+## Load libraries
+```{r}
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(readxl)
+```
+
+## Read the excel example file
+
+```{r}
+# option 2: open the excel and export it as tab delimited values
+# raw_data <- read.delim("HCUV_BOSTON_piloto_tab_delimited.txt")
+raw_data <- read.csv("../../HCUV_BOSTON_v2.csv", sep = ';')
+
+# in R replace the 0s by the 01/01/1900
+raw_data$death_date <- gsub("\\(null\\)", "1/1/90", raw_data$death_date)
+
+# transform all the dates into date type in R 
+raw_data_dates_updated <- raw_data %>%
+  dplyr::mutate( admission_date = as.Date(sapply(strsplit( as.character(admission_date), " "), '[', 1), format = "%d/%m/%Y"), 
+                 discharge_date = as.Date(sapply(strsplit( as.character(last_discharge_date), " "), '[', 1), format = "%d/%m/%Y"), 
+                 death_date = as.Date( death_date, format = "%d/%m/%Y")
+                 )
+```
+
+## Generate the LocalPatientSummary 
+The columns for this file are:
+- siteid
+- cohort (AllAdm)
+- patient_num
+- admission_date (first time the patient was admitted in the study period)
+- source_data_updated_date (date data was extracted)
+- days_since_admission (days between first admission and date the data was extracted)
+- last_discharge_date (last time the patient was discharged)
+- death_date
+- dead (1/0)
+- age (numeric, 1-18)
+- sex (male/female)
+
+```{r}
+patient_summary <- raw_data_dates_updated %>%
+  #group by patient identifier, since we want one row summarizing each patient
+  dplyr::group_by( patient_num ) %>%
+  #format the output columns
+  dplyr::mutate(  site_id = "HCUV", #the side id (for you to decide which one to use) 
+                  cohort = "AllAdm", #the cohort, this needs to be "AllAdm"
+                  admission_date = min(admission_date ), #the minimum value in admission date will be the first admission date that we need to report here
+                  source_data_updated_date = as.Date("2023-07-01"), # the date your data was extracted
+                  days_since_admission = as.numeric(source_data_updated_date - admission_date),  # the days in between both, the first admission and the date you got the data 
+                  last_discharge_date = max(discharge_date), #the maximum date of all the discharges, that would be the latest time in the time period the patient got discharged
+                  dead = max( dead), #if the patient is dead, at some point the value is 1, so for the summary we will take the maximum value
+                  sex = ifelse( trimws(sex) == "HOMBRE", "male", #replace spanish by english 
+                          ifelse( trimws(sex) =="MUJER", "female", "unknow")), 
+                  #for the age we take the minimum value (age at first admission)
+                  age = min(age)
+                 ) %>%
+  #select the columns that are neeeded in this file sorted
+  dplyr::select( site_id, cohort, patient_num, admission_date, source_data_updated_date, 
+                 days_since_admission, last_discharge_date, death_date, 
+                 death_date, dead, age, sex ) %>%
+  #remove any duplicates (even no duplicates should appear, we should have as many rows as distinct patients)
+  unique()
+```
+
+
+## Generate the LocalPatientClinicalCourse 
+The columns for this file are:
+- siteid
+- cohort (AllAdm)
+- patient_num
+- days_since_admission (using as reference the index date that is the first admission date)
+- calendar_date (formated as 2020-10-03)
+- in_hospital (1/0)
+- in_icu	(1/0) 
+- dead (1/0)
+
+```{r}
+clinical_course_days <- raw_data_dates_updated %>%
+    #select only the next three columns, patient identifier, admission and discharge date
+  dplyr::select( patient_num, admission_date, discharge_date) %>%
+  unique() %>%
+  drop_na()
+
+### for loop to create one row for each of the days sequence between admission and discharge date
+for( i in 1:nrow( clinical_course_days)){
+  #print(i)
+  pat <- clinical_course_days$patient_num[i]
+  #create a vector with the day in between each date 
+  days <- seq( clinical_course_days$admission_date[i],clinical_course_days$discharge_date[i], by = "days")
+  
+  #format it as a data frame one column is the patient identifier and the other the calendar dates, for example for a patient admitted on 2019-02-10 and discharged in 2019-02-12 it would do the next transformation
+    #e.g. patient_num   calendar_date
+    #####        1      2019-02-10
+    #####        2      2019-02-11
+    #####        3      2019-02-12
+  format_output <- as.data.frame( matrix( nrow=length(days), ncol=2))
+  format_output$V1 <- pat
+  format_output$V2 <- as.Date(days)
+  
+  if( i== 1){
+    output <- format_output
+  }else{
+    output <- rbind( output, format_output )
+  }
+  
+}
+#rename the columns
+colnames(output ) <- c("patient_num", "calendar_date")
+
+## from the patient_summary file extract the first admission date that will be the index date
+## to estimate the days since admission
+## this file should have a patient per row and patients should not be duplicated
+index_date <- patient_summary %>%
+  dplyr::select( patient_num, index_date = admission_date ) %>%
+  unique()
+
+## we combine the index date with the clinical course to add the column with the days_difference
+## we add the rest of columns needed for this file
+clinical_course_output <- output  %>%
+  dplyr::left_join( index_date ) %>%
+  dplyr::mutate(  site_id = "HCUV", 
+                  cohort = "AllAdm",
+                  days_since_admission = as.numeric(calendar_date - index_date),
+                  in_hospital = 1) %>%
+  dplyr::select( site_id, cohort, patient_num, days_since_admission, calendar_date, 
+                 in_hospital ) %>%
+  unique()                  
+```
+
+To add the days in which the patient is in the ICU we use the columns fecha_ocupa_ini and fecha_ocupa_fin for those patients that in the same row for the in_icu column they have a 1. 
+We will generate a file with one row per patient and day for the days the patients are in the ICU and merge with the previous one. 
+```{r}
+icu_data <- raw_data_dates_updated %>%
+  #select only the rows that contains information for ICU admission
+  dplyr::filter( in_icu == 1) %>%
+  # remove the time stamps from the dates
+  dplyr::mutate( admission_icu = as.Date(sapply(strsplit( as.character(fecha_ocupa_ini), " "), '[', 1), format = "%d/%m/%Y"),
+                 discharge_icu = as.Date(sapply(strsplit( as.character(fecha_ocupa_fin), " "), '[', 1), format = "%d/%m/%Y")) %>%
+  dplyr::select( patient_num, admission_icu, discharge_icu) %>%
+  unique() %>%
+  drop_na()
+
+#follow the same approach as before, using the icu admission and icu discharge dates create a table with one row per day (same code as before)
+for( i in 1:nrow( icu_data)){
+  pat <- icu_data$patient_num[i]
+  days <- seq( icu_data$admission_icu[i],icu_data$discharge_icu[i], by = "days")
+  
+  icu_output <- as.data.frame( matrix( nrow=length(days), ncol=2))
+  icu_output$V1 <- pat
+  icu_output$V2 <- as.Date(days)
+  
+  if( i== 1){
+    perDay_icu_output <- icu_output
+  }else{
+    perDay_icu_output <- rbind( perDay_icu_output, icu_output )
+  }
+  
+}
+colnames(perDay_icu_output ) <- c("patient_num", "calendar_date")
+perDay_icu_output$in_icu <- 1
+
+# join this information with the previously generated one, to add the icu data
+# when icu value is NA we transform it into a 0 
+clinical_course_output <- clinical_course_output %>%
+  dplyr::left_join( perDay_icu_output ) %>%
+  dplyr::mutate( in_icu = ifelse( is.na( in_icu), 0, 1))
+```
+
+To add the time the patient is dead we will extract the dead_date and merge with the previous one too. 
+```{r}
+dead_info <-  raw_data_dates_updated %>%
+  # filter the raw_data by dead = 1 to get the date the patient died
+  dplyr::filter( dead == 1 ) %>% 
+  # select only the patient identifier and the death date
+  dplyr::select( patient_num, death_date) %>%
+  unique()
+
+#merge it with the previous clinical course file, when there is no information for death_date we put a 0
+clinical_course_output <- clinical_course_output %>%
+  dplyr::left_join( dead_info ) %>%
+  dplyr::mutate( dead = ifelse( death_date == calendar_date, 1, 0 ), 
+                 dead = ifelse( is.na( dead), 0, dead)) %>%
+  dplyr::select( - death_date )
+
+```
+
+
+## Generate the LocalPatientObservation
+The columns for this file are:
+- siteid
+- cohort (AllAdm)
+- patient_num
+- days_since_admission (using as reference the index date that is the first admission date)
+- concept_type (DIAG-ICD10)
+- concept_code	value
+- for Valencia we will add ageAtAdmission
+
+```{r }
+patient_observation_output <- raw_data_dates_updated %>%
+  # select the columns that contains the date and the icd codes (cd columns)
+  dplyr::select( patient_num, calendar_date = admission_date, cd_1, cd_2, cd_3, cd_4, cd_5, cd_6, cd_7, cd_8, cd_9, cd_10, ageAtAdmission = age ) %>%
+  unique() %>%
+  # transform it to have one ICD code per row
+  tidyr::pivot_longer( cols = c("cd_1":"cd_10"), names_to = "diag", values_to ="concept_code") %>%
+  # remove the empty cases (in the example as "(null)")
+  dplyr::filter( concept_code != "(null)", concept_code != "0") %>%
+  dplyr::select(-diag ) %>%
+  # join with the clinical course to determine at which day since admission each diagnosis was done, since this file does not contain dates
+  dplyr::left_join( clinical_course_output ) %>%
+  # determine which codes are ICD9 vs. ICD10, by checking if the first value of the code is a number or not
+  # added regular expression to distinguish between E and V codes in ICD9 and 10 (double check outputs)
+  dplyr::mutate(  first_character = substr(concept_code, 0, 1), 
+                  concept_type = ifelse( first_character %in% c("0","1","2","3","4","5","6","7","8","9"), "DIAG-ICD9", ifelse( first_character  == "E" & grepl( "E\\d{3}\\.?\\d?", concept_code) == FALSE, "DIAG-ICD10",  ifelse( first_character  == "V" & grepl( "V\\d{2}\\.?\\d{1,2}$", concept_code) == FALSE, "DIAG-ICD10", "DIAG-ICD9"))))   %>%
+  dplyr::select( site_id, cohort, patient_num, days_since_admission, concept_type, concept_code, ageAtAdmission)
+
+
+```
+Remove from the environment the variables that are not required. 
+```{r}
+#remove all intermediate variables we have generated, except the 3 data frames we need
+rm(list=ls()[! ls() %in% c("patient_summary","clinical_course_output","patient_observation_output")])
+```
+
+## Export the files as CSV
+```{r}
+write.csv(patient_summary, file ="LocalPatientSummary.csv", 
+          row.names = FALSE, 
+          quote = FALSE)
+
+write.csv(clinical_course_output, file ="LocalPatientClinicalCourse.csv", 
+          row.names = FALSE, 
+          quote = FALSE)
+
+write.csv(patient_observation_output, file ="LocalPatientObservations.csv", 
+          row.names = FALSE, 
+          quote = FALSE)
+```
+
+
