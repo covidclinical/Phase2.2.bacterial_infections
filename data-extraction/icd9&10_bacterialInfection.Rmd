@@ -150,9 +150,9 @@ icd10Codes <- read.csv("../public-data/ICD_bacterial5.csv", header = TRUE, colCl
                   syndrome, IBI_simple, IBI_extensive, Respiratory, Skin, bacterial_syndrome )
 
 icd9Codes <- read.csv("../public-data/ICD9_bacterialMap.csv", header = TRUE, colClasses = "character") %>%
-   dplyr::mutate( concept_code = gsub("\\.", "",icd9cm)) %>%
-   dplyr::select( disorder_group = syndrome, concept_code, 
-                  syndrome, IBI_simple, IBI_extensive, Respiratory, Skin, bacterial_syndrome )
+   dplyr::mutate( concept_code = gsub("\\.", "",ICD9_Code)) %>%
+   dplyr::select( disorder_group = Syndrome, concept_code, 
+                  IBI_simple, IBI_extensive, Respiratory, Skin, bacterial_syndrome )
 
 icdCodes <- rbind( icd10Codes, icd9Codes)
 ```
