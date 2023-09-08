@@ -39,12 +39,12 @@ Change the values of the following variables according to your site:
 5. Site ID
 # SITE ID: BCH
 ```{r message=FALSE, warning=FALSE}
-folder_4ce_files <- "/4ceData/Input/AllAdminJuly2023/"
+folder_4ce_files <- "."
 obfuscation =  FALSE
 #obfuscation = 3
 dateFormat <- "%Y-%m-%d"
 data_update_date <- "2023-07-01"
-dir.output <- "/4ceData/bacterialInfection_outputs/"
+dir.output <- "./bacterialInfection_outputs/"
 age_estimation_variability <- FALSE
 ```
 
@@ -146,12 +146,12 @@ if(filecheck){
 print('Reading ICD bacterial codes')
 icd10Codes <- read.csv("../public-data/ICD_bacterial5.csv", header = TRUE, colClasses = "character") %>%
    dplyr::mutate( concept_code = gsub("\\.", "",ICD10_Code)) %>%
-   dplyr::select( disorder_group = syndrome, concept_code, 
+   dplyr::select( disorder_group = syndrome, concept_code, description,
                   syndrome, IBI_simple, IBI_extensive, Respiratory, Skin, bacterial_syndrome )
 
 icd9Codes <- read.csv("../public-data/ICD9_bacterialMap.csv", header = TRUE, colClasses = "character") %>%
    dplyr::mutate( concept_code = gsub("\\.", "",ICD9_Code)) %>%
-   dplyr::select( disorder_group = Syndrome, concept_code, 
+   dplyr::select( disorder_group = Syndrome, concept_code, description = Description,
                   IBI_simple, IBI_extensive, Respiratory, Skin, bacterial_syndrome )
 
 icdCodes <- rbind( icd10Codes, icd9Codes)
@@ -188,7 +188,7 @@ obs_raw <- as.data.frame( obs_raw )
 demo_raw <- as.data.frame( demo_raw )
 clinical_raw <- as.data.frame( clinical_raw )
 
-obs_raw_age <- left_join(obs_raw, demo_raw[c("patient_num", "age", "ageAtAdmission")], by = c("patient_num")) %>%
+obs_raw_age <- left_join(obs_raw, demo_raw[c("patient_num", "age")], by = c("patient_num")) %>%
   dplyr::mutate( concept_code = gsub("\\.", "",concept_code )) %>%
   dplyr::inner_join(clinical_raw[, c("patient_num", "days_since_admission", "calendar_date")], 
             by = c("patient_num", "days_since_admission"))
@@ -348,7 +348,7 @@ all_codes_desc <- all_codes %>%
                                "bacterial", 
                                "others"),
                 disorder_group = tidyr::replace_na(disorder_group, 'non_bacterial'),
-                ICD10_Code = tidyr::replace_na(ICD10_Code, 'non_bacterial'),
+                ICD10_Code = tidyr::replace_na(concept_code, 'non_bacterial'),
                 description = tidyr::replace_na(description, 'non_bacterial'),
                 IBI_simple = tidyr::replace_na(IBI_simple, 'non_bacterial'),
                 IBI_extensive = tidyr::replace_na(IBI_extensive, 'non_bacterial'),
