@@ -1,0 +1,255 @@
+ICD9_Code,Description,Syndrome,IBI_simple,IBI_extensive,Respiratory,Skin,bacterial_syndrome
+510,Empyema,LRTI/empyema,no,yes,yes,no,yes
+510.0,Empyema with fistula,LRTI/empyema,no,yes,yes,no,yes
+510.9,Empyema without mention of fistula,LRTI/empyema,no,yes,yes,no,yes
+035,Erysipelas,skin infections,no,no,no,yes,yes
+376.01,Orbital cellulitis,skin infections,no,no,no,yes,yes
+457.2,Lymphangitis,skin infections,no,no,no,yes,yes
+681,Cellulitis and abscess of finger and toe,skin infections,no,no,no,yes,yes
+681.0,Cellulitis and abscess of finger,skin infections,no,no,no,yes,yes
+681.00,"Cellulitis and abscess of finger, unspecified",skin infections,no,no,no,yes,yes
+681.01,Felon,skin infections,no,no,no,yes,yes
+681.02,Onychia and paronychia of finger,skin infections,no,no,no,yes,yes
+681.1,Cellulitis and abscess of toe,skin infections,no,no,no,yes,yes
+681.10,"Cellulitis and abscess of toe, unspecified",skin infections,no,no,no,yes,yes
+681.11,Onychia and paronychia of toe,skin infections,no,no,no,yes,yes
+681.9,Cellulitis and abscess of unspecified digit,skin infections,no,no,no,yes,yes
+682,Other cellulitis and abscess,skin infections,no,no,no,yes,yes
+682.0,Cellulitis and abscess of face,skin infections,no,no,no,yes,yes
+682.1,Cellulitis and abscess of neck,skin infections,no,no,no,yes,yes
+682.2,Cellulitis and abscess of trunk,skin infections,no,no,no,yes,yes
+682.3,Cellulitis and abscess of upper arm and forearm,skin infections,no,no,no,yes,yes
+682.4,"Cellulitis and abscess of hand, except fingers and thumb",skin infections,no,no,no,yes,yes
+682.5,Cellulitis and abscess of buttock,skin infections,no,no,no,yes,yes
+682.6,"Cellulitis and abscess of leg, except foot",skin infections,no,no,no,yes,yes
+682.7,"Cellulitis and abscess of foot, except toes",skin infections,no,no,no,yes,yes
+682.8,Cellulitis and abscess of other specified sites,skin infections,no,no,no,yes,yes
+682.9,Cellulitis and abscess of unspecified sites,skin infections,no,no,no,yes,yes
+684,Impetigo,skin infections,no,no,no,yes,yes
+040.0,Gas gangrene,necrotizing soft tissue infection,no,no,no,yes,yes
+728.86,Necrotizing fasciitis,necrotizing soft tissue infection,no,no,no,yes,yes
+095.2,Syphilitic peritonitis,Appendicitis/peritonitis,no,no,no,no,yes
+098.86,Gonococcal peritonitis,Appendicitis/peritonitis,no,no,no,no,yes
+540,Acute appendicitis,Appendicitis/peritonitis,no,no,no,no,yes
+540.0,Acute appendicitis with generalized peritonitis,Appendicitis/peritonitis,no,no,no,no,yes
+540.1,Acute appendicitis with peritoneal abscess,Appendicitis/peritonitis,no,no,no,no,yes
+540.9,Acute appendicitis without mention of peritonitis,Appendicitis/peritonitis,no,no,no,no,yes
+541,"Appendicitis, unqualified",Appendicitis/peritonitis,no,no,no,no,yes
+542,Other appendicitis,Appendicitis/peritonitis,no,no,no,no,yes
+567,Peritonitis and retroperitoneal infections,Appendicitis/peritonitis,no,no,no,no,yes
+567.0,Peritonitis in infectious diseases classified elsewhere,Appendicitis/peritonitis,no,no,no,no,yes
+567.1,Pneumococcal peritonitis,Appendicitis/peritonitis,no,no,no,no,yes
+567.2,Other suppurative peritonitis,Appendicitis/peritonitis,no,no,no,no,yes
+567.21,Peritonitis (acute) generalized,Appendicitis/peritonitis,no,no,no,no,yes
+567.22,Peritoneal abscess,Appendicitis/peritonitis,no,no,no,no,yes
+567.23,Spontaneous bacterial peritonitis,Appendicitis/peritonitis,no,no,no,no,yes
+567.29,Other suppurative peritonitis,Appendicitis/peritonitis,no,no,no,no,yes
+567.8,Other specified peritonitis,Appendicitis/peritonitis,no,no,no,no,yes
+567.81,Choleperitonitis,Appendicitis/peritonitis,no,no,no,no,yes
+567.89,Other specified peritonitis,Appendicitis/peritonitis,no,no,no,no,yes
+567.9,Unspecified peritonitis,Appendicitis/peritonitis,no,no,no,no,yes
+383,Mastoiditis and related conditions,mastoiditis,no,no,yes,no,yes
+383.0,Acute mastoiditis,mastoiditis,no,no,yes,no,yes
+383.00,Acute mastoiditis without complications,mastoiditis,no,no,yes,no,yes
+383.01,Subperiosteal abscess of mastoid,mastoiditis,no,no,yes,no,yes
+383.02,Acute mastoiditis with other complications,mastoiditis,no,no,yes,no,yes
+383.1,Chronic mastoiditis,mastoiditis,no,no,yes,no,yes
+383.2,Petrositis,mastoiditis,no,no,yes,no,yes
+383.20,"Petrositis, unspecified",mastoiditis,no,no,yes,no,yes
+383.21,Acute petrositis,mastoiditis,no,no,yes,no,yes
+383.22,Chronic petrositis,mastoiditis,no,no,yes,no,yes
+383.9,Unspecified mastoiditis,mastoiditis,no,no,yes,no,yes
+036.42,Meningococcal endocarditis,endocarditis,no,yes,no,no,yes
+093.2,Syphilitic endocarditis,endocarditis,no,yes,no,no,yes
+093.20,"Syphilitic endocarditis of valve, unspecified",endocarditis,no,yes,no,no,yes
+093.21,Syphilitic endocarditis of mitral valve,endocarditis,no,yes,no,no,yes
+093.22,Syphilitic endocarditis of aortic valve,endocarditis,no,yes,no,no,yes
+093.23,Syphilitic endocarditis of tricuspid valve,endocarditis,no,yes,no,no,yes
+093.24,Syphilitic endocarditis of pulmonary valve,endocarditis,no,yes,no,no,yes
+098.84,Gonococcal endocarditis,endocarditis,no,yes,no,no,yes
+421,Acute and subacute endocarditis,endocarditis,no,yes,no,no,yes
+421.0,Acute and subacute bacterial endocarditis,endocarditis,no,yes,no,no,yes
+421.1,Acute and subacute infective endocarditis in diseases classified elsewhere,endocarditis,no,yes,no,no,yes
+421.9,"Acute endocarditis, unspecified",endocarditis,no,yes,no,no,yes
+003.21,Salmonella meningitis,bacterial CNS infections,yes,yes,no,no,no
+036.0,Meningococcal meningitis,bacterial CNS infections,yes,yes,no,no,no
+091.81,Acute syphilitic meningitis (secondary),bacterial CNS infections,yes,yes,no,no,no
+094.2,Syphilitic meningitis,bacterial CNS infections,yes,yes,no,no,no
+098.82,Gonococcal meningitis,bacterial CNS infections,yes,yes,no,no,no
+100.81,Leptospiral meningitis (aseptic),bacterial CNS infections,yes,yes,no,no,no
+320,Bacterial meningitis,bacterial CNS infections,yes,yes,no,no,no
+320.0,Hemophilus meningitis,bacterial CNS infections,yes,yes,no,no,no
+320.1,Pneumococcal meningitis,bacterial CNS infections,yes,yes,no,no,no
+320.2,Streptococcal meningitis,bacterial CNS infections,yes,yes,no,no,no
+320.3,Staphylococcal meningitis,bacterial CNS infections,yes,yes,no,no,no
+320.7,Meningitis in other bacterial diseases classified elsewhere,bacterial CNS infections,yes,yes,no,no,no
+320.8,Meningitis due to other specified bacteria,bacterial CNS infections,yes,yes,no,no,no
+320.81,Anaerobic meningitis,bacterial CNS infections,yes,yes,no,no,no
+320.82,"Meningitis due to gram-negative bacteria, not elsewhere classified",bacterial CNS infections,yes,yes,no,no,no
+320.89,Meningitis due to other specified bacteria,bacterial CNS infections,yes,yes,no,no,no
+320.9,Meningitis due to unspecified bacterium,bacterial CNS infections,yes,yes,no,no,no
+003.24,Salmonella osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
+376.03,Orbital osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
+730,Osteomyelitis periostitis and other infections involving bone,osteoarticular infections,no,yes,no,yes,yes
+730.0,Acute osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
+730.00,"Acute osteomyelitis, site unspecified",osteoarticular infections,no,yes,no,yes,yes
+730.01,"Acute osteomyelitis, shoulder region",osteoarticular infections,no,yes,no,yes,yes
+730.02,"Acute osteomyelitis, upper arm",osteoarticular infections,no,yes,no,yes,yes
+730.03,"Acute osteomyelitis, forearm",osteoarticular infections,no,yes,no,yes,yes
+730.04,"Acute osteomyelitis, hand",osteoarticular infections,no,yes,no,yes,yes
+730.05,"Acute osteomyelitis, pelvic region and thigh",osteoarticular infections,no,yes,no,yes,yes
+730.06,"Acute osteomyelitis, lower leg",osteoarticular infections,no,yes,no,yes,yes
+730.07,"Acute osteomyelitis, ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+730.08,"Acute osteomyelitis, other specified sites",osteoarticular infections,no,yes,no,yes,yes
+730.09,"Acute osteomyelitis, multiple sites",osteoarticular infections,no,yes,no,yes,yes
+730.1,Chronic osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
+730.10,"Chronic osteomyelitis, site unspecified",osteoarticular infections,no,yes,no,yes,yes
+730.11,"Chronic osteomyelitis, shoulder region",osteoarticular infections,no,yes,no,yes,yes
+730.12,"Chronic osteomyelitis, upper arm",osteoarticular infections,no,yes,no,yes,yes
+730.13,"Chronic osteomyelitis, forearm",osteoarticular infections,no,yes,no,yes,yes
+730.14,"Chronic osteomyelitis, hand",osteoarticular infections,no,yes,no,yes,yes
+730.15,"Chronic osteomyelitis, pelvic region and thigh",osteoarticular infections,no,yes,no,yes,yes
+730.16,"Chronic osteomyelitis, lower leg",osteoarticular infections,no,yes,no,yes,yes
+730.17,"Chronic osteomyelitis, ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+730.18,"Chronic osteomyelitis, other specified sites",osteoarticular infections,no,yes,no,yes,yes
+730.19,"Chronic osteomyelitis, multiple sites",osteoarticular infections,no,yes,no,yes,yes
+730.2,Unspecified osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
+730.20,"Unspecified osteomyelitis, site unspecified",osteoarticular infections,no,yes,no,yes,yes
+730.21,"Unspecified osteomyelitis, shoulder region",osteoarticular infections,no,yes,no,yes,yes
+730.22,"Unspecified osteomyelitis, upper arm",osteoarticular infections,no,yes,no,yes,yes
+730.23,"Unspecified osteomyelitis, forearm",osteoarticular infections,no,yes,no,yes,yes
+730.24,"Unspecified osteomyelitis, hand",osteoarticular infections,no,yes,no,yes,yes
+730.25,"Unspecified osteomyelitis, pelvic region and thigh",osteoarticular infections,no,yes,no,yes,yes
+730.26,"Unspecified osteomyelitis, lower leg",osteoarticular infections,no,yes,no,yes,yes
+730.27,"Unspecified osteomyelitis, ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+730.28,"Unspecified osteomyelitis, other specified sites",osteoarticular infections,no,yes,no,yes,yes
+730.29,"Unspecified osteomyelitis, multiple sites",osteoarticular infections,no,yes,no,yes,yes
+711.0,Pyogenic arthritis,osteoarticular infections,no,yes,no,yes,yes
+711.00,"Pyogenic arthritis, site unspecified",osteoarticular infections,no,yes,no,yes,yes
+711.01,"Pyogenic arthritis, shoulder region",osteoarticular infections,no,yes,no,yes,yes
+711.02,"Pyogenic arthritis, upper arm",osteoarticular infections,no,yes,no,yes,yes
+711.03,"Pyogenic arthritis, forearm",osteoarticular infections,no,yes,no,yes,yes
+711.04,"Pyogenic arthritis, hand",osteoarticular infections,no,yes,no,yes,yes
+711.05,"Pyogenic arthritis, pelvic region and thigh",osteoarticular infections,no,yes,no,yes,yes
+711.06,"Pyogenic arthritis, lower leg",osteoarticular infections,no,yes,no,yes,yes
+711.07,"Pyogenic arthritis, ankle and foot",osteoarticular infections,no,yes,no,yes,yes
+711.08,"Pyogenic arthritis, other specified sites",osteoarticular infections,no,yes,no,yes,yes
+711.09,"Pyogenic arthritis, multiple sites",osteoarticular infections,no,yes,no,yes,yes
+020.3,Primary pneumonic plague,bacterial pneumonia,no,no,yes,no,no
+020.4,Secondary pneumonic plague,bacterial pneumonia,no,no,yes,no,no
+020.5,"Pneumonic plague, unspecified",bacterial pneumonia,no,no,yes,no,no
+021.2,Pulmonary tularemia,bacterial pneumonia,no,no,yes,no,no
+022.1,Pulmonary anthrax,bacterial pneumonia,no,no,yes,no,no
+031.0,Pulmonary diseases due to other mycobacteria,bacterial pneumonia,no,no,yes,no,no
+039.1,Pulmonary actinomycotic infection,bacterial pneumonia,no,no,yes,no,no
+073.0,Ornithosis with pneumonia,bacterial pneumonia,no,no,yes,no,no
+083.0,Q fever,bacterial pneumonia,no,no,yes,no,no
+481,Pneumococcal pneumonia [Streptococcus pneumoniae pneumonia],bacterial pneumonia,no,no,yes,no,no
+482,Other bacterial pneumonia,bacterial pneumonia,no,no,yes,no,no
+482.0,Pneumonia due to Klebsiella pneumoniae,bacterial pneumonia,no,no,yes,no,no
+482.1,Pneumonia due to Pseudomonas,bacterial pneumonia,no,no,yes,no,no
+482.2,Pneumonia due to Hemophilus influenzae [H. influenzae],bacterial pneumonia,no,no,yes,no,no
+482.3,Pneumonia due to streptococcus,bacterial pneumonia,no,no,yes,no,no
+482.30,"Pneumonia due to Streptococcus, unspecified",bacterial pneumonia,no,no,yes,no,no
+482.31,"Pneumonia due to Streptococcus, group A",bacterial pneumonia,no,no,yes,no,no
+482.32,"Pneumonia due to Streptococcus, group B",bacterial pneumonia,no,no,yes,no,no
+482.39,Pneumonia due to other Streptococcus,bacterial pneumonia,no,no,yes,no,no
+482.4,Pneumonia due to staphylococcus,bacterial pneumonia,no,no,yes,no,no
+482.40,"Pneumonia due to Staphylococcus, unspecified",bacterial pneumonia,no,no,yes,no,no
+482.41,Methicillin susceptible pneumonia due to Staphylococcus aureus,bacterial pneumonia,no,no,yes,no,no
+482.42,Methicillin resistant pneumonia due to Staphylococcus aureus,bacterial pneumonia,no,no,yes,no,no
+482.49,Other Staphylococcus pneumonia,bacterial pneumonia,no,no,yes,no,no
+482.8,Pneumonia due to other specified bacteria,bacterial pneumonia,no,no,yes,no,no
+482.81,Pneumonia due to anaerobes,bacterial pneumonia,no,no,yes,no,no
+482.82,Pneumonia due to escherichia coli [E. coli],bacterial pneumonia,no,no,yes,no,no
+482.83,Pneumonia due to other gram-negative bacteria,bacterial pneumonia,no,no,yes,no,no
+482.84,Pneumonia due to Legionnaires' disease,bacterial pneumonia,no,no,yes,no,no
+482.89,Pneumonia due to other specified bacteria,bacterial pneumonia,no,no,yes,no,no
+482.9,"Bacterial pneumonia, unspecified",bacterial pneumonia,no,no,yes,no,no
+483.0,Pneumonia due to mycoplasma pneumoniae,bacterial pneumonia,no,no,yes,no,no
+483.1,Pneumonia due to chlamydia,bacterial pneumonia,no,no,yes,no,no
+484.3,Pneumonia in whooping cough,bacterial pneumonia,no,no,yes,no,no
+484.5,Pneumonia in anthrax,bacterial pneumonia,no,no,yes,no,no
+003.1,Salmonella septicemia,sepsis,yes,yes,no,no,no
+020.2,Septicemic plague,sepsis,yes,yes,no,no,no
+022.3,Anthrax septicemia,sepsis,yes,yes,no,no,no
+038,Septicemia,sepsis,yes,yes,no,no,no
+038.0,Streptococcal septicemia,sepsis,yes,yes,no,no,no
+038.1,Staphylococcal septicemia,sepsis,yes,yes,no,no,no
+038.10,"Staphylococcal septicemia, unspecified",sepsis,yes,yes,no,no,no
+038.11,Methicillin susceptible Staphylococcus aureus septicemia,sepsis,yes,yes,no,no,no
+038.12,Methicillin resistant Staphylococcus aureus septicemia,sepsis,yes,yes,no,no,no
+038.19,Other staphylococcal septicemia,sepsis,yes,yes,no,no,no
+038.2,Pneumococcal septicemia [Streptococcus pneumoniae septicemia],sepsis,yes,yes,no,no,no
+038.3,Septicemia due to anaerobes,sepsis,yes,yes,no,no,no
+038.4,Septicemia due to other gram-negative organisms,sepsis,yes,yes,no,no,no
+038.40,"Septicemia due to gram-negative organism, unspecified",sepsis,yes,yes,no,no,no
+038.41,Septicemia due to hemophilus influenzae [H. influenzae],sepsis,yes,yes,no,no,no
+038.42,Septicemia due to escherichia coli [E. coli],sepsis,yes,yes,no,no,no
+038.43,Septicemia due to pseudomonas,sepsis,yes,yes,no,no,no
+038.44,Septicemia due to serratia,sepsis,yes,yes,no,no,no
+038.49,Other septicemia due to gram-negative organisms,sepsis,yes,yes,no,no,no
+038.8,Other specified septicemias,sepsis,yes,yes,no,no,no
+038.9,Unspecified septicemia,sepsis,yes,yes,no,no,no
+771.81,Septicemia [sepsis] of newborn,sepsis,yes,yes,no,no,no
+995.9,Systemic inflammatory response syndrome (sirs),sepsis,yes,yes,no,no,no
+995.90,"Systemic inflammatory response syndrome, unspecified",sepsis,yes,yes,no,no,no
+995.91,Sepsis,sepsis,yes,yes,no,no,no
+995.92,Severe sepsis,sepsis,yes,yes,no,no,no
+003.0,Salmonella gastroenteritis,bacterial enteritis,no,no,no,no,no
+004,Shigellosis,bacterial enteritis,no,no,no,no,no
+004.0,Shigella dysenteriae,bacterial enteritis,no,no,no,no,no
+004.1,Shigella flexneri,bacterial enteritis,no,no,no,no,no
+004.2,Shigella boydii,bacterial enteritis,no,no,no,no,no
+004.3,Shigella sonnei,bacterial enteritis,no,no,no,no,no
+004.8,Other specified shigella infections,bacterial enteritis,no,no,no,no,no
+004.9,"Shigellosis, unspecified",bacterial enteritis,no,no,no,no,no
+005,Other food poisoning (bacterial),bacterial enteritis,no,no,no,no,no
+005.0,Staphylococcal food poisoning,bacterial enteritis,no,no,no,no,no
+005.1,Botulism food poisoning,bacterial enteritis,no,no,no,no,no
+005.2,Food poisoning due to Clostridium perfringens (C. welchii),bacterial enteritis,no,no,no,no,no
+005.3,Food poisoning due to other Clostridia,bacterial enteritis,no,no,no,no,no
+005.4,Food poisoning due to Vibrio parahaemolyticus,bacterial enteritis,no,no,no,no,no
+005.8,Other bacterial food poisoning,bacterial enteritis,no,no,no,no,no
+005.81,Food poisoning due to Vibrio vulnificus,bacterial enteritis,no,no,no,no,no
+005.89,Other bacterial food poisoning,bacterial enteritis,no,no,no,no,no
+005.9,"Food poisoning, unspecified",bacterial enteritis,no,no,no,no,no
+008.0,Intestinal infection due to escherichia coli [e. coli],bacterial enteritis,no,no,no,no,no
+008.00,"Intestinal infection due to E. coli, unspecified",bacterial enteritis,no,no,no,no,no
+008.01,Intestinal infection due to enteropathogenic E. coli,bacterial enteritis,no,no,no,no,no
+008.02,Intestinal infection due to enterotoxigenic E. coli,bacterial enteritis,no,no,no,no,no
+008.03,Intestinal infection due to enteroinvasive E. coli,bacterial enteritis,no,no,no,no,no
+008.04,Intestinal infection due to enterohemorrhagic E. coli,bacterial enteritis,no,no,no,no,no
+008.09,Intestinal infection due to other intestinal E. coli infections,bacterial enteritis,no,no,no,no,no
+008.1,Intestinal infection due to arizona group of paracolon bacilli,bacterial enteritis,no,no,no,no,no
+008.2,Intestinal infection due to aerobacter aerogenes,bacterial enteritis,no,no,no,no,no
+008.3,Intestinal infection due to proteus (mirabilis) (morganii),bacterial enteritis,no,no,no,no,no
+008.4,Intestinal infection due to other specified bacteria,bacterial enteritis,no,no,no,no,no
+008.41,Intestinal infection due to staphylococcus,bacterial enteritis,no,no,no,no,no
+008.42,Intestinal infection due to pseudomonas,bacterial enteritis,no,no,no,no,no
+008.43,Intestinal infection due to campylobacter,bacterial enteritis,no,no,no,no,no
+008.44,Intestinal infection due to yersinia enterocolitica,bacterial enteritis,no,no,no,no,no
+008.45,Intestinal infection due to Clostridium difficile,bacterial enteritis,no,no,no,no,no
+008.46,Intestinal infection due to other anaerobes,bacterial enteritis,no,no,no,no,no
+008.47,Intestinal infection due to other gram-negative bacteria,bacterial enteritis,no,no,no,no,no
+008.5,"Bacterial enteritis, unspecified",bacterial enteritis,no,no,no,no,no
+590.1,Acute pyelonephritis,UTI/pyelonefritis,no,no,no,no,yes
+590.10,Acute pyelonephritis without lesion of renal medullary necrosis,UTI/pyelonefritis,no,no,no,no,yes
+590.11,Acute pyelonephritis with lesion of renal medullary necrosis,UTI/pyelonefritis,no,no,no,no,yes
+590.2,Renal and perinephric abscess,UTI/pyelonefritis,no,no,no,no,yes
+590.3,Pyeloureteritis cystica,UTI/pyelonefritis,no,no,no,no,yes
+590.8,Other pyelonephritis or pyonephrosis not specified as acute or chronic,UTI/pyelonefritis,no,no,no,no,yes
+590.80,"Pyelonephritis, unspecified",UTI/pyelonefritis,no,no,no,no,yes
+590.81,Pyelitis or pyelonephritis in diseases classified elsewhere,UTI/pyelonefritis,no,no,no,no,yes
+595,Cystitis,UTI/pyelonefritis,no,no,no,no,yes
+595.0,Acute cystitis,UTI/pyelonefritis,no,no,no,no,yes
+595.1,Chronic interstitial cystitis,UTI/pyelonefritis,no,no,no,no,yes
+595.2,Other chronic cystitis,UTI/pyelonefritis,no,no,no,no,yes
+595.3,Trigonitis,UTI/pyelonefritis,no,no,no,no,yes
+595.4,Cystitis in diseases classified elsewhere,UTI/pyelonefritis,no,no,no,no,yes
+595.8,Other specified types of cystitis,UTI/pyelonefritis,no,no,no,no,yes
+595.81,Cystitis cystica,UTI/pyelonefritis,no,no,no,no,yes
+595.82,Irradiation cystitis,UTI/pyelonefritis,no,no,no,no,yes
+595.89,Other specified types of cystitis,UTI/pyelonefritis,no,no,no,no,yes
+595.9,"Cystitis, unspecified",UTI/pyelonefritis,no,no,no,no,yes
+771.82,Urinary tract infection of newborn,UTI/pyelonefritis,no,no,no,no,yes
