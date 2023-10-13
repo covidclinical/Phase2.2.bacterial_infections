@@ -1,0 +1,219 @@
+---
+title: "Tables for Manuscript"
+author: "Simran Makwana"
+date: "2023-10-13"
+output: html_document
+---
+
+##Step 1: Run reformat_aggregate_output.Rmd with latest outputs to get combined dataframes with all data.
+- The output of that script is loaded here
+- Table 1 package is loaded
+- **Outputs including RSV are excluded**
+
+```{r echo = FLASE}
+library(table1)
+
+load(file = '../results/a1_all.Rdata')
+load(file = '../results/a2_all.Rdata')
+
+a1 <- a1_all_to_work %>% 
+  filter(!grepl('withRSV', site))
+
+a2 <- a2_all_to_work %>% 
+  filter(!grepl('withRSV', site))
+```
+
+Organize sites into countries
+- This list must be updated if additional countries / sites are added
+```{r}
+site_country_mapping <- data.frame('site' = c('BCH', 'CCHMC', 'CCMC', 'GOSH', 'H12O', 'HCUV', 'MICHIGAN', 'UPitt'),
+                                   'country' = c('United States', 'United States', 'United States', 'United Kingdom', 
+                                                 'Spain', 'Spain', 'United States', 'United States'))
+
+a1.1 <- a1 %>%
+  mutate(site = gsub('_.*', '', site), 
+         site = trimws(site)) %>%
+  left_join(site_country_mapping)
+
+a2.1 <- a2 %>%
+  mutate(site = gsub('_.*', '', site),
+         site = trimws(site)) %>%
+  left_join(site_country_mapping)
+
+```
+
+# Table 1:  Clinical characteristics of the study population, stratified by cohort  
+- Filter to type == all; include all study population hospitalizations
+- Percentages are calculated by clinical characteristic (columnwise)... for example all USA, UK and Spain counts within the pre-npi cohort add to 100%. To change this, modify `group_by(timeToGroup)` to something like `group_by(country)` in each section.
+- *NPI cohorts are redefined for the season counts using the a2 tables, verify that the cutoffs are correct*
+- *We had some data out of scope, after February 2023. currently removing it*
+```{r echo = FALSE}
+
+# Country
+t1.country <- a1.1 %>%
+  filter(type == 'all') %>%
+  filter(category_name == 'total') %>%
+  group_by(timeToGroup, country) %>%
+  summarise(n = sum(count)) %>%
+  ungroup() %>%
+  group_by(timeToGroup) %>%
+  mutate(percent = n / sum(n) * 100,
+         value = paste0(n, ' (', round(percent, 2), '%)')) %>%
+  pivot_wider(id_cols = country, names_from = timeToGroup, values_from = value) %>%
+  add_row(country = 'Country, n (%)', .before = 1) %>%
+  rename('X' = 'country')
+
+# Age at hospital admission
+t1.age <- a1.1 %>%
+  filter(type == 'all') %>%
+  filter(category_name == 'age') %>%
+  group_by(timeToGroup, category) %>%
+  summarise(n = sum(count)) %>%
+  ungroup() %>%
+  group_by(timeToGroup) %>%
+  mutate(percent = n / sum(n) * 100,
+         value = paste0(n, ' (', round(percent, 2), '%)')) %>%
+  pivot_wider(id_cols = category, names_from = timeToGroup, values_from = value) %>%
+  add_row(category = 'Age at hospital admission, n (%)', .before = 1) %>%
+  rename('X' = 'category')
+
+# Sex
+t1.sex <- a1.1 %>%
+  filter(type == 'all') %>%
+  filter(category_name == 'sex') %>%
+  mutate(category = tolower(category)) %>%
+  group_by(timeToGroup, category) %>%
+  summarise(n = sum(count)) %>%
+  ungroup() %>%
+  group_by(timeToGroup) %>%
+  mutate(percent = n / sum(n) * 100,
+         value = paste0(n, ' (', round(percent, 2), '%)')) %>%
+  pivot_wider(id_cols = category, names_from = timeToGroup, values_from = value) %>%
+  add_row(category = 'Sex, n (%)', .before = 1) %>%
+  rename('X' = 'category')
+
+# Season
+month_season_mapping <- data.frame(month = c(3:12, 1, 2),
+                                   season = c(rep('Spring', 3), rep('Summer', 3), rep('Autumn', 3), rep('Winter', 3))) %>%
+  mutate(season = factor(season, levels = c('Spring', 'Summer', 'Autumn', 'Winter')))
+
+t1.season <- a2.1 %>% 
+  filter(type == 'all') %>%
+  mutate(month = month(timeToGroup),
+# should check to make sure I defined these cohorts correctly
+         cohort = ifelse(as.Date('2019-03-01') <= timeToGroup & timeToGroup < as.Date('2020-02-28'), 'pre-NPI',
+                         ifelse(timeToGroup < as.Date('2021-02-28'), 'full-NPI', 
+                                ifelse(timeToGroup < as.Date('2023-02-28'), 'partial-NPI',
+                                                             'out of scope')))) %>%
+  filter(cohort != 'out of scope') %>%
+  left_join(month_season_mapping) %>%
+  group_by(cohort, season) %>%
+  summarise(n = sum(count)) %>%
+  ungroup() %>%
+  group_by(cohort) %>%
+  mutate(percent = n / sum(n) * 100,
+         value = paste0(n, ' (', round(percent, 2), '%)')) %>%
+  pivot_wider(id_cols = season, names_from = cohort, values_from = value) %>%
+  add_row(season = 'Season, n (%)', .before = 1) %>%
+  rename('X' = 'season')
+  
+
+# Length of hospitalization
+# where did we put this? I thought we made groups for the length of hospitalization?
+```
+
+Combine Table 1 sub-tables
+```{r echo = FALSE}
+table1 <- rbind(t1.country, t1.age, t1.sex, t1.season) %>%
+  select(X, `pre-NPI`, `full-NPI`, `partial-NPI`)
+
+```
+
+
+# Table X (Appendix). Clinical characteristics of the hospitalisations with any bacterial infection, stratified by cohort  
+- Filter to type == bacterial; include only hospitalizations with bacterial infections
+- Percentages are calculated by clinical characteristic (columnwise)... for example all USA, UK and Spain counts within the pre-npi cohort add to 100%. To change this, modify `group_by(timeToGroup)` to something like `group_by(country)` in each section.
+- *NPI cohorts are redefined for the season counts using the a2 tables, verify that the cutoffs are correct*
+- *We had some data out of scope, after February 2023. currently removing it*
+```{r echo = FALSE}
+
+# Country
+tX.country <- a1.1 %>%
+  filter(type == 'bacterial') %>%
+  filter(category_name == 'total') %>%
+  group_by(timeToGroup, country) %>%
+  summarise(n = sum(count)) %>%
+  ungroup() %>%
+  group_by(timeToGroup) %>%
+  mutate(percent = n / sum(n) * 100,
+         value = paste0(n, ' (', round(percent, 2), '%)')) %>%
+  pivot_wider(id_cols = country, names_from = timeToGroup, values_from = value) %>%
+  add_row(country = 'Country, n (%)', .before = 1) %>%
+  rename('X' = 'country')
+
+# Age at hospital admission
+tX.age <- a1.1 %>%
+  filter(type == 'bacterial') %>%
+  filter(category_name == 'age') %>%
+  group_by(timeToGroup, category) %>%
+  summarise(n = sum(count)) %>%
+  ungroup() %>%
+  group_by(timeToGroup) %>%
+  mutate(percent = n / sum(n) * 100,
+         value = paste0(n, ' (', round(percent, 2), '%)')) %>%
+  pivot_wider(id_cols = category, names_from = timeToGroup, values_from = value) %>%
+  add_row(category = 'Age at hospital admission, n (%)', .before = 1) %>%
+  rename('X' = 'category')
+
+# Sex
+tX.sex <- a1.1 %>%
+  filter(type == 'bacterial') %>%
+  filter(category_name == 'sex') %>%
+  mutate(category = tolower(category)) %>%
+  group_by(timeToGroup, category) %>%
+  summarise(n = sum(count)) %>%
+  ungroup() %>%
+  group_by(timeToGroup) %>%
+  mutate(percent = n / sum(n) * 100,
+         value = paste0(n, ' (', round(percent, 2), '%)')) %>%
+  pivot_wider(id_cols = category, names_from = timeToGroup, values_from = value) %>%
+  add_row(category = 'Sex, n (%)', .before = 1) %>%
+  rename('X' = 'category')
+
+# Season
+month_season_mapping <- data.frame(month = c(3:12, 1, 2),
+                                   season = c(rep('Spring', 3), rep('Summer', 3), rep('Autumn', 3), rep('Winter', 3))) %>%
+  mutate(season = factor(season, levels = c('Spring', 'Summer', 'Autumn', 'Winter')))
+
+tX.season <- a2.1 %>% 
+  filter(type == 'bacterial') %>%
+  mutate(month = month(timeToGroup),
+# should check to make sure I defined these cohorts correctly
+         cohort = ifelse(as.Date('2019-03-01') <= timeToGroup & timeToGroup < as.Date('2020-02-28'), 'pre-NPI',
+                         ifelse(timeToGroup < as.Date('2021-02-28'), 'full-NPI', 
+                                ifelse(timeToGroup < as.Date('2023-02-28'), 'partial-NPI',
+                                                             'out of scope')))) %>%
+  filter(cohort != 'out of scope') %>%
+  left_join(month_season_mapping) %>%
+  group_by(cohort, season) %>%
+  summarise(n = sum(count)) %>%
+  ungroup() %>%
+  group_by(cohort) %>%
+  mutate(percent = n / sum(n) * 100,
+         value = paste0(n, ' (', round(percent, 2), '%)')) %>%
+  pivot_wider(id_cols = season, names_from = cohort, values_from = value) %>%
+  add_row(season = 'Season, n (%)', .before = 1) %>%
+  rename('X' = 'season')
+  
+
+# Length of hospitalization
+# where did we put this? I thought we made groups for the length of hospitalization?
+```
+
+Combine Table 1 sub-tables
+```{r echo = FALSE}
+tableX <- rbind(tX.country, tX.age, tX.sex, tX.season) %>%
+  select(X, `pre-NPI`, `full-NPI`, `partial-NPI`)
+
+```
+
