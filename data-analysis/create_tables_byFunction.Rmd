@@ -1,0 +1,278 @@
+---
+title: "Tables for Manuscript"
+author: "Simran Makwana & Alba Gutiérrez"
+date: "2023-10-16"
+output:
+  word_document: default
+  html_document: default
+---
+
+## Load the required libraries
+```{r}
+library(table1)
+library(dplyr)
+library(tidyr)
+```
+
+##Step 1: Run reformat_aggregate_output.Rmd with latest outputs to get combined dataframes with all data. Load the two files (a1 and a2 RData files)
+
+```{r}
+load(file = '../results/bacterial_aggregate_ouputs/a1_all_to_work.RData')
+load(file = '../results/bacterial_aggregate_ouputs/a2_all_to_work.RData')
+```
+
+Organize sites into countries
+- This list must be updated if additional countries / sites are added
+```{r}
+site_country_mapping <- data.frame('site' = c('BCH', 'CCHMC', 'CCMC', 'GOSH', 'H12O', 'HCUV', 'Michigan', 'UPitt'),
+                                   'country' = c('United States', 'United States', 'United States', 'United Kingdom', 
+                                                 'Spain', 'Spain', 'United States', 'United States'))
+
+a1.1 <- a1_all_to_work %>%
+  mutate(site = gsub('_.*', '', site), 
+         site = trimws(site)) %>%
+  left_join(site_country_mapping)
+
+a2.1 <- a2_all_to_work %>%
+  mutate(site = gsub('_.*', '', site),
+         site = trimws(site)) %>%
+  left_join(site_country_mapping)
+
+rm(a1_all_to_work)
+rm(a2_all_to_work)
+```
+# Count function
+We need to estimate the number and percentage of hospitalizations, by period (pre-NPI, full-NPI, partial-NPI), based on different scenarios:
+- filtering by type == all when we want table 1
+- filtering by type == bacterial infection when we want table X
+- doing the counts at different levels (age, sex, etc)
+
+We create a function that given the type and variable generates the table. Then we apply it to the different conditions. 
+- Percentages are calculated by clinical characteristic (columnwise)... for example all USA, UK and Spain counts within the pre-npi cohort add to 100%. To change this, modify `group_by(timeToGroup)` to something like `group_by(country)` in each section.
+
+```{r, echo=FALSE}
+countsAndPercentages <- function( input_df, selected_type, variable ){
+  
+  if( variable == "country"){
+    output <- input_df %>%
+      dplyr::filter(type == selected_type) %>%
+      dplyr::filter(category_name == "total" ) 
+      
+    output <- output %>%
+      dplyr::group_by(timeToGroup, country) %>%
+      dplyr::summarise(n = sum(count)) %>%
+      dplyr::ungroup() %>%
+      dplyr::group_by(timeToGroup) %>%
+      dplyr::mutate(percent = n / sum(n) * 100,
+                    value = paste0(n, ' (', round(percent, 2), '%)')) 
+    
+    output_wider <- output %>%
+      tidyr::pivot_wider(id_cols = country, 
+                         names_from = timeToGroup, 
+                         values_from = value) %>%
+      dplyr::add_row(country = 'Country, n (%)', .before = 1) %>%
+      dplyr::rename('X' = 'country')
+  }else if( variable == "subgroup"){
+    output <- input_df %>%
+      dplyr::filter(type == selected_type) %>%
+      dplyr::filter(category_name == "subgroups" ) 
+      
+    output <- output %>%
+      dplyr::group_by(timeToGroup, subgroup) %>%
+      dplyr::summarise(n = sum(count)) %>%
+      dplyr::ungroup() %>%
+      dplyr::group_by(timeToGroup) %>%
+      dplyr::mutate(percent = n / sum(n) * 100,
+                    value = paste0(n, ' (', round(percent, 2), '%)')) 
+    
+    output_wider <- output %>%
+      tidyr::pivot_wider(id_cols = subgroup, 
+                         names_from = timeToGroup, 
+                         values_from = value)
+
+  }else{
+    output <- input_df %>%
+      dplyr::filter(type == selected_type) %>%
+      dplyr::filter(category_name == variable ) 
+      
+    output <- output %>%
+      dplyr::group_by(timeToGroup, category) %>%
+      dplyr::summarise(n = sum(count)) %>%
+      dplyr::ungroup() %>%
+      dplyr::group_by(timeToGroup) %>%
+      dplyr::mutate(percent = n / sum(n) * 100, 
+                    value = paste0(n, ' (', round(percent, 2), '%)'))
+    
+    output_wider <- output %>%
+      tidyr::pivot_wider(id_cols = category, 
+                         names_from = timeToGroup, 
+                         values_from = value) %>%
+      dplyr::add_row(category = paste0( variable, ', n (%)'), .before = 1) %>%
+      dplyr::rename('X' = 'category')
+  }
+  return( output_wider )
+}
+```
+
+
+
+# Table 1 
+- Filter to type == all; include all study population hospitalizations
+- *NPI cohorts are redefined for the season counts using the a2 tables, verify that the cutoffs are correct*
+```{r echo = FALSE}
+# Country
+t1.country <- countsAndPercentages( input_df = a1.1, 
+                                 selected_type = "all", 
+                                 variable = "country")
+# Age at hospital admission
+t1.age <- countsAndPercentages( input_df = a1.1, 
+                                 selected_type = "all", 
+                                 variable = "age")
+
+# Sex
+t1.sex <- countsAndPercentages( input_df = a1.1, 
+                                 selected_type = "all", 
+                                 variable = "sex")
+# Season
+t1.season <- countsAndPercentages( input_df = a1.1, 
+                                 selected_type = "all", 
+                                 variable = "season")
+# Lenght of hospitalization
+t1.lengthHospitalization <- countsAndPercentages( input_df = a1.1, 
+                                 selected_type = "all", 
+                                 variable = "lengthHospitalization")
+```
+
+Combine Table 1 sub-tables
+```{r echo = FALSE}
+table1 <- rbind(t1.country, t1.age, t1.sex, t1.season, t1.lengthHospitalization) %>%
+  select(X, `pre-NPI`, `full-NPI`, `partial-NPI`)
+
+```
+
+```{r}
+rm(list=setdiff(ls(), c("table1","a1.1", "countsAndPercentages")))
+
+```
+
+
+# Table 2 
+
+```{r}
+table2 <- countsAndPercentages( input_df = a1.1, 
+                                 selected_type = "bacterial", 
+                                 variable ="subgroup")
+
+```
+
+
+# Table 3 
+
+```{r}
+table3 <- countsAndPercentages( input_df = a1.1, 
+                                 selected_type = "bacterial", 
+                                 variable ="bacterialInfection")
+
+```
+
+# Table X 
+- Filter to type == bacterial
+```{r echo = FALSE}
+# Country
+tX.country <- countsAndPercentages( input_df = a1.1, 
+                                 selected_type = "bacterial", 
+                                 variable = "country")
+# Age at hospital admission
+tX.age <- countsAndPercentages( input_df = a1.1, 
+                                 selected_type = "bacterial", 
+                                 variable = "age")
+
+# Sex
+tX.sex <- countsAndPercentages( input_df = a1.1, 
+                                 selected_type = "bacterial", 
+                                 variable = "sex")
+# Season
+tX.season <- countsAndPercentages( input_df = a1.1, 
+                                 selected_type = "bacterial", 
+                                 variable = "season")
+# Lenght of hospitalization
+tX.lengthHospitalization <- countsAndPercentages( input_df = a1.1, 
+                                 selected_type = "bacterial", 
+                                 variable = "lengthHospitalization")
+```
+
+Combine Table X sub-tables
+```{r echo = FALSE}
+tableX <- rbind(tX.country, tX.age, tX.sex, tX.season, tX.lengthHospitalization) %>%
+  select(X, `pre-NPI`, `full-NPI`, `partial-NPI`)
+
+```
+
+```{r}
+rm(list=setdiff(ls(), c("table1","table2","table3","tableX","a1.1", "countsAndPercentages")))
+```
+
+```{r}
+#install.packages("officer")
+#install.packages("flextable")
+library(officer)
+library(flextable)
+
+# Create a Word document
+doc <- read_docx()
+
+# Add a heading for table1
+doc <- body_add_par(doc, "Table 1", 
+                    style = "heading 1")
+
+# Add the table1 to the doc
+doc <- body_add_flextable(
+  doc,
+  value = flextable(table1))
+
+# Add a heading for table2
+doc <- body_add_par(doc, "Table 2", 
+                    style = "heading 1")
+
+# Add the table2 to the doc
+doc <- body_add_flextable(
+  doc,
+  value = flextable(table2))
+
+
+# Add a heading for table3
+doc <- body_add_par(doc, "Table 3",
+                    style = "heading 1")
+
+# Add the table 3 to the doc
+doc <- body_add_flextable(
+  doc,
+  value = flextable(table3))
+
+# Add a heading for tableX
+doc <- body_add_par(doc, "Table X",
+                    style = "heading 1")
+
+# Add the table X to the doc
+doc <- body_add_flextable(
+  doc,
+  value = flextable(tableX))
+
+# Save the document
+print(doc, target = "../../bacterialTables.docx")
+
+```
+
+```{r}
+table2
+```
+
+```{r}
+table3
+```
+
+```{r}
+tableX
+```
+
+
