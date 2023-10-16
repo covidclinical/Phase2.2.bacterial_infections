@@ -24,7 +24,7 @@ The folder containing the outputs from the different sites follows the next stru
 - One folder per site with the name of the site
 - Inside each site folder, two .RData files, "a1Tables.RData" and "a2Tables.RData"
 ```{r}
-dir.input <- "/4ceData/QC_counts/"
+dir.input <- "../results/QC_counts/"
 ```
 
 #### Get all the folders names 
@@ -75,6 +75,10 @@ for( i in 1:length( files )){
   a2_lengthHosp_bacterial <- a2_lengthHosp_bacterial %>%
     dplyr::mutate( category_name = "lengthHospitalization", type = "bacterial" ) 
   
+   a2_subgroup_bacterial <- a2_subgroups %>%
+    dplyr::mutate( category_name = "subgroups", type = "bacterial" )
+ 
+  
   ### add dead and ICU grouped by year
   a2_icu_all <- a2_icu_all %>%
     dplyr::mutate( category_name = "icu",type = "all" )
@@ -108,10 +112,11 @@ for( i in 1:length( files )){
   a2_all <- rbind( a2_age_all, a2_sex_all, a2_total_all, 
                    a2_lengthHosp_all, a2_lengthHosp_bacterial,
                    a2_age_bacterial, a2_sex_bacterial, 
+                   a2_subgroup_bacterial,
                    a2_total_bacterial, a2_bact_infection, a2_icu_mortality) %>%
             dplyr::mutate( site = site_id )
   
-  rm( a2_age_all, a2_sex_all, a2_total_all, a2_age_bacterial, a2_sex_bacterial,
+  rm( a2_age_all, a2_sex_all, a2_total_all, a2_age_bacterial, a2_sex_bacterial,a2_subgroup_bacterial,
       a2_lengthHosp_all, a2_lengthHosp_bacterial,
       a2_total_bacterial, a2_bact_infection, a2_icu_mortality )
   
@@ -153,6 +158,9 @@ for( i in 1:length( files )){
   a1_lengthHosp_all <- a1_lengthHosp_all %>%
     dplyr::mutate( category_name = "lengthHospitalization", type = "all" )
   
+  a1_season_all <- a1_season_all %>%
+    dplyr::mutate( category_name = "season", type = "all" )
+ 
   a1_total_bacterial <-a1_total_bacterial %>%
     dplyr::mutate( category_name = "total", type = "bacterial" )
   
@@ -168,6 +176,13 @@ for( i in 1:length( files )){
   a1_bact_infection <- a1_bact_infection %>%
     dplyr::mutate( category_name = "bacterialInfection", type = "bacterial" ) %>%
     dplyr::rename( category = disorder_group )
+  
+  a1_season_bacterial <- a1_season_bacterial %>%
+    dplyr::mutate( category_name = "season", type = "bacterial" )
+ 
+   a1_subgroup_bacterial <- a1_subgroups %>%
+    dplyr::mutate( category_name = "subgroups", type = "bacterial" )
+ 
   
   ### add dead and ICU, in this case the category is a number so we will need to change
   ### it later to character to merge with the rest of tables
@@ -198,11 +213,14 @@ for( i in 1:length( files )){
   a1_all <- rbind( a1_age_all, a1_sex_all, a1_total_all, 
                    a1_age_bacterial, a1_sex_bacterial, 
                    a1_lengthHosp_all, a1_lengthHosp_bacterial,
+                   a1_season_bacterial, a1_season_all,
+                   a1_subgroup_bacterial,
                    a1_total_bacterial, a1_bact_infection, a1_icu_mortality) %>%
             dplyr::mutate( site = site_id )
   
-  rm( a1_age_all, a1_sex_all, a1_total_all, a1_age_bacterial, a1_sex_bacterial,
+  rm( a1_age_all, a1_sex_all, a1_total_all, a1_age_bacterial, a1_sex_bacterial,a1_subgroup_bacterial,
       a1_lengthHosp_all, a1_lengthHosp_bacterial,
+      a1_season_bacterial, a1_season_all,
       a1_total_bacterial, a1_bact_infection, a1_icu_mortality )
   
   # put together all the sites a1 tables as a1_all_to_work      
@@ -224,7 +242,7 @@ ls()
 
 Save the files generated. 
 ```{r}
-save(a1_all_to_work, file = "/4ceData/bacterial_aggregate_ouputs/a1_all_to_work.RData")
-save(a2_all_to_work, file = "/4ceData/bacterial_aggregate_ouputs/a2_all_to_work.RData")
+save(a1_all_to_work, file = "../results/bacterial_aggregate_ouputs/a1_all_to_work.RData")
+save(a2_all_to_work, file = "../results/bacterial_aggregate_ouputs/a2_all_to_work.RData")
 ```
 
