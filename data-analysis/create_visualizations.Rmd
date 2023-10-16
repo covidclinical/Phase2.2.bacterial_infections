@@ -1,0 +1,76 @@
+---
+title: "Plots for Manuscript"
+author: "Simran Makwana & Alba Gutiérrez"
+date: "2023-10-16"
+output:
+  word_document: default
+  html_document: default
+---
+
+## Load the required libraries
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+##Step 1: Run reformat_aggregate_output.Rmd with latest outputs to get combined dataframes with all data. Load the two files (a1 and a2 RData files)
+
+```{r}
+load(file = '../results/bacterial_aggregate_ouputs/a1_all_to_work.RData')
+load(file = '../results/bacterial_aggregate_ouputs/a2_all_to_work.RData')
+```
+
+Organize sites into countries
+- This list must be updated if additional countries / sites are added
+```{r}
+site_country_mapping <- data.frame('site' = c('BCH', 'CCHMC', 'CCMC', 'GOSH', 'H12O', 'HCUV', 'Michigan', 'UPitt'),
+                                   'country' = c('United States', 'United States', 'United States', 'United Kingdom', 
+                                                 'Spain', 'Spain', 'United States', 'United States'))
+
+a1.1 <- a1_all_to_work %>%
+  mutate(site = gsub('_.*', '', site), 
+         site = trimws(site)) %>%
+  left_join(site_country_mapping)
+
+a2.1 <- a2_all_to_work %>%
+  mutate(site = gsub('_.*', '', site),
+         site = trimws(site)) %>%
+  left_join(site_country_mapping)
+
+rm(a1_all_to_work)
+rm(a2_all_to_work)
+```
+# Figure 1
+Bar chart of infections by hospital.
+On the X-axis hospitals (order by country), on they Y-axis total number of bacterial infections, one pannel per category. 
+```{r}
+bacterial_counts <- a1.1 %>%
+      dplyr::filter(type == "bacterial") %>%
+      dplyr::filter(category_name == "bacterialInfection" ) 
+      
+bacterial_counts_bySite <- bacterial_counts %>%
+  dplyr::group_by(site, category) %>%
+  dplyr::summarise(n = sum(count)) %>%
+  dplyr::ungroup() 
+```
+Create the barplots
+```{r}
+bacterial_counts_bySite$site <- factor(bacterial_counts_bySite$site, levels = c("BCH", "Michigan", "H12O", "HCUV"))
+
+bacterial_counts_bySite$country <- ifelse( bacterial_counts_bySite$site %in% c("H12O", "HCUV"), "Spain", "US")
+
+output_plot <- ggplot2::ggplot( data = bacterial_counts_bySite, 
+                 aes( x= site, y = n, fill=country )) +
+  ggplot2::geom_bar( stat = "identity") +
+  ggplot2::scale_fill_manual( "legend", values = c("Spain" = "#D81B60", "US" = "#1E88E5", "UK" = "#FFC107")) +
+  ggplot2::geom_vline(xintercept = 2.5, linetype="dotted") +
+  ggplot2::facet_wrap(~ category, scales = "free") + 
+  ggplot2::geom_text( aes(label=n), vjust=1.6, color="white", size=3.5) + 
+  ggplot2::ylab( "Number of hospitalizations") +
+  ggplot2::theme_bw()
+
+output_plot
+```
+ 
+ 
