@@ -262,17 +262,3 @@ doc <- body_add_flextable(
 print(doc, target = "../../bacterialTables.docx")
 
 ```
-
-```{r}
-table2
-```
-
-```{r}
-table3
-```
-
-```{r}
-tableX
-```
-
-
