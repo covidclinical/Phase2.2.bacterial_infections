@@ -56,6 +56,9 @@ for( i in 1:length( files )){
   a2_sex_all <- a2_sex_all %>%
     dplyr::mutate( category_name = "sex", type = "all" )
   
+  a2_lengthHosp_all <- a2_lengthHosp_all %>%
+    dplyr::mutate( category_name = "lengthHospitalization", type = "all" )
+  
   a2_total_bacterial <-a2_total_bacterial %>%
     dplyr::mutate( category_name = "total", type = "bacterial" )
   
@@ -68,6 +71,9 @@ for( i in 1:length( files )){
   a2_bact_infection <- a2_bact_infection %>%
     dplyr::mutate( category_name = "bacterialInfection", type = "bacterial" ) %>%
     dplyr::rename( category = disorder_group )
+  
+  a2_lengthHosp_bacterial <- a2_lengthHosp_bacterial %>%
+    dplyr::mutate( category_name = "lengthHospitalization", type = "bacterial" ) 
   
   ### add dead and ICU grouped by year
   a2_icu_all <- a2_icu_all %>%
@@ -100,11 +106,13 @@ for( i in 1:length( files )){
   # add all the a2 tables together as a2_all and remove the original ones 
   # add a column with the site id
   a2_all <- rbind( a2_age_all, a2_sex_all, a2_total_all, 
+                   a2_lengthHosp_all, a2_lengthHosp_bacterial,
                    a2_age_bacterial, a2_sex_bacterial, 
                    a2_total_bacterial, a2_bact_infection, a2_icu_mortality) %>%
             dplyr::mutate( site = site_id )
   
   rm( a2_age_all, a2_sex_all, a2_total_all, a2_age_bacterial, a2_sex_bacterial,
+      a2_lengthHosp_all, a2_lengthHosp_bacterial,
       a2_total_bacterial, a2_bact_infection, a2_icu_mortality )
   
   # put together all the sites a2 tables as a2_all_to_work      
@@ -142,6 +150,9 @@ for( i in 1:length( files )){
   a1_sex_all <- a1_sex_all %>%
     dplyr::mutate( category_name = "sex", type = "all" )
   
+  a1_lengthHosp_all <- a1_lengthHosp_all %>%
+    dplyr::mutate( category_name = "lengthHospitalization", type = "all" )
+  
   a1_total_bacterial <-a1_total_bacterial %>%
     dplyr::mutate( category_name = "total", type = "bacterial" )
   
@@ -150,6 +161,9 @@ for( i in 1:length( files )){
   
   a1_sex_bacterial <- a1_sex_bacterial %>%
     dplyr::mutate( category_name = "sex", type = "bacterial" )
+  
+  a1_lengthHosp_bacterial <- a1_lengthHosp_bacterial %>%
+    dplyr::mutate( category_name = "lengthHospitalization", type = "bacterial" ) 
   
   a1_bact_infection <- a1_bact_infection %>%
     dplyr::mutate( category_name = "bacterialInfection", type = "bacterial" ) %>%
@@ -183,10 +197,12 @@ for( i in 1:length( files )){
   # add a column with the site id
   a1_all <- rbind( a1_age_all, a1_sex_all, a1_total_all, 
                    a1_age_bacterial, a1_sex_bacterial, 
+                   a1_lengthHosp_all, a1_lengthHosp_bacterial,
                    a1_total_bacterial, a1_bact_infection, a1_icu_mortality) %>%
             dplyr::mutate( site = site_id )
   
   rm( a1_age_all, a1_sex_all, a1_total_all, a1_age_bacterial, a1_sex_bacterial,
+      a1_lengthHosp_all, a1_lengthHosp_bacterial,
       a1_total_bacterial, a1_bact_infection, a1_icu_mortality )
   
   # put together all the sites a1 tables as a1_all_to_work      
@@ -206,4 +222,9 @@ rm(list=setdiff(ls(), c("a2_all_to_work","a1_all_to_work", "files", "dir.input")
 ls()
 ```
 
+Save the files generated. 
+```{r}
+save(a1_all_to_work, file = "/4ceData/bacterial_aggregate_ouputs/a1_all_to_work.RData")
+save(a2_all_to_work, file = "/4ceData/bacterial_aggregate_ouputs/a2_all_to_work.RData")
+```
 
