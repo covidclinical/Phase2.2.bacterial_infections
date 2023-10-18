@@ -59,7 +59,7 @@ We create a function that given the type and variable generates the table. Then 
 - Percentages are calculated by clinical characteristic (columnwise)... for example all USA, UK and Spain counts within the pre-npi cohort add to 100%. To change this, modify `group_by(timeToGroup)` to something like `group_by(country)` in each section.
 
 ```{r, echo=FALSE}
-countsAndPercentages <- function( input_df, selected_type, variable ){
+countsAndPercentages <- function( input_df, selected_type, variable, percentage ){
   
   if( variable == "country"){
     output <- input_df %>%
@@ -88,10 +88,18 @@ countsAndPercentages <- function( input_df, selected_type, variable ){
     output <- output %>%
       dplyr::group_by(timeToGroup, subgroup) %>%
       dplyr::summarise(n = sum(count)) %>%
-      dplyr::ungroup() %>%
-      dplyr::group_by(timeToGroup) %>%
-      dplyr::mutate(percent = n / sum(n) * 100,
-                    value = paste0(n, ' (', round(percent, 2), '%)')) 
+      dplyr::ungroup() 
+    
+    if( percentage == TRUE){
+      output <- output %>%
+        dplyr::group_by(timeToGroup) %>%
+        dplyr::mutate(percent = n / sum(n) * 100,
+                    value = paste0(n, ' (', round(percent, 2), '%)'))
+    }else{
+       output <- output %>%
+        dplyr::group_by(timeToGroup) %>%
+        dplyr::mutate(value = n)
+    }
     
     output_wider <- output %>%
       tidyr::pivot_wider(id_cols = subgroup, 
@@ -106,10 +114,18 @@ countsAndPercentages <- function( input_df, selected_type, variable ){
     output <- output %>%
       dplyr::group_by(timeToGroup, category) %>%
       dplyr::summarise(n = sum(count)) %>%
-      dplyr::ungroup() %>%
-      dplyr::group_by(timeToGroup) %>%
-      dplyr::mutate(percent = n / sum(n) * 100, 
+      dplyr::ungroup()
+    
+    if( percentage == TRUE){
+      output <- output %>%
+        dplyr::group_by(timeToGroup) %>%
+        dplyr::mutate(percent = n / sum(n) * 100,
                     value = paste0(n, ' (', round(percent, 2), '%)'))
+    }else{
+       output <- output %>%
+        dplyr::group_by(timeToGroup) %>%
+        dplyr::mutate(value = n)
+    }
     
     output_wider <- output %>%
       tidyr::pivot_wider(id_cols = category, 
@@ -118,6 +134,7 @@ countsAndPercentages <- function( input_df, selected_type, variable ){
       dplyr::add_row(category = paste0( variable, ', n (%)'), .before = 1) %>%
       dplyr::rename('X' = 'category')
   }
+  
   return( output_wider )
 }
 ```
@@ -131,24 +148,37 @@ countsAndPercentages <- function( input_df, selected_type, variable ){
 # Country
 t1.country <- countsAndPercentages( input_df = a1.1, 
                                  selected_type = "all", 
-                                 variable = "country")
+                                 variable = "country", 
+                                 percentage = TRUE)
 # Age at hospital admission
 t1.age <- countsAndPercentages( input_df = a1.1, 
                                  selected_type = "all", 
-                                 variable = "age")
+                                 variable = "age", 
+                                 percentage = TRUE)
+orderAge <- c("age, n (%)","infancy", "childhood", "middle childhood", "adolescence")
+t1.age$X <- factor(t1.age$X , levels = orderAge)
+t1.age <- t1.age[order(t1.age$X), ]
+
 
 # Sex
 t1.sex <- countsAndPercentages( input_df = a1.1, 
                                  selected_type = "all", 
-                                 variable = "sex")
+                                 variable = "sex", 
+                                 percentage = TRUE)
 # Season
 t1.season <- countsAndPercentages( input_df = a1.1, 
                                  selected_type = "all", 
-                                 variable = "season")
+                                 variable = "season", 
+                                 percentage = TRUE)
 # Lenght of hospitalization
 t1.lengthHospitalization <- countsAndPercentages( input_df = a1.1, 
                                  selected_type = "all", 
-                                 variable = "lengthHospitalization")
+                                 variable = "lengthHospitalization", 
+                                 percentage = TRUE)
+
+orderLength <- c("lengthHospitalization, n (%)","less than 3 days", "between 3 and 7 days", "more than 7 days")
+t1.lengthHospitalization$X <- factor(t1.lengthHospitalization$X , levels = orderLength)
+t1.lengthHospitalization <- t1.lengthHospitalization[order(t1.lengthHospitalization$X), ]
 ```
 
 Combine Table 1 sub-tables
@@ -169,7 +199,8 @@ rm(list=setdiff(ls(), c("table1","a1.1", "countsAndPercentages")))
 ```{r}
 table2 <- countsAndPercentages( input_df = a1.1, 
                                  selected_type = "bacterial", 
-                                 variable ="subgroup")
+                                 variable ="subgroup", 
+                                 percentage = FALSE)
 
 ```
 
@@ -179,7 +210,8 @@ table2 <- countsAndPercentages( input_df = a1.1,
 ```{r}
 table3 <- countsAndPercentages( input_df = a1.1, 
                                  selected_type = "bacterial", 
-                                 variable ="bacterialInfection")
+                                 variable ="bacterialInfection", 
+                                 percentage = FALSE)
 
 ```
 
@@ -189,24 +221,37 @@ table3 <- countsAndPercentages( input_df = a1.1,
 # Country
 tX.country <- countsAndPercentages( input_df = a1.1, 
                                  selected_type = "bacterial", 
-                                 variable = "country")
+                                 variable = "country", 
+                                 percentage = TRUE)
 # Age at hospital admission
 tX.age <- countsAndPercentages( input_df = a1.1, 
                                  selected_type = "bacterial", 
-                                 variable = "age")
+                                 variable = "age", 
+                                 percentage = TRUE)
+
+orderAge <- c("age, n (%)","infancy", "childhood", "middle childhood", "adolescence")
+tX.age$X <- factor(tX.age$X , levels = orderAge)
+tX.age <- tX.age[order(tX.age$X), ]
 
 # Sex
 tX.sex <- countsAndPercentages( input_df = a1.1, 
                                  selected_type = "bacterial", 
-                                 variable = "sex")
+                                 variable = "sex", 
+                                 percentage = TRUE)
 # Season
 tX.season <- countsAndPercentages( input_df = a1.1, 
                                  selected_type = "bacterial", 
-                                 variable = "season")
+                                 variable = "season", 
+                                 percentage = TRUE)
 # Lenght of hospitalization
 tX.lengthHospitalization <- countsAndPercentages( input_df = a1.1, 
                                  selected_type = "bacterial", 
-                                 variable = "lengthHospitalization")
+                                 variable = "lengthHospitalization", 
+                                 percentage = TRUE)
+
+orderLength <- c("lengthHospitalization, n (%)","less than 3 days", "between 3 and 7 days", "more than 7 days")
+tX.lengthHospitalization$X <- factor(tX.lengthHospitalization$X , levels = orderLength)
+tX.lengthHospitalization <- tX.lengthHospitalization[order(tX.lengthHospitalization$X), ]
 ```
 
 Combine Table X sub-tables
