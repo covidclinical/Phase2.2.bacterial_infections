@@ -71,23 +71,23 @@ ICD9_Code,Description,Syndrome,IBI_simple,IBI_extensive,Respiratory,Skin,bacteri
 421.0,Acute and subacute bacterial endocarditis,endocarditis,no,yes,no,no,yes
 421.1,Acute and subacute infective endocarditis in diseases classified elsewhere,endocarditis,no,yes,no,no,yes
 421.9,"Acute endocarditis, unspecified",endocarditis,no,yes,no,no,yes
-003.21,Salmonella meningitis,bacterial CNS infections,yes,yes,no,no,no
-036.0,Meningococcal meningitis,bacterial CNS infections,yes,yes,no,no,no
-091.81,Acute syphilitic meningitis (secondary),bacterial CNS infections,yes,yes,no,no,no
-094.2,Syphilitic meningitis,bacterial CNS infections,yes,yes,no,no,no
-098.82,Gonococcal meningitis,bacterial CNS infections,yes,yes,no,no,no
-100.81,Leptospiral meningitis (aseptic),bacterial CNS infections,yes,yes,no,no,no
-320,Bacterial meningitis,bacterial CNS infections,yes,yes,no,no,no
-320.0,Hemophilus meningitis,bacterial CNS infections,yes,yes,no,no,no
-320.1,Pneumococcal meningitis,bacterial CNS infections,yes,yes,no,no,no
-320.2,Streptococcal meningitis,bacterial CNS infections,yes,yes,no,no,no
-320.3,Staphylococcal meningitis,bacterial CNS infections,yes,yes,no,no,no
-320.7,Meningitis in other bacterial diseases classified elsewhere,bacterial CNS infections,yes,yes,no,no,no
-320.8,Meningitis due to other specified bacteria,bacterial CNS infections,yes,yes,no,no,no
-320.81,Anaerobic meningitis,bacterial CNS infections,yes,yes,no,no,no
-320.82,"Meningitis due to gram-negative bacteria, not elsewhere classified",bacterial CNS infections,yes,yes,no,no,no
-320.89,Meningitis due to other specified bacteria,bacterial CNS infections,yes,yes,no,no,no
-320.9,Meningitis due to unspecified bacterium,bacterial CNS infections,yes,yes,no,no,no
+003.21,Salmonella meningitis,bacterial meningitis,yes,yes,no,no,no
+036.0,Meningococcal meningitis,bacterial meningitis,yes,yes,no,no,no
+091.81,Acute syphilitic meningitis (secondary),bacterial meningitis,yes,yes,no,no,no
+094.2,Syphilitic meningitis,bacterial meningitis,yes,yes,no,no,no
+098.82,Gonococcal meningitis,bacterial meningitis,yes,yes,no,no,no
+100.81,Leptospiral meningitis (aseptic),bacterial meningitis,yes,yes,no,no,no
+320,Bacterial meningitis,bacterial meningitis,yes,yes,no,no,no
+320.0,Hemophilus meningitis,bacterial meningitis,yes,yes,no,no,no
+320.1,Pneumococcal meningitis,bacterial meningitis,yes,yes,no,no,no
+320.2,Streptococcal meningitis,bacterial meningitis,yes,yes,no,no,no
+320.3,Staphylococcal meningitis,bacterial meningitis,yes,yes,no,no,no
+320.7,Meningitis in other bacterial diseases classified elsewhere,bacterial meningitis,yes,yes,no,no,no
+320.8,Meningitis due to other specified bacteria,bacterial meningitis,yes,yes,no,no,no
+320.81,Anaerobic meningitis,bacterial meningitis,yes,yes,no,no,no
+320.82,"Meningitis due to gram-negative bacteria, not elsewhere classified",bacterial meningitis,yes,yes,no,no,no
+320.89,Meningitis due to other specified bacteria,bacterial meningitis,yes,yes,no,no,no
+320.9,Meningitis due to unspecified bacterium,bacterial meningitis,yes,yes,no,no,no
 003.24,Salmonella osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
 376.03,Orbital osteomyelitis,osteoarticular infections,no,yes,no,yes,yes
 730,Osteomyelitis periostitis and other infections involving bone,osteoarticular infections,no,yes,no,yes,yes

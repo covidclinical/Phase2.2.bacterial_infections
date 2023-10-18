@@ -21,6 +21,14 @@ load(file = '../results/bacterial_aggregate_ouputs/a1_all_to_work.RData')
 load(file = '../results/bacterial_aggregate_ouputs/a2_all_to_work.RData')
 ```
 
+Replace "bacterial CNS infections" by "bacterial meningitis" to make it match the ICD9 with the ICD10 category. 
+```{r}
+a1_all_to_work$category <- gsub("bacterial CNS infections", "bacterial meningitis", a1_all_to_work$category)
+
+a2_all_to_work$category <- gsub("bacterial CNS infections", "bacterial meningitis", a2_all_to_work$category)
+```
+
+
 Organize sites into countries
 - This list must be updated if additional countries / sites are added
 ```{r}
