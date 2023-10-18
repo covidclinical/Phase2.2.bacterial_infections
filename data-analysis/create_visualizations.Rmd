@@ -21,6 +21,14 @@ load(file = '../results/bacterial_aggregate_ouputs/a1_all_to_work.RData')
 load(file = '../results/bacterial_aggregate_ouputs/a2_all_to_work.RData')
 ```
 
+Replace "bacterial CNS infections" by "bacterial meningitis" to make it match the ICD9 with the ICD10 category. 
+```{r}
+a1_all_to_work$category <- gsub("bacterial CNS infections", "bacterial meningitis", a1_all_to_work$category)
+
+a2_all_to_work$category <- gsub("bacterial CNS infections", "bacterial meningitis", a2_all_to_work$category)
+```
+
+
 Organize sites into countries
 - This list must be updated if additional countries / sites are added
 ```{r}
@@ -54,11 +62,39 @@ bacterial_counts_bySite <- bacterial_counts %>%
   dplyr::summarise(n = sum(count)) %>%
   dplyr::ungroup() 
 ```
+Add 0s for the categories not present in sites
+```{r}
+allCategories <- unique(bacterial_counts_bySite$category)
+sites <- unique(bacterial_counts_bySite$site)
+ceroCategories <- as.data.frame( matrix( ncol = 3, nrow = 0))
+colnames(ceroCategories) <- colnames( bacterial_counts_bySite)
+for(i in 1:length(sites)){
+  subset <- bacterial_counts_bySite %>%
+    dplyr::filter( site == sites[i]) 
+  
+  missingCategories <- allCategories[! allCategories %in% subset$category ]
+  if(length(missingCategories != 0)){
+    toAddCategories <- as.data.frame( missingCategories) %>%
+      dplyr::mutate( site = sites[i], 
+                     category = missingCategories, 
+                     n = 0) %>%
+      dplyr::select( -missingCategories)
+    ceroCategories <- rbind( ceroCategories, toAddCategories )
+  }
+  
+}
+
+bacterial_counts_bySite <- rbind( bacterial_counts_bySite, ceroCategories)
+```
+
 Create the barplots
 ```{r}
 bacterial_counts_bySite$site <- factor(bacterial_counts_bySite$site, levels = c("BCH", "Michigan", "H12O", "HCUV"))
 
 bacterial_counts_bySite$country <- ifelse( bacterial_counts_bySite$site %in% c("H12O", "HCUV"), "Spain", "US")
+
+bacterial_counts_bySite$site <- factor(bacterial_counts_bySite$site, levels = c("BCH", "Michigan", "H12O", "HCUV"))
+
 
 output_plot <- ggplot2::ggplot( data = bacterial_counts_bySite, 
                  aes( x= site, y = n, fill=country )) +
@@ -100,7 +136,7 @@ linePlot <- ggplot2::ggplot( data = valuesToPlot, aes(x=timeToGroup, y=count, gr
   #ggplot2::geom_line( aes(linetype=category_name, color=category_name)) +
   ggplot2::facet_wrap(~ site, scales = "free") + 
   #ggplot2::scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9","darkgreen", "grey")) +
-  ggplot2::scale_color_brewer(palette="Greens") +
+  #ggplot2::scale_color_brewer(palette="Greens") +
   ggplot2::ylab( "Number of hospitalizations") +
   ggplot2::xlab( "time") +
   ggplot2::geom_vline(xintercept = as.Date( "2020-02-01") , linetype = "dashed") +
@@ -112,7 +148,7 @@ linePlot <- ggplot2::ggplot( data = valuesToPlot, aes(x=timeToGroup, y=count, gr
 linePlot
 ```
 Test the violin plot idea
-```{r}
+```{r, eval=FALSE}
 valuesToPlot$site <- factor(valuesToPlot$site, levels = c("BCH", "Michigan", "H12O", "HCUV"))
 
 valuesToPlot$country <- ifelse( valuesToPlot$site %in% c("H12O", "HCUV"), "Spain", "US")
