@@ -170,6 +170,12 @@ t1.season <- countsAndPercentages( input_df = a1.1,
                                  selected_type = "all", 
                                  variable = "season", 
                                  percentage = TRUE)
+
+orderSeason <- c("season, n (%)","Spring", "Summer", "Autumn", "Winter")
+t1.season$X <- factor(t1.season$X , levels = orderSeason)
+t1.season <- t1.season[order(t1.season$X), ]
+
+
 # Lenght of hospitalization
 t1.lengthHospitalization <- countsAndPercentages( input_df = a1.1, 
                                  selected_type = "all", 
@@ -243,6 +249,9 @@ tX.season <- countsAndPercentages( input_df = a1.1,
                                  selected_type = "bacterial", 
                                  variable = "season", 
                                  percentage = TRUE)
+orderSeason <- c("season, n (%)","Spring", "Summer", "Autumn", "Winter")
+tX.season$X <- factor(tX.season$X , levels = orderSeason)
+tX.season <- tX.season[order(tX.season$X), ]
 # Lenght of hospitalization
 tX.lengthHospitalization <- countsAndPercentages( input_df = a1.1, 
                                  selected_type = "bacterial", 
