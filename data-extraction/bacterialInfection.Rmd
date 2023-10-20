@@ -39,11 +39,11 @@ Change the values of the following variables according to your site:
 5. Site ID
 # SITE ID: BCH
 ```{r message=FALSE, warning=FALSE}
-folder_4ce_files <- "/4ceData/Input/AllAdminJuly2023/"
+folder_4ce_files <- "/4ceData/Input/4CEAllAdminChortsOct2023/"
 obfuscation =  FALSE
 #obfuscation = 3
 dateFormat <- "%Y-%m-%d"
-data_update_date <- "2023-07-01"
+data_update_date <- "2023-10-01"
 dir.output <- "/4ceData/bacterialInfection_outputs/"
 age_estimation_variability <- FALSE
 ```
@@ -137,6 +137,10 @@ if(filecheck){
   print('Error in reading files')
 }
 
+#remove potential duplicates
+clinical_raw <- clinical_raw %>% unique()
+demo_raw <- demo_raw %>% unique()
+obs_raw <- obs_raw %>% unique()
 
 ```
 
@@ -402,6 +406,7 @@ For this estimate, done for QC purposes, we do not filter by any condition.
 monthly_hospitalizations <- all_codes_desc %>%
   dplyr::filter( time_p < end_date_plots, 
                  time_p >= start_date_plots ) %>%
+  unique() %>%
   dplyr::group_by( time_p ) %>%
   dplyr::summarise(count_total =  ifelse(n_distinct(hospitalization_id) > obfuscation | isFALSE(obfuscation),
                                n_distinct(hospitalization_id), 
