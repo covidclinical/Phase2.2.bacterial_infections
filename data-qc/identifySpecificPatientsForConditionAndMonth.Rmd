@@ -1,0 +1,353 @@
+---
+title: "Identify specific patients for a condition and month"
+output:
+  html_document:
+    code_folding: hide
+    toc: yes
+    toc_float: yes
+  word_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+```{r message=FALSE, warning=FALSE}
+folder_4ce_files <- "/4ceData/Input/4CEAllAdminChortsOct2023/"
+obfuscation =  FALSE
+#obfuscation = 3
+dateFormat <- "%Y-%m-%d"
+data_update_date <- "2023-10-01"
+dir.output <- "/4ceData/QC_patientsToCheck/"
+age_estimation_variability <- FALSE
+```
+
+# Setting up the R environment
+
+```{r}
+print("Creating the output folder if it doesn't exist")
+if (! dir.output %in% list.dirs()) {dir.create(dir.output)}
+
+print(timestamp())
+print('##########')
+```
+
+3. installing and loading the libraries
+4. set up the theme plots and color palettes 
+5. get the session info 
+
+```{r libraries, message=FALSE, warning=FALSE, results='hide'}
+# Install packages
+source("../R/packagesInstallation.R")
+# set up the theme plots
+source("../R/theme_plots.R")
+# get the session information
+sessionInfo()
+# load the local variables
+source("../R/setUpVariableParameters.R")
+
+print(paste0( 'FourCePhase2.2bacterial Infection Code version: ', codeVersion ))
+print('##########')
+```
+
+# Data loading
+We will use as input the 2.2 data files. Specifically:
+-   LocalPatientSummary
+-   LocalPatientObservation
+-   LocalPatientClinicalcourse
+
+## Reading 4CE phase 2.2 files
+
+```{r message=FALSE, warning=FALSE}
+### Read the CSV input files without duplicating the data
+
+source("../R/readInputFiles_fread.R")
+
+filecheck <- checkInputFilesFread( path = folder_4ce_files, separator = ",", skip = 0, verbose = TRUE )
+
+if(filecheck){
+  demo_raw <- read_delim_4ce("LocalPatientSummary.csv", folder_4ce_files, )
+  obs_raw <- read_delim_4ce("LocalPatientObservations.csv", folder_4ce_files)
+  clinical_raw <- read_delim_4ce("LocalPatientClinicalCourse.csv", folder_4ce_files)
+
+  ### Extract the patient summary and observation information. 
+  # arrange in a consistent way to make sure we are not assuming the order of some sites
+  # select only the study period
+  demo_raw <- demo_raw %>% 
+    dplyr::mutate( age = trunc( age ) ) %>%
+    dplyr::filter(cohort == "AllAdm", 
+                  age >= 0,
+                  as.Date(admission_date, format = dateFormat) >= ymd('2019-01-01'),
+                  as.Date(admission_date, format = dateFormat) <= ymd('2023-03-31')) %>%
+    dplyr::arrange(patient_num, as.Date(admission_date, format = dateFormat), days_since_admission)
+  obs_raw <- obs_raw %>% 
+    dplyr::filter(cohort == "AllAdm") %>%
+    dplyr::arrange(patient_num, days_since_admission)
+  clinical_raw <- clinical_raw %>% 
+    dplyr::filter(cohort == "AllAdm",
+                  as.Date(calendar_date, format = dateFormat) >= ymd('2019-01-01'),
+                  as.Date(calendar_date, format = dateFormat) <= ymd('2023-03-31')) %>%
+    dplyr::arrange(patient_num, as.Date(calendar_date, format = dateFormat), days_since_admission)
+  
+  print('Input files successfully read, patient data extracted')
+  
+}else{
+  print('Error in reading files')
+}
+
+#remove potential duplicates
+clinical_raw <- clinical_raw %>% unique()
+demo_raw <- demo_raw %>% unique()
+obs_raw <- obs_raw %>% unique()
+
+```
+
+## Select the ICD codes of interest
+```{r}
+#### ICD codes bacterial conditions ####
+print('Reading ICD bacterial codes')
+icdCodes <- read.csv("../public-data/ICD_bacterial5.csv", header = TRUE, colClasses = "character") %>%
+   dplyr::mutate( concept_code = gsub("\\.", "",ICD10_Code)) %>%
+   dplyr::select( disorder_group = syndrome, ICD10_Code, concept_code, description, 
+                  syndrome, IBI_simple, IBI_extensive, Respiratory, Skin, bacterial_syndrome )
+
+```
+
+# Data-management
+
+## Filtering on "inpatient" status
+
+```{r}
+# Filtering on inpatients here (in_hospital == 1), to reduce subsequent compute time of the encounter length calculation 
+clinical_raw <- dplyr::filter(clinical_raw, in_hospital == 1)
+```
+
+## Calculating duration of individual hospitalizations
+
+- Adding columns with hospitalization number and hospitalization length to
+the clinical raw file
+- Calculate 'admit date': date of admission for each hospitalization
+
+```{r}
+source("../R/count_sequences_hospitalisation.R")
+clinical_raw <- count_hosp(clinical_raw)
+
+print('Hospitalization sequences have been counted.')
+```
+
+## Calculating age at hospitalization time
+
+```{r}
+# Calculating patient age at the time of visit, assuming the age used is the patients' age at the time of extraction (last discharge date available in the data)
+# removing the dots from the ICD codes (if any)
+obs_raw <- as.data.frame( obs_raw )
+demo_raw <- as.data.frame( demo_raw )
+clinical_raw <- as.data.frame( clinical_raw )
+
+obs_raw_age <- left_join(obs_raw, demo_raw[c("patient_num", "age", "dead", "death_date")], by = c("patient_num")) %>%
+  dplyr::mutate( concept_code = gsub("\\.", "",concept_code )) %>%
+  dplyr::inner_join(clinical_raw[, c("patient_num", "days_since_admission", "calendar_date")], 
+            by = c("patient_num", "days_since_admission"))
+
+# estimate age at each diagnosis
+if( age_estimation_variability == FALSE ){
+  
+  obs_raw_age <- obs_raw_age %>%
+    dplyr::mutate( age_time_diagnosis = age - floor(as.numeric(as.Date(data_update_date, format = dateFormat) - as.Date(calendar_date, format = dateFormat)) / 365.25)) %>%
+    dplyr::select( -dead, -death_date )
+  
+}else if( age_estimation_variability == TRUE ){
+  
+  alive<- obs_raw_age %>%
+    dplyr::filter( dead == 0 ) %>%
+    dplyr::mutate( age_time_diagnosis = age - floor(as.numeric(as.Date(data_update_date, format = dateFormat) - as.Date(calendar_date, format = dateFormat)) / 365.25 )) %>%
+    dplyr::select( -dead, -death_date )
+  
+  dead<- obs_raw_age %>%
+    dplyr::filter( dead == 1 ) %>%
+    dplyr::mutate( age_time_diagnosis = age - floor(as.numeric(as.Date(death_date, format = dateFormat) - as.Date(calendar_date, format = dateFormat)) / 365.25 )) %>%
+    dplyr::select( -dead, -death_date )
+ obs_raw_age <- rbind( alive, dead )
+}
+
+print('Patient age calculated')
+```
+
+## Applying inclusion criteria to filter and format the data
+
+We are selecting hospitalizations based on the following criteria:
+
+-   Associated with at least 1 ICD code
+
+-   With a duration of hospitalization spanning over at least one
+    consecutive days
+
+-   Starting on or after 2019/01/01
+
+-   Age at diagnosis < 18 y/o
+
+```{r}
+obs_filtered_inclusion_criteria <- obs_raw_age %>% 
+  dplyr::filter(concept_type == 'DIAG-ICD10',
+                days_since_admission >= 0, 
+                age_time_diagnosis < 18 )
+
+if (!time_period %in% c('day', 'week', 'month')) {
+  print(paste0('unidentified time period: ', time_period))
+  print(paste0('possible time periods: ', c('day', 'week', 'month')))
+} else {
+  print(paste0('time period: ', time_period))
+}
+
+# base the time period on admit date, not calendar date
+clinical_filtered  <- clinical_raw %>%
+  dplyr::filter( length_hospitalization >= min_hosp_days, 
+          cohort  %in% c("AllAdm")) %>%
+  dplyr::mutate( calendar_date = as.Date( calendar_date, format = dateFormat),
+                 admit_date = as.Date( admit_date, format = dateFormat),
+                 time_p = as.Date(cut( admit_date, breaks = time_period)),
+                 period = ifelse( admit_date <= pre_NPI, "pre-NPI", 
+                                  ifelse( admit_date > full_NPI, "partial-NPI", "full-NPI")))
+
+
+# we create a hospitalization id and select only the columns of interest
+clinical_filtered <- clinical_filtered %>%
+  dplyr::mutate( hospitalization_id = paste0( patient_num, "-", n_hospitalization )) %>% # create id to each hospitaliz.
+  dplyr::select( patient_num, days_since_admission, in_hospital, in_icu, dead, length_hospitalization, n_hospitalization, time_p, period, hospitalization_id ) %>%
+  unique()
+  
+
+# we filter the demographic data by patients that meet the inclusion criteria
+# from all the information there we select the patient id, the time patient die and sex
+demographic_filtered_inclusion_criteria <- demo_raw %>%
+  filter( patient_num %in% obs_filtered_inclusion_criteria$patient_num ) %>%
+  select( patient_num, death_date, sex) %>%
+  unique()
+```
+
+## Put all the data together in a unique table
+
+We create a table with all the data together. 
+```{r}
+all_codes <- obs_filtered_inclusion_criteria %>% 
+   dplyr::inner_join( clinical_filtered, 
+                     by = c("patient_num", "days_since_admission")) %>% 
+   dplyr::inner_join(demographic_filtered_inclusion_criteria, 
+                     by = "patient_num")
+```
+
+## Adding ICU and dead status by hospitalization
+We add two columns to know if in each hospitalization the patient was dead and/or in the ICU.
+We need this information by hospitalization, not by day as it is here. 
+
+```{r}
+all_codes <- all_codes %>%
+  dplyr::group_by( patient_num, n_hospitalization ) %>%
+  dplyr::mutate( icu_in_hosp = ifelse( max(in_icu ) == 1, 1, 0 ), 
+                 dead_in_hosp = ifelse( max( dead ) == 1, 1, 0 ))
+
+```
+
+### QC
+# from here only use all_codes combined data structure? remove other dataframes?
+```{r}
+print("Starting QC")
+source("../R/qc_summary.R")
+# summary restricted to patients < 18 years old
+qc_summary( input_df = all_codes, obfuscation_threshold = obfuscation, dir.output = dir.output  )
+
+stopifnot(unique(all_codes$in_hospital) == 1)
+stopifnot(unique(all_codes$length_hospitalization >= min_hosp_days))
+stopifnot(length(unique(all_codes$patient_num)) == length(unique(demographic_filtered_inclusion_criteria$patient_num)))
+stopifnot(length(unique(all_codes$patient_num)) == length(unique(obs_filtered_inclusion_criteria$patient_num)))
+```
+
+
+## Adding the age group and length of hospitalization category
+```{r}
+# add the age groups
+ageGroups <- read.delim("../public-data/ageGroups.txt", sep="\t",  header = TRUE) 
+
+# flag any unexpected ages
+strange_ages <- all_codes %>% dplyr::filter(age_time_diagnosis<0 | age_time_diagnosis>18)
+if (nrow(strange_ages) != 0) {
+  print("Some strange ages were found for our patients:")
+  print(unique(strange_ages$age_time_diagnosis))
+}
+
+# Filtering hospitalizations where patient age is in inclusion criteria
+all_codes <- all_codes %>%
+  dplyr::filter( age_time_diagnosis >= -1 & age_time_diagnosis < 18) %>%
+  dplyr::left_join( ageGroups, by = c("age_time_diagnosis" = "age")) %>%
+  dplyr::mutate( length_hospitalization_category = ifelse( length_hospitalization < 3, "less than 3 days", 
+                                                           ifelse( length_hospitalization > 7, "more than 7 days", 
+                                                                   "between 3 and 7 days")) )
+
+### print checks
+print("Age summary")
+print(table(all_codes$age_group, useNA = 'ifany'))
+print(summary(as.factor(all_codes$age_time_diagnosis)))
+```
+
+## Add the bacterial infection ICD code description and filter
+
+```{r message=FALSE, warning=FALSE}
+# Getting site name, will be used later in the analysis
+site <- unique(as.character(demo_raw$siteid))
+print(paste0('site id: ', site))
+
+# add a column that will allow us to identify if the code belongs to any of the bacterial infections or not
+all_codes_desc <- all_codes %>% 
+  dplyr::left_join( icdCodes, by=c("concept_code") ) %>%
+  dplyr::mutate(icd_code_category = ifelse(concept_code %in% icdCodes$concept_code, 
+                               "bacterial", 
+                               "others"),
+                disorder_group = tidyr::replace_na(disorder_group, 'non_bacterial'),
+                ICD10_Code = tidyr::replace_na(ICD10_Code, 'non_bacterial'),
+                description = tidyr::replace_na(description, 'non_bacterial'),
+                IBI_simple = tidyr::replace_na(IBI_simple, 'non_bacterial'),
+                IBI_extensive = tidyr::replace_na(IBI_extensive, 'non_bacterial'),
+                Respiratory = tidyr::replace_na(Respiratory, 'non_bacterial'),
+                Skin = tidyr::replace_na(Skin, 'non_bacterial'),
+                bacterial_syndrome = tidyr::replace_na(bacterial_syndrome, 'non_bacterial')) 
+
+print('the following icd code categories are present:')
+print(table(all_codes_desc$icd_code_category))
+```
+
+## Bacterial pneumonia and LRTI/empyema
+Bacterial pneumonia and empyema is a special case. 
+- If the patient in the hospitalization presents both,bacterial pneumonia and empyema we only want to keep empyema. 
+- If the patient in the hospitalization only has bacterial pneumonia we keep it is
+- If the patient in the hospitalization only presents empyema, then we keep it as it is.
+Identify which is the subset of patients in the first scenario (having both in the same hospitalization), and remove bacterial pneumonia. 
+
+```{r}
+all_codes_desc <- all_codes_desc %>%
+  dplyr::group_by(hospitalization_id) %>%
+  dplyr::mutate(has_both = "LRTI/empyema" %in% disorder_group & "bacterial pneumonia" %in% disorder_group) %>%
+  dplyr::filter(!(disorder_group == "bacterial pneumonia" & !is.na(disorder_group) & has_both)) %>% # remove the bacterial pneumonia rows if the hospitalization has both 
+  dplyr::select(-has_both)
+```
+
+
+# Identify patients with specific conditions in a month
+
+```{r}
+#conditions <- c("sepsis", "UTI/pyelonefritis")
+conditions <- c("sepsis")
+month <- "2019-01-01"
+
+subset <- all_codes_desc %>%
+  dplyr::filter( disorder_group %in% conditions &
+                 time_p == "2019-01-01")
+
+datesData <- subset %>%
+  dplyr::select( hospitalization_id, patient_num, length_hospitalization, calendar_date, time_p) %>%
+  unique()
+
+length(unique(subset$hospitalization_id))
+summary(as.factor( subset$concept_code))
+```
