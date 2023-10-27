@@ -159,3 +159,23 @@ violin_output <- ggplot2::ggplot(valuesToPlot, aes(x=as.factor(site), y=count, f
 violin_output
 ```
 
+## Appendix figure: monthly total hospitalizations per site
+```{r}
+total_counts <- a2.1 %>%
+      dplyr::filter(type == "all") %>%
+      dplyr::filter(category_name == "total" )%>%
+      dplyr::select( timeToGroup, count, site )
+
+totalHosp_plot <- total_counts %>%
+  ggplot2::ggplot( aes( x= timeToGroup, y = count )) +
+  ggplot2::geom_bar( stat = "identity") +
+  ggplot2::facet_wrap(~ site, scales = "free") + 
+    ggplot2::ylab( "Number of total hospitalizations") +
+  ggplot2::xlab( "time") +
+  ggplot2::geom_vline(xintercept = as.Date( "2020-02-01") , linetype = "dashed") +
+  ggplot2::geom_vline(xintercept = as.Date( "2021-02-01"), linetype = "dashed") +
+  ggplot2::theme_bw()
+
+totalHosp_plot
+```
+
