@@ -1,0 +1,196 @@
+---
+title: "bacterial_infection"
+output: pdf_document
+date: "2023-10-26"
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(glmnet)
+library(ggplot2)
+library(gridExtra)
+
+paths = c("BCH_currentOutputsOctober5th_withoutRSV",
+          "MICHIGAN_currentOutputsOctober12th_withoutRSV",
+          "H12O_currentOutputsOctober16th_withoutRSV",
+          "HCUV_currentOutputsOctober20th_withoutRSV")
+sites = c("BCH","MICHIGAN","H12O","HCUV")
+
+dat_combined = NULL
+design.mats = vector("list",length(sites))
+
+for (kk in 1:length(paths)){
+  load(paste0(paths[kk],"/a2Tables.RData"))
+  load(paste0(paths[kk],"/a1Tables.RData"))
+  
+  #dat = a2_total_bacterial
+  dat = (a2_subgroups %>% filter(subgroup=="Respiratory"))[,-2]
+  colnames(dat)[2] = "bacterial"
+  dat = merge(dat,a2_total_all)
+  colnames(dat)[3] = "all"
+  dat$frac = dat$bacterial/dat$all
+  
+  age.frac = NULL
+  for (age.group in c("childhood","infancy","middle childhood")){
+    this_group = a2_age_all %>% filter(category == age.group) %>% arrange(timeToGroup)
+    this_group = merge(dat,this_group,all.x=TRUE)
+    this_group$count = ifelse(is.na(this_group$count),0,this_group$count)
+    age.frac = cbind(age.frac,this_group$count/dat$all)
+  }
+  colnames(age.frac) = c("cFrac","iFrac","mFrac")
+  dat = cbind(dat,age.frac) 
+  #plot(dat$timeToGroup,dat$frac)
+  dat$time = c(1:nrow(dat))
+  dat$month = sapply(dat$timeToGroup,function(x){as.numeric(strsplit(as.character(x),split="-")[[1]][2])})
+  dat$season = rep(NA,nrow(dat))
+  for (i in 1:nrow(dat)){
+    if (dat$month[i] %in% c(1,2,12)){
+      dat$season[i] = "winter"
+    } else if (dat$month[i] %in% c(3,4,5)){
+      dat$season[i] = "spring"
+    } else if (dat$month[i] %in% c(6,7,8)){
+      dat$season[i] = "summer"
+    } else if (dat$month[i] %in% c(9,10,11)){
+      dat$season[i] = "autumn"
+    }
+  }
+  dat$site = rep(sites[kk],nrow(dat))
+  dat = dat %>% filter(timeToGroup <= as.Date("2023-03-01"))
+  #print(dim(dat))
+  #print(range(dat$timeToGroup))
+  dat_combined = rbind(dat_combined,dat)
+  
+  design.season = matrix(0,nrow(dat),3)
+  seasons = c("summer","autumn","winter")
+  for (j in 1:length(seasons)){
+    design.season[,j] = 1*(dat$season == seasons[j])
+  }
+  colnames(design.season) = seasons
+  basis = matrix(0,nrow(dat),16)
+  for (i in 1:16){
+    basis[,i] = (dat$time - 3*i)*(dat$time > (3*i))
+  }
+  design.mat = cbind(dat[,c("all","cFrac","iFrac","mFrac","time")],basis)
+  colnames(design.mat)[-c(1:5)] = sapply(1:16,function(i){paste0("time",3*i)})
+  design.mat = as.matrix(design.mat)
+  design.mat = cbind(design.mat,design.season)
+  #print(dim(design.mat))
+  design.mats[[kk]] = design.mat
+}
+
+design.sites = matrix(0,nrow(dat_combined),length(sites)-1)
+for (jj in 1:length(sites[-1])){
+  design.sites[,jj] = 1*(dat_combined$site == sites[-1][jj])
+}
+colnames(design.sites) = sites[-1]
+
+design_combined = NULL
+for (kk in 1:length(sites)){
+  design_combined = rbind(design_combined,design.mats[[kk]])
+}
+design_combined = cbind(design_combined,design.sites)
+```
+
+We analyze data from 4 sites: BCH, Michigan, HCUV, and H12O. Let us visualized the counts in these 4 sites over time.
+
+```{r echo=FALSE}
+ggplot(dat_combined) +
+  geom_line(aes(x = timeToGroup, y = bacterial, colour = site)) + labs(x="time",y="number of infection")
+```
+
+First, we fit a poisson GLM using total number of hospitalization as an offset, allowing change in slope every 3 months. That is,
+\begin{equation}
+ Y = \beta_0 + \sum_{j=1}^{16} \beta_j(t-t_j)_{+} + \beta_{age}* age + \beta_{season}* season + \alpha_{site}* site
+\end{equation}
+We fit the model using adaptive lasso, so that we achieve variable selection as well.
+
+```{r echo=FALSE, warning=FALSE}
+# -------------------------------------------------
+# --- glm poisson model with total as offset ------
+# -------------------------------------------------
+set.seed(99)
+mod.lasso.pois = cv.glmnet(x=design_combined[,-1], y=dat_combined$bacterial,family=poisson,offset=log(design_combined[,1]))
+beta.init = as.vector(coef(mod.lasso.pois,s="lambda.1se"))[-1]
+mod.lasso.pois = cv.glmnet(x=design_combined[,-1], y=dat_combined$bacterial,family=poisson,offset=log(design_combined[,1]),penalty.factor=1/abs(beta.init))
+beta.alasso = coef(mod.lasso.pois,s="lambda.1se")
+rownames(beta.alasso)[beta.alasso[,1] != 0][-1]
+```
+
+Now let's visualize the fitted results in each site.
+
+```{r echo = FALSE}
+pred.lasso = predict(mod.lasso.pois, s="lambda.1se",newx=design_combined[,-1],newoffset=log(design_combined[,1]),type="response")
+dat_combined$pred = pred.lasso
+p1= ggplot(dat_combined %>% filter(site=="BCH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("BCH")+labs(x="time",y="bacterial infection")
+p2= ggplot(dat_combined %>% filter(site=="MICHIGAN")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("Michigan")+labs(x="time",y="bacterial infection")
+p3= ggplot(dat_combined %>% filter(site=="HCUV")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("HCUV")+labs(x="time",y="bacterial infection")
+p4= ggplot(dat_combined %>% filter(site=="H12O")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("H12O")+labs(x="time",y="bacterial infection")
+grid.arrange(p1,p2,p3,p4,ncol=2)
+```
+
+Next, based on the variable selection results. Let us re-fit the model using glm. 
+
+```{r echo=FALSE}
+selected_var = rownames(beta.alasso)[which(beta.alasso != 0)][-1]
+design_reduced = design_combined[,colnames(design_combined) %in% selected_var]
+time_points = as.numeric(sapply(selected_var[sapply(selected_var,function(x){substr(x,1,4)}) == "time"],function(x){substr(x,5,nchar(x))}))
+level_change_design = matrix(0,nrow(design_reduced),length(time_points))
+for (jj in 1:length(time_points)){
+  level_change_design[,jj] = 1*(design_combined[,"time"] >= time_points[jj])
+}
+level_change_design = data.frame(level_change_design)
+colnames(level_change_design) = sapply(time_points,function(x){paste0("indicator",x)})
+design_slope_level = cbind(design_reduced,level_change_design)
+design_slope = data.frame(design_reduced)
+design_level = cbind(design_reduced[,-c(which(colnames(design_reduced) %in% sapply(time_points,function(x){paste0("time",x)})))],level_change_design)
+
+# model with only slope change
+dat_slope = cbind(dat_combined$bacterial,design_combined[,1],design_slope)
+colnames(dat_slope)[1:2] = c("bacterial","all")
+myformula = paste0("bacterial~",paste0(colnames(dat_slope)[-c(1:2)],collapse="+"))
+mod_slope = glm(as.formula(myformula),family=poisson(),offset=log(all),data=dat_slope)
+summary(mod_slope)
+
+library(car)
+linearHypothesis(mod_slope,matrix(c(0,0,0,0,1,1,0,0,0,0,0,0,0),nrow=1))
+
+```
+
+And let's visualize the fit.
+
+```{r echo=FALSE}
+dat_combined$pred = predict(mod_slope,type="response")
+p1= ggplot(dat_combined %>% filter(site=="BCH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("BCH")+labs(x="time",y="bacterial infection")
+p2= ggplot(dat_combined %>% filter(site=="MICHIGAN")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("Michigan")+labs(x="time",y="bacterial infection")
+p3= ggplot(dat_combined %>% filter(site=="HCUV")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("HCUV")+labs(x="time",y="bacterial infection")
+p4= ggplot(dat_combined %>% filter(site=="H12O")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("H12O")+labs(x="time",y="bacterial infection")
+grid.arrange(p1,p2,p3,p4,ncol=2)
+```
+
+Now, what if we allow both change in level and change in slope every three months? That is, we assume the following model:
+\begin{equation}
+ Y = \beta_0 + \sum_{j=1}^{16} \gamma_j I\{t\geq t_j\} + \sum_{j=1}^{16} \beta_j(t-t_j)_{+} + \beta_{age}* age + \beta_{season}* season + \alpha_{site}* site
+\end{equation}
+We again fit the model with adaptive lasso and visualize the fit.
+
+```{r echo=FALSE,warning=FALSE}
+add_level = matrix(0,nrow(design_combined),16)
+for (jj in 1:16){
+  add_level[,jj] = 1*(design_combined[,"time"]>=(jj*3))
+}
+colnames(add_level) = sapply(c(1:16)*3,function(x){paste0("level",x)})
+
+set.seed(99)
+mod.lasso.pois = cv.glmnet(x=cbind(design_combined[,-1],add_level), y=dat_combined$bacterial,family=poisson,offset=log(design_combined[,1]))
+beta.init = as.vector(coef(mod.lasso.pois,s="lambda.1se"))[-1]
+mod.lasso.pois = cv.glmnet(x=cbind(design_combined[,-1],add_level), y=dat_combined$bacterial,family=poisson,offset=log(design_combined[,1]),penalty.factor=1/abs(beta.init))
+beta.alasso = coef(mod.lasso.pois,s="lambda.1se")
+rownames(beta.alasso)[beta.alasso[,1] != 0][-1]
+pred.lasso = predict(mod.lasso.pois, s="lambda.1se",newx=cbind(design_combined[,-1],add_level),newoffset=log(design_combined[,1]),type="response")
+dat_combined$pred = pred.lasso
+p1= ggplot(dat_combined %>% filter(site=="BCH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("BCH")+labs(x="time",y="bacterial infection")
+p2= ggplot(dat_combined %>% filter(site=="MICHIGAN")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("Michigan")+labs(x="time",y="bacterial infection")
+p3= ggplot(dat_combined %>% filter(site=="HCUV")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("HCUV")+labs(x="time",y="bacterial infection")
+p4= ggplot(dat_combined %>% filter(site=="H12O")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("H12O")+labs(x="time",y="bacterial infection")
+grid.arrange(p1,p2,p3,p4,ncol=2)
+```
