@@ -10,11 +10,13 @@ library(glmnet)
 library(ggplot2)
 library(gridExtra)
 
-paths = c("BCH_currentOutputsOctober5th_withoutRSV",
-          "MICHIGAN_currentOutputsOctober12th_withoutRSV",
-          "H12O_currentOutputsOctober16th_withoutRSV",
-          "HCUV_currentOutputsOctober20th_withoutRSV")
-sites = c("BCH","MICHIGAN","H12O","HCUV")
+paths = c("../results/sites_outputs/BCH",
+          "../results/sites_outputs/MICHIGAN",
+          "../results/sites_outputs/H12O",
+          "../results/sites_outputs/HCUV", 
+          "../results/sites_outputs/CCMC", 
+          "../results/sites_outputs/GOSH")
+sites = c("BCH","MICHIGAN","H12O","HCUV", "CCMC", "GOSH")
 
 dat_combined = NULL
 design.mats = vector("list",length(sites))
@@ -126,6 +128,10 @@ p2= ggplot(dat_combined %>% filter(site=="MICHIGAN")) + geom_col(aes(x=timeToGro
 p3= ggplot(dat_combined %>% filter(site=="HCUV")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("HCUV")+labs(x="time",y="bacterial infection")
 p4= ggplot(dat_combined %>% filter(site=="H12O")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("H12O")+labs(x="time",y="bacterial infection")
 grid.arrange(p1,p2,p3,p4,ncol=2)
+p5= ggplot(dat_combined %>% filter(site=="CCMC")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("CCMC")+labs(x="time",y="bacterial infection")
+grid.arrange(p1,p2,p3,p4,ncol=2)
+p6= ggplot(dat_combined %>% filter(site=="GOSH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("GOSH")+labs(x="time",y="bacterial infection")
+grid.arrange(p1,p2,p3,p4,p5,p6,ncol=2)
 ```
 
 Next, based on the variable selection results. Let us re-fit the model using glm. 
@@ -164,7 +170,9 @@ p1= ggplot(dat_combined %>% filter(site=="BCH")) + geom_col(aes(x=timeToGroup,y=
 p2= ggplot(dat_combined %>% filter(site=="MICHIGAN")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("Michigan")+labs(x="time",y="bacterial infection")
 p3= ggplot(dat_combined %>% filter(site=="HCUV")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("HCUV")+labs(x="time",y="bacterial infection")
 p4= ggplot(dat_combined %>% filter(site=="H12O")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("H12O")+labs(x="time",y="bacterial infection")
-grid.arrange(p1,p2,p3,p4,ncol=2)
+p5= ggplot(dat_combined %>% filter(site=="CCMC")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("CCMC")+labs(x="time",y="bacterial infection")
+p6= ggplot(dat_combined %>% filter(site=="GOSH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("GOSH")+labs(x="time",y="bacterial infection")
+grid.arrange(p1,p2,p3,p4,p5,p6,ncol=2)
 ```
 
 Now, what if we allow both change in level and change in slope every three months? That is, we assume the following model:
@@ -192,5 +200,7 @@ p1= ggplot(dat_combined %>% filter(site=="BCH")) + geom_col(aes(x=timeToGroup,y=
 p2= ggplot(dat_combined %>% filter(site=="MICHIGAN")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("Michigan")+labs(x="time",y="bacterial infection")
 p3= ggplot(dat_combined %>% filter(site=="HCUV")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("HCUV")+labs(x="time",y="bacterial infection")
 p4= ggplot(dat_combined %>% filter(site=="H12O")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("H12O")+labs(x="time",y="bacterial infection")
-grid.arrange(p1,p2,p3,p4,ncol=2)
+p5= ggplot(dat_combined %>% filter(site=="CCMC")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("CCMC")+labs(x="time",y="bacterial infection")
+p6= ggplot(dat_combined %>% filter(site=="GOSH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("GOSH")+labs(x="time",y="bacterial infection")
+grid.arrange(p1,p2,p3,p4,p5,p6,ncol=2)
 ```
