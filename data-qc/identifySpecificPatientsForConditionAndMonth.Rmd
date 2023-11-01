@@ -351,3 +351,45 @@ datesData <- subset %>%
 length(unique(subset$hospitalization_id))
 summary(as.factor( subset$concept_code))
 ```
+
+What codes are contributing to high counts in specific conditions of interest, and how do they change over time?
+Example looking at sepsis and 2 time points each year
+```{r}
+
+get_codes <- function(month, conditions) {
+  subset <- all_codes_desc %>%
+    dplyr::filter( disorder_group %in% conditions,
+                   time_p %in% month)
+  return(subset)
+}
+
+# modify this to change the time snapshots and conditions of interest
+sepsis_snapshots <- get_codes(month = ymd(c("2019-01-01", "2019-06-01", "2010-01-01", "2020-06-01", "2021-01-01", "2021-06-01",
+                                       "2022-01-01", "2022-06-01", "2023-01-01")),
+                              conditions = c("sepsis"))
+
+plotdf <- sepsis_snapshots %>%
+  unique() %>%
+  group_by(time_p, concept_code) %>%
+  summarise(value = n()) %>%
+  filter(value > 5) # filter to codes present more than 5 times in a month
+
+ggplot(plotdf, aes(fill = concept_code, y = value, x = time_p)) +
+  geom_bar(position='stack', stat = 'identity')
+
+```
+What patients are associated to strange codes and do they show up multiple times?
+```{r}
+codes <- c('A419')
+
+patients_with_codes <- sepsis_snapshots %>%
+  unique() %>%
+  filter(concept_code %in% codes) %>%
+  group_by(patient_num, concept_code) %>%
+  summarise(count = n()) %>% 
+  arrange(desc(count))
+
+```
+
+
+
