@@ -81,18 +81,19 @@ bacterial_counts_bySite <- rbind( bacterial_counts_bySite, ceroCategories)
 
 Create the barplots
 ```{r}
-bacterial_counts_bySite$site <- factor(bacterial_counts_bySite$site, levels = c("BCH", "Michigan", "H12O", "HCUV"))
+bacterial_counts_bySite$site <- factor(bacterial_counts_bySite$site, levels = c("BCH","CCMC", "Michigan", "H12O", "HCUV", "GOSH"))
 
-bacterial_counts_bySite$country <- ifelse( bacterial_counts_bySite$site %in% c("H12O", "HCUV"), "Spain", "US")
+bacterial_counts_bySite$country <- ifelse( bacterial_counts_bySite$site %in% c("H12O", "HCUV"), "Spain", ifelse( bacterial_counts_bySite$site == "GOSH", "UK", "US"))
 
-bacterial_counts_bySite$site <- factor(bacterial_counts_bySite$site, levels = c("BCH", "Michigan", "H12O", "HCUV"))
+bacterial_counts_bySite$site <- factor(bacterial_counts_bySite$site, levels = c("BCH","CCMC", "Michigan", "H12O", "HCUV", "GOSH"))
 
 
 output_plot <- ggplot2::ggplot( data = bacterial_counts_bySite, 
                  aes( x= site, y = n, fill=country )) +
   ggplot2::geom_bar( stat = "identity") +
   ggplot2::scale_fill_manual( "legend", values = c("Spain" = "#D81B60", "US" = "#1E88E5", "UK" = "#FFC107")) +
-  ggplot2::geom_vline(xintercept = 2.5, linetype="dotted") +
+  ggplot2::geom_vline(xintercept = 3.5, linetype="dotted") +
+  ggplot2::geom_vline(xintercept = 5.5, linetype="dotted") +
   ggplot2::facet_wrap(~ category, scales = "free") + 
   ggplot2::geom_text( aes(label=n), vjust=1.6, color="white", size=3.5) + 
   ggplot2::ylab( "Number of hospitalizations") +
@@ -141,15 +142,16 @@ linePlot
 ```
 Test the violin plot idea
 ```{r, eval=FALSE}
-valuesToPlot$site <- factor(valuesToPlot$site, levels = c("BCH", "Michigan", "H12O", "HCUV"))
+valuesToPlot$site <- factor(valuesToPlot$site, levels = c("BCH","CCMC", "Michigan", "H12O", "HCUV", "GOSH"))
 
-valuesToPlot$country <- ifelse( valuesToPlot$site %in% c("H12O", "HCUV"), "Spain", "US")
-
+valuesToPlot$country <-  ifelse( valuesToPlot$site %in% c("H12O", "HCUV"), "Spain", ifelse( valuesToPlot$site == "GOSH", "UK", "US"))
+  
 violin_output <- ggplot2::ggplot(valuesToPlot, aes(x=as.factor(site), y=count, fill=country)) +
   ggplot2::geom_violin( )+
   ggplot2::scale_fill_manual(values = c("Spain" = "#D81B60", "US" = "#1E88E5", "UK" = "#FFC107")) +
   ggplot2::facet_wrap( ~category_name, scales = "free")+
-  ggplot2::geom_vline(xintercept = 2.5, linetype="dotted")+
+  ggplot2::geom_vline(xintercept = 3.5, linetype="dotted")+
+  ggplot2::geom_vline(xintercept = 5.5, linetype="dotted")+
   ggplot2::ylab( "Number of hospitalizations") +
   ggplot2::xlab( "")+
   ggplot2::theme_bw( ) +

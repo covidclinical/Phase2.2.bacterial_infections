@@ -12,6 +12,7 @@ output:
 library(table1)
 library(dplyr)
 library(tidyr)
+library(stringr)
 ```
 
 ##Step 1: Run reformat_aggregate_output.Rmd with latest outputs to get combined dataframes with all data. Load the two files (a1 and a2 RData files)
@@ -19,6 +20,12 @@ library(tidyr)
 ```{r}
 load(file = '../results/bacterial_aggregate_ouputs/a1_all_to_work.RData')
 load(file = '../results/bacterial_aggregate_ouputs/a2_all_to_work.RData')
+```
+
+Capitalize the first letter to each category name for harmonization.
+```{r}
+a2_all_to_work$category <- stringr::str_to_title( a2_all_to_work$category )
+a1_all_to_work$category <- stringr::str_to_title( a1_all_to_work$category )
 ```
 
 Organize sites into countries
@@ -147,7 +154,7 @@ t1.age <- countsAndPercentages( input_df = a1.1,
                                  selected_type = "all", 
                                  variable = "age", 
                                  percentage = TRUE)
-orderAge <- c("age, n (%)","infancy", "childhood", "middle childhood", "adolescence")
+orderAge <- c("age, n (%)","Infancy", "Childhood", "Middle Childhood", "Adolescence")
 t1.age$X <- factor(t1.age$X , levels = orderAge)
 t1.age <- t1.age[order(t1.age$X), ]
 
@@ -174,7 +181,7 @@ t1.lengthHospitalization <- countsAndPercentages( input_df = a1.1,
                                  variable = "lengthHospitalization", 
                                  percentage = TRUE)
 
-orderLength <- c("lengthHospitalization, n (%)","less than 3 days", "between 3 and 7 days", "more than 7 days")
+orderLength <- c("lengthHospitalization, n (%)","Less Than 3 Days", "Between 3 And 7 Days", "More Than 7 Days")
 t1.lengthHospitalization$X <- factor(t1.lengthHospitalization$X , levels = orderLength)
 t1.lengthHospitalization <- t1.lengthHospitalization[order(t1.lengthHospitalization$X), ]
 ```
@@ -227,7 +234,7 @@ tX.age <- countsAndPercentages( input_df = a1.1,
                                  variable = "age", 
                                  percentage = TRUE)
 
-orderAge <- c("age, n (%)","infancy", "childhood", "middle childhood", "adolescence")
+orderAge <- c("age, n (%)","infancy", "Childhood", "Middle Childhood", "Adolescence")
 tX.age$X <- factor(tX.age$X , levels = orderAge)
 tX.age <- tX.age[order(tX.age$X), ]
 
@@ -250,7 +257,7 @@ tX.lengthHospitalization <- countsAndPercentages( input_df = a1.1,
                                  variable = "lengthHospitalization", 
                                  percentage = TRUE)
 
-orderLength <- c("lengthHospitalization, n (%)","less than 3 days", "between 3 and 7 days", "more than 7 days")
+orderLength <- c("lengthHospitalization, n (%)","Less Than 3 Days", "Between 3 And 7 Days", "More Than 7 Days")
 tX.lengthHospitalization$X <- factor(tX.lengthHospitalization$X , levels = orderLength)
 tX.lengthHospitalization <- tX.lengthHospitalization[order(tX.lengthHospitalization$X), ]
 ```
