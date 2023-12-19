@@ -24,6 +24,16 @@ dir.output <- "/4ceData/bacterialInfection_outputs/"
 age_estimation_variability <- FALSE
 ```
 
+```{r message=FALSE, warning=FALSE}
+#folder_4ce_files <- "/users/bha6ki/Documents/harvard_4CE_2023_tables/"
+#obfuscation =  FALSE
+#dateFormat <- "%Y-%m-%d"
+#data_update_date <- "2023-03-01"
+#dir.output <- "/users/bha6ki/Documents/Phase2.2.bacterial_infections-main/outputs/"
+#age_estimation_variability <- FALSE
+```
+
+
 ```{r libraries, message=FALSE, warning=FALSE, results='hide'}
 # Install packages
 source("../R/packagesInstallation.R")
@@ -57,9 +67,11 @@ source("../R/readInputFiles_fread.R")
 filecheck <- checkInputFilesFread( path = folder_4ce_files, separator = ",", skip = 0, verbose = TRUE )
 
 if(filecheck){
-  demo_raw <- read_delim_4ce("LocalPatientSummary.csv", folder_4ce_files, )
-  obs_raw <- read_delim_4ce("LocalPatientObservations.csv", folder_4ce_files)
-  clinical_raw <- read_delim_4ce("LocalPatientClinicalCourse.csv", folder_4ce_files)
+  demo_raw <-  data.table::fread(paste0( folder_4ce_files, "LocalPatientSummary.csv"), sep = ',',skip = 0, fill=TRUE )
+  obs_raw <-  data.table::fread(paste0( folder_4ce_files, "LocalPatientObservations.csv"), sep = ',',skip = 0, fill=TRUE)
+  clinical_raw <-  data.table::fread(paste0( folder_4ce_files, "LocalPatientClinicalCourse.csv"), sep = ',',skip = 0, fill=TRUE)
+  
+
 
   ### Extract the patient summary and observation information. 
   # arrange in a consistent way to make sure we are not assuming the order of some sites
@@ -294,11 +306,62 @@ obs_raw <- as.data.frame( obs_raw )
 demo_raw <- as.data.frame( demo_raw )
 clinical_raw <- as.data.frame( clinical_raw )
 
+obs_raw_demo <- left_join(obs_raw, demo_raw[c("patient_num", "age", "dead", "death_date")], by = c("patient_num")) %>%
+  dplyr::mutate( concept_code = gsub("\\.", "",concept_code )) 
+```
+
+## CHECK8: after merging the obs_raw with demo_raw
+```{r}
+obs_raw_inpatients_icd10_demo <- obs_raw_demo %>%
+  dplyr::filter( patient_num %in% clinical_raw$patient_num ) %>%
+  dplyr::filter( trimws( concept_type) == "DIAG-ICD10")  %>%
+  dplyr::filter( days_since_admission >= 0 )
+
+
+obs_raw_inpatients_icd10_demo <- unique(obs_raw_inpatients_icd10_demo$patient_num )
+
+monthly_hosp_in_obs_icd10_aa_demo <- clinical_raw %>%
+  dplyr::ungroup() %>%
+  dplyr::filter( patient_num %in% obs_raw_inpatients_icd10_demo) %>%
+  dplyr::group_by( month_hosp ) %>%
+  dplyr::summarize( n = n_distinct( patient_num ))
+
+p5 <- admission_plot_count(df = monthly_hosp_in_obs_icd10_aa_demo, 
+                     x = "month_hosp",
+                     y = "n", 
+                     title = paste0("Total hospitalizations (per ", time_period,")"), 
+                     y_title = "Hospitalization Count")
+p5
+```
+
+## CHECK9:  after merging the obs_raw with demo_raw and clinical_raw
+```{r}
 obs_raw_age <- left_join(obs_raw, demo_raw[c("patient_num", "age", "dead", "death_date")], by = c("patient_num")) %>%
   dplyr::mutate( concept_code = gsub("\\.", "",concept_code )) %>%
-  dplyr::inner_join(clinical_raw[, c("patient_num", "days_since_admission", "calendar_date")], 
+  dplyr::inner_join(clinical_raw[, c("patient_num", "days_since_admission", "calendar_date", "month_hosp")], 
             by = c("patient_num", "days_since_admission"))
+```
 
+```{r}
+obs_raw_inpatients_icd10_demo_clin <- obs_raw_age %>%
+  dplyr::filter( trimws( concept_type) == "DIAG-ICD10")  %>%
+  dplyr::filter( days_since_admission >= 0 )
+
+monthly_hosp_in_obs_icd10_aa_demo_clin <- obs_raw_inpatients_icd10_demo_clin %>%
+  dplyr::ungroup() %>%
+  dplyr::group_by( month_hosp ) %>%
+  dplyr::summarize( n = n_distinct( patient_num ))
+
+p6 <- admission_plot_count(df = monthly_hosp_in_obs_icd10_aa_demo, 
+                     x = "month_hosp",
+                     y = "n", 
+                     title = paste0("Total hospitalizations (per ", time_period,")"), 
+                     y_title = "Hospitalization Count")
+p6
+```
+
+
+````{r}
 # estimate age at each diagnosis
 if( age_estimation_variability == FALSE ){
   
@@ -306,42 +369,37 @@ if( age_estimation_variability == FALSE ){
     dplyr::mutate( age_time_diagnosis = age - floor(as.numeric(as.Date(data_update_date, format = dateFormat) - as.Date(calendar_date, format = dateFormat)) / 365.25)) %>%
     dplyr::select( -dead, -death_date )
   
-}else if( age_estimation_variability == TRUE ){
-  
-  alive<- obs_raw_age %>%
-    dplyr::filter( dead == 0 ) %>%
-    dplyr::mutate( age_time_diagnosis = age - floor(as.numeric(as.Date(data_update_date, format = dateFormat) - as.Date(calendar_date, format = dateFormat)) / 365.25 )) %>%
-    dplyr::select( -dead, -death_date )
-  
-  dead<- obs_raw_age %>%
-    dplyr::filter( dead == 1 ) %>%
-    dplyr::mutate( age_time_diagnosis = age - floor(as.numeric(as.Date(death_date, format = dateFormat) - as.Date(calendar_date, format = dateFormat)) / 365.25 )) %>%
-    dplyr::select( -dead, -death_date )
- obs_raw_age <- rbind( alive, dead )
 }
 
 print('Patient age calculated')
 ```
 
-## CHECK8: make sure that the concept_type values for ICD10 look all the same
+## CHECK10: make sure that the concept_type values for ICD10 look all the same
 ```{r}
 concept_types <- unique( obs_raw_age$concept_type )
 concept_types
 ```
 
-## Applying inclusion criteria to filter and format the data
+## Check 11: counts after filtering by DIAG-ICD10
+```{r}
+obs_filtered_inclusion_criteria_icd10 <- obs_raw_age %>%
+    dplyr::filter(concept_type == 'DIAG-ICD10')
 
-We are selecting hospitalizations based on the following criteria:
+to_check <- obs_filtered_inclusion_criteria_icd10 %>%
+  dplyr::ungroup() %>%
+  dplyr::group_by( month_hosp ) %>%
+  dplyr::summarize( n = n_distinct( patient_num ))
 
--   Associated with at least 1 ICD code
+p7 <- admission_plot_count(df = to_check, 
+                     x = "month_hosp",
+                     y = "n", 
+                     title = paste0("Total hospitalizations (per ", time_period,")"), 
+                     y_title = "Hospitalization Count")
+p7
+```
 
--   With a duration of hospitalization spanning over at least one
-    consecutive days
 
--   Starting on or after 2019/01/01
-
--   Age at diagnosis < 18 y/o
-
+## Check 12: counts after filtering by age
 
 ```{r}
 obs_filtered_inclusion_criteria <- obs_raw_age %>% 
@@ -349,6 +407,35 @@ obs_filtered_inclusion_criteria <- obs_raw_age %>%
                 days_since_admission >= 0, 
                 age_time_diagnosis < 18 )
 
+to_check_age <- obs_filtered_inclusion_criteria %>%
+  dplyr::ungroup() %>%
+  dplyr::group_by( month_hosp ) %>%
+  dplyr::summarize( n = n_distinct( patient_num ))
+
+p8 <- admission_plot_count(df = to_check_age, 
+                     x = "month_hosp",
+                     y = "n", 
+                     title = paste0("Total hospitalizations (per ", time_period,")"), 
+                     y_title = "Hospitalization Count")
+p8
+```
+## Check 13: add a estimation of patients per month and age
+```{r}
+counts_month_age <- obs_filtered_inclusion_criteria %>%
+  dplyr::mutate( year = floor_date(ymd(month_hosp), "year")) %>%
+  dplyr::ungroup() %>%
+  dplyr::group_by( age, month_hosp, year ) %>%
+  dplyr::summarize( n = n_distinct( patient_num ))
+
+b1 <- ggplot( data = counts_month_age, aes( x= month_hosp, y=n, fill="age")) +
+  geom_bar( stat="identity") +
+  facet_wrap( ~ age )
+
+b1
+```
+
+## Check 14: get counts of length of hospitalization per month
+```{r}
 if (!time_period %in% c('day', 'week', 'month')) {
   print(paste0('unidentified time period: ', time_period))
   print(paste0('possible time periods: ', c('day', 'week', 'month')))
@@ -367,6 +454,39 @@ clinical_filtered  <- clinical_raw %>%
                                   ifelse( admit_date > full_NPI, "partial-NPI", "full-NPI")))
 
 
+to_check_lengthHosp <- clinical_filtered %>%
+  dplyr::ungroup() %>%
+  dplyr::group_by( month_hosp ) %>%
+  dplyr::summarize( n = n_distinct( patient_num ))
+
+p9 <- admission_plot_count(df = to_check_lengthHosp, 
+                     x = "month_hosp",
+                     y = "n", 
+                     title = paste0("Total hospitalizations (per ", time_period,")"), 
+                     y_title = "Hospitalization Count")
+p9
+
+
+counts_month_lenght_hosp <- clinical_filtered %>%
+  dplyr::mutate( year = floor_date(ymd(month_hosp), "year")) %>%
+  dplyr::ungroup() %>%
+  dplyr::group_by( length_hospitalization, month_hosp, year ) %>%
+  dplyr::summarize( n = n_distinct( patient_num ))
+
+summary(counts_month_lenght_hosp$length_hospitalization)
+
+b2 <- counts_month_lenght_hosp %>%
+  dplyr::filter( length_hospitalization < 21 ) %>%
+  ggplot(  aes( x= month_hosp, y=n, fill="length_hospitalization")) +
+  geom_bar( stat="identity") +
+  facet_wrap( ~ length_hospitalization )
+
+b2
+```
+
+
+
+```{r}
 # we create a hospitalization id and select only the columns of interest
 clinical_filtered <- clinical_filtered %>%
   dplyr::mutate( hospitalization_id = paste0( patient_num, "-", n_hospitalization )) %>% # create id to each hospitaliz.
@@ -382,7 +502,7 @@ demographic_filtered_inclusion_criteria <- demo_raw %>%
   unique()
 ```
 
-## CHECK9: how many inpatients with ICD codes since admission in the age range are present in the 3 input files?
+## CHECK15: how many inpatients with ICD codes since admission in the age range are present in the 3 input files?
 ```{r}
 clinical_filtered_patients <- unique(clinical_filtered$patient_num)
 print(length(clinical_filtered_patients))
