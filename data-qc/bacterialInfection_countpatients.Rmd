@@ -17,7 +17,6 @@ editor_options:
 ```{r message=FALSE, warning=FALSE}
 folder_4ce_files <- "/4ceData/Input/4CEAllAdminChortsOct2023/"
 obfuscation =  FALSE
-#obfuscation = 3
 dateFormat <- "%Y-%m-%d"
 data_update_date <- "2023-10-01"
 dir.output <- "/4ceData/bacterialInfection_outputs/"
@@ -340,6 +339,18 @@ obs_raw_age <- left_join(obs_raw, demo_raw[c("patient_num", "age", "dead", "deat
   dplyr::mutate( concept_code = gsub("\\.", "",concept_code )) %>%
   dplyr::inner_join(clinical_raw[, c("patient_num", "days_since_admission", "calendar_date", "month_hosp")], 
             by = c("patient_num", "days_since_admission"))
+dim(obs_raw_age)
+summary(as.factor( obs_raw_age$month_hosp))
+
+### extra check
+obs_raw_age_check <- left_join(obs_raw, demo_raw[c("patient_num", "age", "dead", "death_date")], by = c("patient_num")) %>%
+  dplyr::mutate( concept_code = gsub("\\.", "",concept_code )) %>%
+  dplyr::full_join(clinical_raw[, c("patient_num", "days_since_admission", "calendar_date", "month_hosp")], 
+            by = c("patient_num", "days_since_admission"))
+dim(obs_raw_age_check)
+
+#clin_no_obs <- obs_raw_age_check %>% filter( is.na(concept_type))
+#summary(as.factor( clin_no_obs$month_hosp))
 ```
 
 ```{r}
@@ -352,7 +363,7 @@ monthly_hosp_in_obs_icd10_aa_demo_clin <- obs_raw_inpatients_icd10_demo_clin %>%
   dplyr::group_by( month_hosp ) %>%
   dplyr::summarize( n = n_distinct( patient_num ))
 
-p6 <- admission_plot_count(df = monthly_hosp_in_obs_icd10_aa_demo, 
+p6 <- admission_plot_count(df = monthly_hosp_in_obs_icd10_aa_demo_clin, 
                      x = "month_hosp",
                      y = "n", 
                      title = paste0("Total hospitalizations (per ", time_period,")"), 
@@ -363,6 +374,10 @@ p6
 
 ````{r}
 # estimate age at each diagnosis
+dim(obs_raw_age)
+summary( as.factor(obs_raw_age$age))
+summary( obs_raw_age$age)
+
 if( age_estimation_variability == FALSE ){
   
   obs_raw_age <- obs_raw_age %>%
@@ -370,8 +385,10 @@ if( age_estimation_variability == FALSE ){
     dplyr::select( -dead, -death_date )
   
 }
-
+dim(obs_raw_age)
 print('Patient age calculated')
+summary( as.factor(obs_raw_age$age_time_diagnosis))
+summary( obs_raw_age$age_time_diagnosis)
 ```
 
 ## CHECK10: make sure that the concept_type values for ICD10 look all the same
@@ -383,7 +400,8 @@ concept_types
 ## Check 11: counts after filtering by DIAG-ICD10
 ```{r}
 obs_filtered_inclusion_criteria_icd10 <- obs_raw_age %>%
-    dplyr::filter(concept_type == 'DIAG-ICD10')
+    dplyr::filter( trimws( concept_type) == "DIAG-ICD10")  %>%
+    dplyr::filter( days_since_admission >= 0 )
 
 to_check <- obs_filtered_inclusion_criteria_icd10 %>%
   dplyr::ungroup() %>%
