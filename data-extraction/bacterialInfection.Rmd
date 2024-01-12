@@ -108,9 +108,9 @@ source("../R/readInputFiles_fread.R")
 filecheck <- checkInputFilesFread( path = folder_4ce_files, separator = ",", skip = 0, verbose = TRUE )
 
 if(filecheck){
-  demo_raw <- read_delim_4ce("LocalPatientSummary.csv", folder_4ce_files, )
-  obs_raw <- read_delim_4ce("LocalPatientObservations.csv", folder_4ce_files)
-  clinical_raw <- read_delim_4ce("LocalPatientClinicalCourse.csv", folder_4ce_files)
+  demo_raw <-  data.table::fread(paste0( folder_4ce_files, "LocalPatientSummary.csv"), sep = ',',skip = 0, fill=TRUE )
+  obs_raw <-  data.table::fread(paste0( folder_4ce_files, "LocalPatientObservations.csv"), sep = ',',skip = 0, fill=TRUE)
+  clinical_raw <-  data.table::fread(paste0( folder_4ce_files, "LocalPatientClinicalCourse.csv"), sep = ',',skip = 0, fill=TRUE)
 
   ### Extract the patient summary and observation information. 
   # arrange in a consistent way to make sure we are not assuming the order of some sites
