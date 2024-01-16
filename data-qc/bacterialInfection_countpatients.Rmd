@@ -349,8 +349,6 @@ obs_raw_age_check <- left_join(obs_raw, demo_raw[c("patient_num", "age", "dead",
             by = c("patient_num", "days_since_admission"))
 dim(obs_raw_age_check)
 
-#clin_no_obs <- obs_raw_age_check %>% filter( is.na(concept_type))
-#summary(as.factor( clin_no_obs$month_hosp))
 ```
 
 ```{r}
@@ -372,7 +370,44 @@ p6
 ```
 
 
-````{r}
+## Extra Check in 9: which patient-day are in obs_raw that are not in clinical_raw
+
+```{r}
+obs_raw_demo_patient_daysSinceAdm <- left_join(obs_raw, demo_raw[c("patient_num", "age", "dead", "death_date")], by = c("patient_num")) %>%
+  dplyr::filter( days_since_admission >= 0 ) %>%
+  dplyr::mutate( concept_code = gsub("\\.", "",concept_code), 
+                 key = paste0( patient_num, "**", days_since_admission )) %>%
+  dplyr::select( patient_num, days_since_admission, key ) %>%
+  unique()
+
+dim(obs_raw_demo_patient_daysSinceAdm)
+
+
+obs_raw_inpatients_icd10_demo_days_since_admission <- obs_raw_demo %>%
+  dplyr::filter( patient_num %in% clinical_raw$patient_num ) %>%
+  dplyr::filter( trimws( concept_type) == "DIAG-ICD10")  %>%
+  dplyr::filter( days_since_admission >= 0 ) %>%
+  dplyr::mutate( key = paste0( patient_num, "**", days_since_admission )) %>%
+  dplyr::select( patient_num, days_since_admission, key ) %>%
+  unique()
+
+dim(obs_raw_inpatients_icd10_demo_days_since_admission)
+
+clin_raw_patient_days_since_admission <- clinical_raw %>%
+  dplyr::mutate( key = paste0( patient_num, "**", days_since_admission )) %>%
+  dplyr::select( patient_num, days_since_admission, calendar_date, month_hosp, key) %>%
+  unique()
+
+dim(clin_raw_patient_days_since_admission)
+
+missing <- obs_raw_inpatients_icd10_demo_days_since_admission[ ! obs_raw_inpatients_icd10_demo_days_since_admission$key %in%
+                                                                clin_raw_patient_days_since_admission$key,  ]
+
+is_patient_present <- missing[ missing$patient_num %in% clin_raw_patient_days_since_admission$patient_num, ]
+```
+
+
+```{r}
 # estimate age at each diagnosis
 dim(obs_raw_age)
 summary( as.factor(obs_raw_age$age))
