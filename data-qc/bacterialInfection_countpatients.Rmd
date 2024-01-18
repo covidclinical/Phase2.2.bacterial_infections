@@ -358,7 +358,34 @@ obs_raw_icd10_demo_day <- obs_raw_icd10_demo %>%
   dplyr::mutate( in_hospital = ifelse( key %in% inpatients_clinical_raw$key, "inpatient", "outpatient"), 
                  diangosis_month =  floor_date(ymd(diagnosis_day), "month"))
 
+# counts to plot
+inpatient_outpatient_monthly <- obs_raw_icd10_demo_day %>%
+  dplyr::group_by( in_hospital, diangosis_month ) %>%
+  dplyr::summarise( n = n_distinct( patient_num))
 
+bp1 <- ggplot( data = inpatient_outpatient_monthly, aes( x = diangosis_month, y = n, fill=in_hospital  )) +
+  geom_bar(position="dodge", stat="identity")
+
+bp1  
+
+#count only in or only out or both
+both_inpatient_outpatient_monthly <- obs_raw_icd10_demo_day %>%
+  group_by( patient_num, diangosis_month ) %>%
+  summarise( n = n_distinct( in_hospital ), 
+             p = paste0(unique(in_hospital), collapse = "-")) %>%
+  mutate( type = ifelse( p == "inpatient", "inpatient_only", ifelse( p == "outpatient", "outpatient_only","both")))
+
+all_info <- obs_raw_icd10_demo_day %>%
+  dplyr::left_join( both_inpatient_outpatient_monthly, by=c("patient_num", "diangosis_month"))
+
+inpatient_outpatient_both_monthly <- all_info %>%
+  dplyr::group_by( type, diangosis_month ) %>%
+  dplyr::summarise( n = n_distinct( patient_num))
+  
+bp2 <- ggplot( data = inpatient_outpatient_both_monthly, aes( x = diangosis_month, y = n, fill=type  )) +
+  geom_bar(position="dodge", stat="identity")
+
+bp2 
 ```
 
 ## CHECK9:  after merging the obs_raw with demo_raw and clinical_raw
