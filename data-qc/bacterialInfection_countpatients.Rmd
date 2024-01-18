@@ -332,6 +332,34 @@ p5 <- admission_plot_count(df = monthly_hosp_in_obs_icd10_aa_demo,
                      y_title = "Hospitalization Count")
 p5
 ```
+## CHECK 8.2 Inpatients vs. outpatients with ICD codes per month
+
+```{r}
+obs_raw_icd10_demo <- obs_raw_demo %>%
+  dplyr::filter( patient_num %in% clinical_raw$patient_num ) %>%
+  dplyr::filter( trimws( concept_type) == "DIAG-ICD10")  %>%
+  dplyr::filter( days_since_admission >= 0 )
+
+# add the admission date per patient to get the calendar date of each diagnosis
+admin_day_o <- clinical_raw %>%
+  dplyr::filter( days_since_admission == 0 ) %>%
+  dplyr::select( patient_num, calendar_date ) %>%
+  unique()
+
+inpatients_clinical_raw <- clinical_raw %>%
+  dplyr::mutate(  key = paste0( patient_num, "-", days_since_admission)) %>%
+  dplyr::select( patient_num, key ) %>%
+  unique()
+
+obs_raw_icd10_demo_day <- obs_raw_icd10_demo %>%
+  dplyr::left_join( admin_day_o, by = "patient_num") %>%
+  dplyr::mutate( diagnosis_day = as.Date( calendar_date) + days_since_admission, 
+                 key = paste0( patient_num, "-", days_since_admission)) %>%
+  dplyr::mutate( in_hospital = ifelse( key %in% inpatients_clinical_raw$key, "inpatient", "outpatient"), 
+                 diangosis_month =  floor_date(ymd(diagnosis_day), "month"))
+
+
+```
 
 ## CHECK9:  after merging the obs_raw with demo_raw and clinical_raw
 ```{r}
@@ -350,6 +378,8 @@ obs_raw_age_check <- left_join(obs_raw, demo_raw[c("patient_num", "age", "dead",
 dim(obs_raw_age_check)
 
 ```
+
+
 
 ```{r}
 obs_raw_inpatients_icd10_demo_clin <- obs_raw_age %>%
