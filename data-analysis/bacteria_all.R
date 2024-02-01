@@ -63,6 +63,9 @@ for (kk in 1:length(sites)){
   dat = dat %>% filter(timeToGroup <= as.Date("2023-03-01"))
   #print(dim(dat))
   #print(range(dat$timeToGroup))
+  if( sites[[kk]]== "CCHMC"){
+    dat <- dat %>% filter( timeToGroup < as.Date("2022-04-01"))
+  }
   dat_combined = rbind(dat_combined,dat)
   
   # creating the covariate matrix corresponding to season
@@ -197,36 +200,36 @@ myformula = paste0("bacterial~",paste0(colnames(dat_slope)[-1],collapse="+"))
 mod_slope = glm(as.formula(myformula),family=poisson(),data=dat_slope)
 summary(mod_slope)
 
-#time12_index = which(names(coefficients(mod_slope)) == "time12")
-#time24_index = which(names(coefficients(mod_slope)) == "time24")
-#time45_index = which(names(coefficients(mod_slope)) == "time45")
-time39_index = which(names(coefficients(mod_slope)) == "time39")
+time12_index = which(names(coefficients(mod_slope)) == "time12")
+time24_index = which(names(coefficients(mod_slope)) == "time24")
+time45_index = which(names(coefficients(mod_slope)) == "time45")
+time48_index = which(names(coefficients(mod_slope)) == "time48")
 
 # testing linear hypothesis in GLM
 # need to give specify the linear combination
 # for example, the level in month 45 is (45-12)*time12 + (45-24)*time24 + ...
 # for example, the slope after month 24 is time12 + time24
-#LH1 = LH2 = LH3 =LH4 = LH5 = matrix(rep(0,length(coefficients(mod_slope))),nrow=1)
-#LH1[1,time12_index] =1 ; LH1[1,time24_index] =1
-#LH4[1,c(time12_index,time24_index,time45_index)] = 1
-#LH5[1,c(time12_index,time24_index,time45_index,time48_index)] = 1
-#LH2[1,time12_index] =24; LH2[1,time24_index] =12
-#LH2[1,time12_index] =33; LH2[1,time24_index] =21
-#LH3[1,c(time12_index,time24_index,time45_index)] = 48-c(12,24,45)
-#library(car)
-#LH1 %*% coefficients(mod_slope)
-#linearHypothesis(mod_slope,LH1)
+LH1 = LH2 = LH3 =LH4 = LH5 = matrix(rep(0,length(coefficients(mod_slope))),nrow=1)
+LH1[1,time12_index] =1 ; LH1[1,time24_index] =1
+LH4[1,c(time12_index,time24_index,time45_index)] = 1
+LH5[1,c(time12_index,time24_index,time45_index,time48_index)] = 1
+LH2[1,time12_index] =24; LH2[1,time24_index] =12
+LH2[1,time12_index] =33; LH2[1,time24_index] =21
+LH3[1,c(time12_index,time24_index,time45_index)] = 48-c(12,24,45)
+library(car)
+LH1 %*% coefficients(mod_slope)
+linearHypothesis(mod_slope,LH1)
 
-#LH4 %*% coefficients(mod_slope)
-#linearHypothesis(mod_slope,LH4)
+LH4 %*% coefficients(mod_slope)
+linearHypothesis(mod_slope,LH4)
 
-#LH5 %*% coefficients(mod_slope)
-#linearHypothesis(mod_slope,LH5)
+LH5 %*% coefficients(mod_slope)
+linearHypothesis(mod_slope,LH5)
 
-#LH2 %*% coefficients(mod_slope)
-#linearHypothesis(mod_slope,LH2)
-#LH3 %*% coefficients(mod_slope)
-#linearHypothesis(mod_slope,LH3)
+LH2 %*% coefficients(mod_slope)
+linearHypothesis(mod_slope,LH2)
+LH3 %*% coefficients(mod_slope)
+linearHypothesis(mod_slope,LH3)
 
 # -------------- visualization ----------------
 ### plot the model fit
@@ -251,7 +254,7 @@ for (kk in 1:length(sites)){
   standard_site = sites[kk]
   print(standard_site)
   if (standard_site == "BCH"){
-    dat_standard_site = dat_slope[which(rowSums(dat_slope[,c("CCMC","GOSH","H12O","HCUV","MICHIGAN", "UPitt")])==0),]
+    dat_standard_site = dat_slope[which(rowSums(dat_slope[,c("CCMC","GOSH","H12O","HCUV","MICHIGAN", "UPitt", "CCHMC")])==0),]
   } else {
     dat_standard_site = dat_slope[which(dat_slope[,standard_site]==1),]
   }

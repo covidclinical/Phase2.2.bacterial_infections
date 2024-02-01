@@ -23,8 +23,10 @@ for (kk in 1:length(sites)){
   # this line looks at total bacterial infection
   #dat = a2_total_bacterial
   # this line looks at a subgroup of bacterial infections
-  dat = (a2_subgroups %>% filter(subgroup=="Respiratory"))[,-2]
+  #dat = (a2_subgroups %>% filter(subgroup=="Respiratory"))[,-2]
   #dat = (a2_subgroups %>% filter(subgroup=="IBI_simple"))[,-2]
+  dat = (a2_subgroups %>% filter(subgroup=="IBI_extensive"))[,-2]
+  #dat = (a2_subgroups %>% filter(subgroup=="Skin"))[,-2]
   colnames(dat)[2] = "bacterial"
   dat = merge(dat,a2_total_all,all.y=TRUE)
   colnames(dat)[3] = "all"
