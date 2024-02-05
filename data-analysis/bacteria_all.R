@@ -1,5 +1,5 @@
 rm(list=ls())
-setwd("../results/sites_outputs/")
+#setwd("../results/sites_outputs/")
 library(dplyr)
 library(glmnet)
 library(ggplot2)
@@ -107,65 +107,21 @@ for (kk in 1:length(sites)){
 }
 design_combined = cbind(design_combined,design.sites)
 
-# ------------- adaptive lasso and variable selection ---------
-# ----------------------------
-# --- glm linear model -------
-# ----------------------------
-# set.seed(99)
-# mod.lasso = cv.glmnet(x=design_combined,y=dat_combined$bacterial)
-# coef(mod.lasso,s="lambda.1se")
-# pred.lasso = predict(mod.lasso,s="lambda.1se",newx=design_combined)
-# dat_combined$pred = pred.lasso
 
 # ----------------------------------------------------
 # --- glm poisson model with total as covariate ------
 # --- I think this is the preferred approach ---------
 # ----------------------------------------------------
-set.seed(99)
+set.seed(123)
 mod.lasso.pois = cv.glmnet(x=design_combined, y=dat_combined$bacterial,family=poisson)
 beta.init = as.vector(coef(mod.lasso.pois,s="lambda.1se"))[-1]
-set.seed(99)
+set.seed(123)
 mod.lasso.pois = cv.glmnet(x=design_combined, y=dat_combined$bacterial,family=poisson,penalty.factor=1/abs(beta.init))
 beta.alasso = coef(mod.lasso.pois,s="lambda.1se")
 beta.alasso
 
 pred.lasso = predict(mod.lasso.pois, s="lambda.1se",newx=design_combined,type="response")
 dat_combined$pred = pred.lasso
-
-# -------------------------------------------------
-# --- glm poisson model with total as offset ------
-# -------------------------------------------------
-# set.seed(99)
-# mod.lasso.pois = cv.glmnet(x=design_combined[,-1], y=dat_combined$bacterial,family=poisson,offset=log(design_combined[,1]))
-# beta.init = as.vector(coef(mod.lasso.pois,s="lambda.1se"))[-1]
-# mod.lasso.pois = cv.glmnet(x=design_combined[,-1], y=dat_combined$bacterial,family=poisson,offset=log(design_combined[,1]),penalty.factor=1/abs(beta.init))
-# beta.alasso = coef(mod.lasso.pois,s="lambda.1se")
-# pred.lasso = predict(mod.lasso.pois, s="lambda.1se",newx=design_combined[,-1],newoffset=log(design_combined[,1]),type="response")
-# dat_combined$pred = pred.lasso
-
-# ggplot(dat_combined) +
-#   geom_line(aes(x = timeToGroup, y = bacterial, colour = site)) + labs(x="time",y="number of infection")
-# p1= ggplot(dat_combined %>% filter(site=="BCH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("BCH")+labs(x="time",y="bacterial infection")
-# p2= ggplot(dat_combined %>% filter(site=="MICHIGAN")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("Michigan")+labs(x="time",y="bacterial infection")
-# p3= ggplot(dat_combined %>% filter(site=="HCUV")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("HCUV")+labs(x="time",y="bacterial infection")
-# p4= ggplot(dat_combined %>% filter(site=="H12O")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("H12O")+labs(x="time",y="bacterial infection")
-# grid.arrange(p1,p2,p3,p4,ncol=2)
-
-
-# add_level = matrix(0,nrow(design_combined),nbasis)
-# for (jj in 1:nbasis){
-#   add_level[,jj] = 1*(design_combined[,"time"]>=(jj*gap))
-# }
-# colnames(add_level) = sapply(c(1:nbasis)*gap,function(x){paste0("level",x)})
-# 
-# design_combined_level_only = cbind(design_combined[,-c(which(sapply(colnames(design_combined),function(x){substr(x,1,4)}) == "time"))],add_level)
-# set.seed(9)
-# mod.lasso.pois = cv.glmnet(x=design_combined_level_only, y=dat_combined$bacterial,family=poisson)
-# beta.init = as.vector(coef(mod.lasso.pois,s="lambda.1se"))[-1]
-# mod.lasso.pois = cv.glmnet(x=design_combined_level_only, y=dat_combined$bacterial,family=poisson,penalty.factor=1/abs(beta.init))
-# beta.alasso = coef(mod.lasso.pois,s="lambda.1se")
-# pred.lasso = predict(mod.lasso.pois, s="lambda.1se",newx=design_combined[,-1],newoffset=log(design_combined[,1]),type="response")
-# dat_combined$pred = pred.lasso
 
 # ----------- refit model with selected variables + hypothesis testing ---------
 # -----------
@@ -174,23 +130,10 @@ dat_combined$pred = pred.lasso
 # we now refit the model with variables selected by adaptive lasso
 # this is to facilitate hypothesis testing
 selected_var = rownames(beta.alasso)[which(beta.alasso != 0)][-1]
-# alternatively, we can manually specify which variables we want to
-# include in the model and do hypothesis testing
-# selected_var = c("time","time15","time27",
-#                       "cFrac","iFrac","mFrac",
-#                       "winter",
-#                       "CCMC","GOSH","H12O","HCUV","MICHIGAN")
 
 design_reduced = design_combined[,colnames(design_combined) %in% selected_var]
 time_points = as.numeric(sapply(selected_var[sapply(selected_var,function(x){substr(x,1,4)}) == "time"],function(x){substr(x,5,nchar(x))}))
-# level_change_design = matrix(0,nrow(design_reduced),length(time_points))
-# for (jj in 1:length(time_points)){
-#   level_change_design[,jj] = 1*(design_combined[,"time"] >= time_points[jj])
-# }
-# level_change_design = data.frame(level_change_design)
-# colnames(level_change_design) = sapply(time_points,function(x){paste0("indicator",x)})
-# design_slope_level = cbind(design_reduced,level_change_design)
-# design_level = cbind(design_reduced[,-c(which(sapply(colnames(design_reduced),function(x){substr(x,1,4)})=="time" ))],level_change_design)
+time_points
 design_slope = data.frame(design_reduced)
 
 # model with only slope change
@@ -271,101 +214,9 @@ for (kk in 1:length(sites)){
                          site = rep(standard_site,length(pred_standard_site)))
   all_pred = rbind(all_pred,this_pred)
 }
+
 library(ggplot2)
 all_pred$date = dat_combined$timeToGroup
 ggplot(data=all_pred,aes(x=date,y=pred,colour=site)) + geom_line()+ylab("predicted bacterial infection")+
   geom_vline(xintercept=as.Date("2020-01-01"),linetype=2,colour="blue")+geom_vline(xintercept=as.Date("2021-01-01"),linetype=2,colour="blue")+geom_vline(xintercept=as.Date("2022-09-01"),linetype=2,colour="blue")+geom_vline(xintercept=as.Date("2022-12-01"),linetype=2,colour="blue")+
   geom_vline(xintercept=as.Date("2020-03-01"),linetype=2)+geom_vline(xintercept=as.Date("2021-03-01"),linetype=2)
-
-
-# dat_combined$pred = predict(mod_slope,type="response")
-# p1= ggplot(dat_combined %>% filter(site=="BCH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("BCH")+labs(x="time",y="bacterial infection")
-# p2= ggplot(dat_combined %>% filter(site=="MICHIGAN")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("Michigan")+labs(x="time",y="bacterial infection")
-# p3= ggplot(dat_combined %>% filter(site=="HCUV")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("HCUV")+labs(x="time",y="bacterial infection")
-# p4= ggplot(dat_combined %>% filter(site=="H12O")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("H12O")+labs(x="time",y="bacterial infection")
-# grid.arrange(p1,p2,p3,p4,ncol=2)
-# 
-# # model with only level change
-# dat_level = cbind(dat_combined$bacterial,design_combined[,1],design_level)
-# colnames(dat_level)[1:2] = c("bacterial","all")
-# myformula = paste0("bacterial~",paste0(colnames(dat_level)[-1],collapse="+"))
-# mod_level = glm(as.formula(myformula),family=poisson(),data=dat_level)
-# summary(mod_level)
-# 
-# # model with both slope and level changes
-# dat_slope_level = cbind(dat_combined$bacterial,design_combined[,1],design_slope_level)
-# colnames(dat_slope_level)[1:2] = c("bacterial","all")
-# myformula = paste0("bacterial~",paste0(colnames(dat_slope_level)[-c(1:2)],collapse="+"))
-# mod_slope_level = glm(as.formula(myformula),family=poisson(),data=dat_slope_level)
-# 
-# ### anova test
-# anova(mod_slope,mod_slope_level,test="LRT")
-# anova(mod_level,mod_slope_level,test="LRT")
-# 
-# png("spline.png",width=4,height=4,units="in",res=300)
-# ggplot(dat_combined %>% filter(site=="MICHIGAN")) +geom_line(aes(x=timeToGroup,y=pred))+labs(x="time",y="bacterial infection")
-# dev.off()
-# png("pred.png",width=8,height=4,units="in",res=300)
-# grid.arrange(p1,p2,ncol=2)
-# dev.off()
-# design_fake = matrix(0,51,4)
-# set.seed(28)
-# mod.lasso.pois = cv.glmnet(x=design_combined,y=dat_combined$bacterial,family=poisson)
-# coef(mod.lasso.pois,s="lambda.1se")
-# 
-# set.seed(28)
-# mod.lasso.pois.offset = cv.glmnet(x=design_combined[,-1],y=dat_combined$bacterial,family=poisson,offset=log(design_combined[,1]))
-# coef(mod.lasso.pois.offset,s="lambda.1se")
-# 
-# 
-# #visualization
-# par(mar = c(2.1, 4.1, 4.1, 2.1))
-# par(mfrow=c(2,1))
-# for (kk in 1:length(sites)){
-#   dat_plot = dat_combined %>% filter(site == sites[kk])
-#   plot(dat_plot$timeToGroup,dat_plot$bacterial,main = sites[kk])
-#   plot(dat_plot$timeToGroup,dat_plot$frac,main = sites[kk])
-# }
-# 
-# plot(dat_combined$timeToGroup,dat_combined$frac)
-# 
-# # UPitt has weird peaks in Aprils??
-# 
-# 
-# ### total counts does not match
-# ### probably the different bacterial infections are
-# ### NOT mutually exclusive
-# 
-# # this should match a2_age_bacterial? seems it does not
-# a2_age_bact_infection %>% group_by(timeToGroup,category) %>% summarise(tt = sum(count))
-# 
-# # this should match a2_total_bacterial? seems it does not
-# a2_bact_infection %>% group_by(timeToGroup) %>% summarise(tt = sum(count))
-# 
-# # this should match a2_total_bacterial? seems it does
-# a2_age_bacterial %>% group_by(timeToGroup) %>% summarise(tt = sum(count))
-# 
-# # this should match a2_bact_infection? Seems it does
-# a2_age_bact_infection %>% group_by(timeToGroup,disorder_group) %>% summarise(tt = sum(count))
-# 
-# 
-# 
-# 
-# 
-# 
-# # fit a piecewise linear function??
-# mod = lm(bacterial~all+time,data=dat)
-# mod.pois = glm(bacterial~all+time,data=dat,family=poisson)
-# 
-# 
-# library(glmnet)
-# mod.lasso = cv.glmnet(x=design.mat,y=dat$bacterial)
-# coef(mod.lasso,s="lambda.1se")
-# 
-# mod.lasso.pois = cv.glmnet(x=design.mat,y=dat$bacterial,family=poisson)
-# coef(mod.lasso.pois,s="lambda.1se")
-# 
-# ### poisson model or linear model?
-# ### do we need offset if poisson model?
-# 
-# 
