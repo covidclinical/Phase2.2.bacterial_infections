@@ -81,24 +81,27 @@ bacterial_counts_bySite <- rbind( bacterial_counts_bySite, ceroCategories)
 
 Create the barplots
 ```{r}
-bacterial_counts_bySite$site <- factor(bacterial_counts_bySite$site, levels = c("BCH","CCMC", "Michigan", "H12O", "HCUV", "GOSH"))
+bacterial_counts_bySite$site <- factor(bacterial_counts_bySite$site, levels = c("BCH","CCHMC", "CCMC", "MICHIGAN", "UPitt","H12O", "HCUV", "GOSH"))
 
 bacterial_counts_bySite$country <- ifelse( bacterial_counts_bySite$site %in% c("H12O", "HCUV"), "Spain", ifelse( bacterial_counts_bySite$site == "GOSH", "UK", "US"))
 
-bacterial_counts_bySite$site <- factor(bacterial_counts_bySite$site, levels = c("BCH","CCMC", "Michigan", "H12O", "HCUV", "GOSH"))
+bacterial_counts_bySite$site <- factor(bacterial_counts_bySite$site, levels = c("BCH","CCHMC", "CCMC", "MICHIGAN", "UPitt","H12O", "HCUV", "GOSH"))
 
 
 output_plot <- ggplot2::ggplot( data = bacterial_counts_bySite, 
                  aes( x= site, y = n, fill=country )) +
   ggplot2::geom_bar( stat = "identity") +
   ggplot2::scale_fill_manual( "legend", values = c("Spain" = "#D81B60", "US" = "#1E88E5", "UK" = "#FFC107")) +
-  ggplot2::geom_vline(xintercept = 3.5, linetype="dotted") +
   ggplot2::geom_vline(xintercept = 5.5, linetype="dotted") +
+  ggplot2::geom_vline(xintercept = 7.5, linetype="dotted") +
   ggplot2::facet_wrap(~ category, scales = "free") + 
   ggplot2::geom_text( aes(label=n), vjust=1.6, color="white", size=3.5) + 
   ggplot2::ylab( "Number of hospitalizations") +
   ggplot2::theme_bw( ) +
-  ggplot2::theme(panel.grid.major.x = element_blank())
+  ggplot2::theme(panel.grid.major.x = element_blank(), 
+                 axis.text.x = element_text(angle = 45, 
+                                            vjust = 1, 
+                                            hjust=1))
 
 
 output_plot
@@ -127,29 +130,29 @@ valuesToPlot <- rbind( totalBacterialPerMonth, bacterialSubgroupPerMonth)
 linePlot <- ggplot2::ggplot( data = valuesToPlot, aes(x=timeToGroup, y=count, group=category_name)) +
     ggplot2::geom_line( aes( color=category_name)) +
   #ggplot2::geom_line( aes(linetype=category_name, color=category_name)) +
-  ggplot2::facet_wrap(~ site, scales = "free") + 
+  ggplot2::facet_wrap(~ site, scales = "free", nrow = 2) + 
   #ggplot2::scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9","darkgreen", "grey")) +
   #ggplot2::scale_color_brewer(palette="Greens") +
   ggplot2::ylab( "Number of hospitalizations") +
   ggplot2::xlab( "time") +
   ggplot2::geom_vline(xintercept = as.Date( "2020-02-01") , linetype = "dashed") +
   ggplot2::geom_vline(xintercept = as.Date( "2021-02-01"), linetype = "dashed") +
-                
   #ggplot2::geom_point( aes(shape=category_name)) +
-  ggplot2::theme_bw()
+  ggplot2::theme_bw()+
+  ggplot2::theme(legend.position="bottom")
 
 linePlot
 ```
 Test the violin plot idea
 ```{r, eval=FALSE}
-valuesToPlot$site <- factor(valuesToPlot$site, levels = c("BCH","CCMC", "Michigan", "H12O", "HCUV", "GOSH"))
+valuesToPlot$site <- factor(valuesToPlot$site, levels = c("BCH","CCHMC","CCMC", "MICHIGAN","UPitt", "H12O", "HCUV", "GOSH"))
 
 valuesToPlot$country <-  ifelse( valuesToPlot$site %in% c("H12O", "HCUV"), "Spain", ifelse( valuesToPlot$site == "GOSH", "UK", "US"))
   
 violin_output <- ggplot2::ggplot(valuesToPlot, aes(x=as.factor(site), y=count, fill=country)) +
   ggplot2::geom_violin( )+
   ggplot2::scale_fill_manual(values = c("Spain" = "#D81B60", "US" = "#1E88E5", "UK" = "#FFC107")) +
-  ggplot2::facet_wrap( ~category_name, scales = "free")+
+  ggplot2::facet_wrap( ~category_name, scales = "free",nrow = 3)+
   ggplot2::geom_vline(xintercept = 3.5, linetype="dotted")+
   ggplot2::geom_vline(xintercept = 5.5, linetype="dotted")+
   ggplot2::ylab( "Number of hospitalizations") +
@@ -171,7 +174,7 @@ total_counts <- a2.1 %>%
 totalHosp_plot <- total_counts %>%
   ggplot2::ggplot( aes( x= timeToGroup, y = count )) +
   ggplot2::geom_bar( stat = "identity") +
-  ggplot2::facet_wrap(~ site, scales = "free") + 
+  ggplot2::facet_wrap(~ site, scales = "free", ncol = 2) + 
     ggplot2::ylab( "Number of total hospitalizations") +
   ggplot2::xlab( "time") +
   ggplot2::geom_vline(xintercept = as.Date( "2020-02-01") , linetype = "dashed") +
