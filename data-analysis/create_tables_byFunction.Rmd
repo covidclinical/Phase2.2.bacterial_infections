@@ -31,7 +31,7 @@ a1_all_to_work$category <- stringr::str_to_title( a1_all_to_work$category )
 Organize sites into countries
 - This list must be updated if additional countries / sites are added
 ```{r}
-site_country_mapping <- data.frame('site' = c('BCH', 'CCHMC', 'CCMC', 'GOSH', 'H12O', 'HCUV', 'Michigan', 'UPitt'),
+site_country_mapping <- data.frame('site' = c('BCH', 'CCHMC', 'CCMC', 'GOSH', 'H12O', 'HCUV', 'MICHIGAN', 'UPitt'),
                                    'country' = c('United States', 'United States', 'United States', 'United Kingdom', 
                                                  'Spain', 'Spain', 'United States', 'United States'))
 
