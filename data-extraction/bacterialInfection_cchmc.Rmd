@@ -491,12 +491,12 @@ hospitalization_summary <- count_perc_bact_hosp %>%
 ## ITS Count based
 ```{r, its count based}
 ts_linear_count <- lm(count_bacterial ~ period * time, hospitalization_summary)
-ts_seasonal_count <- lm(count_bacterial ~ period*time + harmonic(month_year, 1, 12), hospitalization_summary)
+#ts_seasonal_count <- lm(count_bacterial ~ period*time + harmonic(month_year, 1, 12), hospitalization_summary)
 ```
 
 ### ITS Visualization: counts, no clearance period, with seasonality effect
 
-```{r}
+```{r, eval=FALSE}
 source("../R/time_series_analysis_plotting.R")
 
 time_series_analysis_plotting(ts_seasonal_count,
@@ -512,12 +512,12 @@ time_series_analysis_plotting(ts_seasonal_count,
 ## ITS Percentage based
 ```{r, its percentage based}
 ts_linear_percent <- lm(percentage_bacterial ~ period * time, hospitalization_summary)
-ts_seasonal_percent <- lm(percentage_bacterial ~ period*time + harmonic(month_year, 1, 12), hospitalization_summary)
+#ts_seasonal_percent <- lm(percentage_bacterial ~ period*time + harmonic(month_year, 1, 12), hospitalization_summary)
 ```
 
 ### ITS Visualization: percentage, no clearance period, with seasonality effect
 
-```{r}
+```{r, eval=FALSE}
 time_series_analysis_plotting(ts_seasonal_percent,
                               hospitalization_summary,
                               "percentage_bacterial",
