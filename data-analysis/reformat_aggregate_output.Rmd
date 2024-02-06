@@ -120,11 +120,6 @@ for( i in 1:length( files )){
       a2_lengthHosp_all, a2_lengthHosp_bacterial,
       a2_total_bacterial, a2_bact_infection, a2_icu_mortality )
   
-  # remove data for CCHMC after March 2022  
-  if( site_id == "CCHMC"){
-    a2_all <- a2_all %>% filter( timeToGroup < as.Date("2022-04-01"))
-  }
-  
   # put together all the sites a2 tables as a2_all_to_work      
   if( i ==1 ){
     a2_all_to_work <- a2_all
@@ -227,11 +222,6 @@ for( i in 1:length( files )){
       a1_lengthHosp_all, a1_lengthHosp_bacterial,
       a1_season_bacterial, a1_season_all,
       a1_total_bacterial, a1_bact_infection, a1_icu_mortality )
-  
-  # remove data for CCHMC after March 2022  
-  #if( site_id == "CCHMC"){
-  #  a1_all <- a1_all %>% filter( timeToGroup != "partial-NPI")
-  #}
   
   # put together all the sites a1 tables as a1_all_to_work      
   if( i ==1 ){

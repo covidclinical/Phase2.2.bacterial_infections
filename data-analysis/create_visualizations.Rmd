@@ -103,8 +103,11 @@ output_plot <- ggplot2::ggplot( data = bacterial_counts_bySite,
                                             vjust = 1, 
                                             hjust=1))
 
-
+png(filename = "../../figure1_barchar_infections_byHospital.png",
+    width    = 800, 
+    height   = 600 )
 output_plot
+dev.off()
 ```
  
  
@@ -141,7 +144,11 @@ linePlot <- ggplot2::ggplot( data = valuesToPlot, aes(x=timeToGroup, y=count, gr
   ggplot2::theme_bw()+
   ggplot2::theme(legend.position="bottom")
 
+png(filename = "../../figure2_linePlot_HighCategory_byHospital.png",
+    width    = 800, 
+    height   = 600 )
 linePlot
+dev.off()
 ```
 Test the violin plot idea
 ```{r, eval=FALSE}
@@ -160,8 +167,11 @@ violin_output <- ggplot2::ggplot(valuesToPlot, aes(x=as.factor(site), y=count, f
   ggplot2::theme_bw( ) +
   ggplot2::theme(panel.grid.major.x = element_blank())
 
-
+png(filename = "../../appendix_violinPlot.png",
+    width    = 800, 
+    height   = 600 )
 violin_output
+dev.off()
 ```
 
 ## Appendix figure: monthly total hospitalizations per site
@@ -181,6 +191,10 @@ totalHosp_plot <- total_counts %>%
   ggplot2::geom_vline(xintercept = as.Date( "2021-02-01"), linetype = "dashed") +
   ggplot2::theme_bw()
 
+png(filename = "../../appendix_barplot.png",
+    width    = 800, 
+    height   = 600 )
 totalHosp_plot
+dev.off()
 ```
 

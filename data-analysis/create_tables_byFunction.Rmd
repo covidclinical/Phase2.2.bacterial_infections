@@ -191,6 +191,9 @@ Combine Table 1 sub-tables
 table1 <- rbind(t1.country, t1.age, t1.sex, t1.season, t1.lengthHospitalization) %>%
   select(X, `pre-NPI`, `full-NPI`, `partial-NPI`)
 
+colnames(table1) <- c(" ", "pre-NPI \n Jan 2019-Feb 2020", 
+                      "full-NPI \n March 2020-Feb 2021", 
+                      "partial-NPI \n March 2021-Feb 2023")
 ```
 
 ```{r}
@@ -207,6 +210,9 @@ table2 <- countsAndPercentages( input_df = a1.1,
                                  variable ="subgroup", 
                                  percentage = FALSE)
 
+table2 <- table2 %>%
+  select(subgroup, `pre-NPI`, `full-NPI`, `partial-NPI`)
+
 ```
 
 
@@ -217,7 +223,8 @@ table3 <- countsAndPercentages( input_df = a1.1,
                                  selected_type = "bacterial", 
                                  variable ="bacterialInfection", 
                                  percentage = FALSE)
-
+table3 <- table3 %>%
+  select(`X`, `pre-NPI`, `full-NPI`, `partial-NPI`)
 ```
 
 # Table X 
