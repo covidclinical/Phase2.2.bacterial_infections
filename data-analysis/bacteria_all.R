@@ -24,7 +24,7 @@ for (kk in 1:length(sites)){
   #dat = a2_total_bacterial
   # this line looks at a subgroup of bacterial infections
   dat = (a2_subgroups %>% filter(subgroup=="Respiratory"))[,-2]
-  #dat = (a2_subgroups %>% filter(subgroup=="IBI_simple"))[,-2]
+  #dat = (a2_subgroups %>% filter(subgroup=="Skin"))[,-2]
   colnames(dat)[2] = "bacterial"
   dat = merge(dat,a2_total_all,all.y=TRUE)
   colnames(dat)[3] = "all"
@@ -112,10 +112,10 @@ design_combined = cbind(design_combined,design.sites)
 # --- glm poisson model with total as covariate ------
 # --- I think this is the preferred approach ---------
 # ----------------------------------------------------
-set.seed(123)
+set.seed(45)
 mod.lasso.pois = cv.glmnet(x=design_combined, y=dat_combined$bacterial,family=poisson)
 beta.init = as.vector(coef(mod.lasso.pois,s="lambda.1se"))[-1]
-set.seed(123)
+set.seed(45)
 mod.lasso.pois = cv.glmnet(x=design_combined, y=dat_combined$bacterial,family=poisson,penalty.factor=1/abs(beta.init))
 beta.alasso = coef(mod.lasso.pois,s="lambda.1se")
 beta.alasso
