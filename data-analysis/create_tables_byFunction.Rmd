@@ -201,6 +201,253 @@ rm(list=setdiff(ls(), c("table1","a1.1", "countsAndPercentages")))
 
 ```
 
+## Adding two columns to table 1
+```{r}
+countsCombinedAndPercentages <- function( input_df, selected_type, variable, category_type, percentage ){
+  
+  if( variable == "country"){
+    output <- input_df %>%
+      dplyr::filter(type == selected_type) %>%
+      dplyr::filter(category_name == category_type) 
+    
+    output <- output %>%
+      dplyr::group_by(country) %>%
+      dplyr::summarise(n = sum(count)) %>%
+      dplyr::mutate(percent = n / sum(n) * 100,
+                    value = paste0(n, ' (', round(percent, 2), '%)')) %>%
+      dplyr::select( country, value )
+    
+    output_wider <- output %>%
+      dplyr::add_row(country = 'Country, n (%)', .before = 1) %>%
+      dplyr::rename('X' = 'country')
+  }else{
+    output <- input_df %>%
+      dplyr::filter(type == selected_type) %>%
+      dplyr::filter(category_name == variable ) 
+    
+    output <- output %>%
+      dplyr::group_by(category) %>%
+      dplyr::summarise(n = sum(count)) %>%
+      dplyr::ungroup()
+    
+    if( percentage == TRUE){
+      output <- output %>%
+        dplyr::mutate(percent = n / sum(n) * 100,
+                      value = paste0(n, ' (', round(percent, 2), '%)')) %>%
+        dplyr::select( category, value )
+    }else{
+      output <- output %>%
+        dplyr::mutate(value = n) %>%
+        dplyr::select( category, value )
+    }
+    
+    output_wider <- output %>%
+      dplyr::add_row(category = paste0( variable, ', n (%)'), .before = 1) %>%
+      dplyr::rename('X' = 'category')
+  }
+  
+  return( output_wider )
+}
+
+
+all_admin_by_country <- countsCombinedAndPercentages( input_df = a1.1, 
+                                                      selected_type = "all", 
+                                                      variable = "country", 
+                                                      category_type = "total",
+                                                      percentage = TRUE )
+
+t1.all_admin_sex <- countsCombinedAndPercentages( input_df = a1.1, 
+                                                  selected_type = "all", 
+                                                  variable = "sex", 
+                                                  percentage = TRUE)
+
+t1.all_admin_age <- countsCombinedAndPercentages( input_df = a1.1, 
+                                                  selected_type = "all", 
+                                                  variable = "age", 
+                                                  percentage = TRUE)
+
+orderAge <- c("age, n (%)","Infancy", "Childhood", "Middle Childhood", "Adolescence")
+t1.all_admin_age$X <- factor(t1.all_admin_age$X , levels = orderAge)
+t1.all_admin_age <- t1.all_admin_age[order(t1.all_admin_age$X), ]
+
+bacterial_admin_by_country <- countsCombinedAndPercentages( input_df = a1.1, 
+                                                      selected_type = "bacterial", 
+                                                      variable = "country", 
+                                                      category_type = "total",
+                                                      percentage = TRUE )
+
+
+t1.all_season <- countsCombinedAndPercentages( input_df = a1.1, 
+                                   selected_type = "all", 
+                                   variable = "season", 
+                                   percentage = TRUE)
+
+orderSeason <- c("season, n (%)","Spring", "Summer", "Autumn", "Winter")
+t1.all_season$X <- factor(t1.all_season$X , levels = orderSeason)
+t1.all_season <- t1.all_season[order(t1.all_season$X), ]
+
+t1.all_lengthHospitalization <- countsCombinedAndPercentages( input_df = a1.1, 
+                                                  selected_type = "all", 
+                                                  variable = "lengthHospitalization", 
+                                                  percentage = TRUE)
+
+orderLength <- c("lengthHospitalization, n (%)","Less Than 3 Days", "Between 3 And 7 Days", "More Than 7 Days")
+t1.all_lengthHospitalization$X <- factor(t1.all_lengthHospitalization$X , levels = orderLength)
+t1.all_lengthHospitalization <- t1.all_lengthHospitalization[order(t1.all_lengthHospitalization$X), ]
+
+### bacterial
+t1.bac_admin_sex <- countsCombinedAndPercentages( input_df = a1.1, 
+                                                  selected_type = "bacterial", 
+                                                  variable = "sex", 
+                                                  percentage = TRUE)
+
+t1.bac_admin_age <- countsCombinedAndPercentages( input_df = a1.1, 
+                                                  selected_type = "bacterial", 
+                                                  variable = "age", 
+                                                  percentage = TRUE)
+
+orderAge <- c("age, n (%)","Infancy", "Childhood", "Middle Childhood", "Adolescence")
+t1.bac_admin_age$X <- factor(t1.bac_admin_age$X , levels = orderAge)
+t1.bac_admin_age <- t1.bac_admin_age[order(t1.bac_admin_age$X), ]
+
+t1.bac_season <- countsCombinedAndPercentages( input_df = a1.1, 
+                                   selected_type = "bacterial", 
+                                   variable = "season", 
+                                   percentage = TRUE)
+
+orderSeason <- c("season, n (%)","Spring", "Summer", "Autumn", "Winter")
+t1.bac_season$X <- factor(t1.bac_season$X , levels = orderSeason)
+t1.bac_season <- t1.bac_season[order(t1.bac_season$X), ]
+
+
+# Lenght of hospitalization
+t1.bac_lengthHospitalization <- countsCombinedAndPercentages( input_df = a1.1, 
+                                                  selected_type = "bacterial", 
+                                                  variable = "lengthHospitalization", 
+                                                  percentage = TRUE)
+
+orderLength <- c("lengthHospitalization, n (%)","Less Than 3 Days", "Between 3 And 7 Days", "More Than 7 Days")
+t1.bac_lengthHospitalization$X <- factor(t1.bac_lengthHospitalization$X , levels = orderLength)
+t1.bac_lengthHospitalization <- t1.bac_lengthHospitalization[order(t1.bac_lengthHospitalization$X), ]
+```
+
+Combine the two new colums
+```{r echo = FALSE}
+table1_col1 <- rbind(all_admin_by_country, t1.all_admin_age, t1.all_admin_sex, t1.all_season, t1.all_lengthHospitalization) %>%
+  select(X, value)
+
+colnames(table1_col1) <- c("X", "Admissions")
+
+table1_col2 <- rbind(bacterial_admin_by_country, t1.bac_admin_age, t1.bac_admin_sex, t1.bac_season, t1.bac_lengthHospitalization) %>%
+  select(X, value)
+
+colnames(table1_col2) <- c("X", "Admissions with bacterial inf")
+
+new_cols <- left_join( table1_col1, table1_col2, by="X")
+
+updated_table1 <- left_join( new_cols, table1, by=c("X"=" "))
+```
+
+```{r}
+rm(list=setdiff(ls(), c("updated_table1","a1.1", "countsAndPercentages")))
+
+```
+
+## Table 1 option 2
+```{r}
+countsAndPercentages_averageMonth <- function( input_df, selected_type, variable){
+  
+  if( variable == "subgroup"){
+    output <- input_df %>%
+      dplyr::filter(type == selected_type) %>%
+      dplyr::filter(category_name == "subgroups" ) 
+    
+    output <- output %>%
+      dplyr::group_by(timeToGroup, subgroup) %>%
+      dplyr::summarise(n = sum(count)) %>%
+      dplyr::ungroup() 
+    
+      output <- output %>%
+        dplyr::mutate(month_average = round( ifelse( timeToGroup == "pre-NPI", n/112, 
+                                              ifelse( timeToGroup == "full-NPI", n/96, n/181)), 1))
+      
+    
+    output_wider <- output %>%
+      tidyr::pivot_wider(id_cols = subgroup, 
+                         names_from = timeToGroup, 
+                         values_from = month_average)
+    
+  }else{
+    output <- input_df %>%
+      dplyr::filter(type == selected_type) %>%
+      dplyr::filter(category_name == variable ) 
+    
+    output <- output %>%
+      dplyr::group_by(timeToGroup, category) %>%
+      dplyr::summarise(n = sum(count)) %>%
+      dplyr::ungroup()
+    
+      output <- output %>%
+        dplyr::mutate(month_average = round( ifelse( timeToGroup == "pre-NPI", n/112, 
+                                              ifelse( timeToGroup == "full-NPI", n/96, n/181)), 1))
+      
+    output_wider <- output %>%
+      tidyr::pivot_wider(id_cols = category, 
+                         names_from = timeToGroup, 
+                         values_from = month_average) %>%
+      dplyr::add_row(category = paste0( variable, ', n (%)'), .before = 1) %>%
+      dplyr::rename('X' = 'category')
+  }
+  
+  return( output_wider )
+}
+
+t1.opt2_age <- countsAndPercentages_averageMonth( input_df = a1.1, 
+                                selected_type = "bacterial", 
+                                variable = "age")
+orderAge <- c("age, n (%)","Infancy", "Childhood", "Middle Childhood", "Adolescence")
+t1.opt2_age$X <- factor(t1.opt2_age$X , levels = orderAge)
+t1.opt2_age <- t1.opt2_age[order(t1.opt2_age$X), ]
+
+
+# Sex
+t1.opt2_sex <- countsAndPercentages_averageMonth( input_df = a1.1, 
+                                selected_type = "bacterial", 
+                                variable = "sex")
+# Season
+t1.opt2_season <- countsAndPercentages_averageMonth( input_df = a1.1, 
+                                   selected_type = "bacterial", 
+                                   variable = "season")
+
+orderSeason <- c("season, n (%)","Spring", "Summer", "Autumn", "Winter")
+t1.opt2_season$X <- factor(t1.opt2_season$X , levels = orderSeason)
+t1.opt2_season <- t1.opt2_season[order(t1.opt2_season$X), ]
+
+
+# Lenght of hospitalization
+t1.opt2_lengthHospitalization <- countsAndPercentages_averageMonth( input_df = a1.1, 
+                                                  selected_type = "bacterial", 
+                                                  variable = "lengthHospitalization")
+
+orderLength <- c("lengthHospitalization, n (%)","Less Than 3 Days", "Between 3 And 7 Days", "More Than 7 Days")
+t1.opt2_lengthHospitalization$X <- factor(t1.opt2_lengthHospitalization$X , levels = orderLength)
+t1.opt2_lengthHospitalization <- t1.opt2_lengthHospitalization[order(t1.opt2_lengthHospitalization$X), ]
+```
+
+Combine the columns to create opt 2 table 1
+```{r echo = FALSE}
+table1_opt2 <- rbind(t1.opt2_age, t1.opt2_sex, t1.opt2_season, t1.opt2_lengthHospitalization) %>%
+  select(X, `pre-NPI`, `full-NPI`, `partial-NPI`)
+
+colnames(table1_opt2) <- c(" ", "pre-NPI \n Jan 2019-Feb 2020", 
+                      "full-NPI \n March 2020-Feb 2021", 
+                      "partial-NPI \n March 2021-Feb 2023")
+```
+
+```{r}
+rm(list=setdiff(ls(), c("updated_table1","table1_opt2","a1.1", "countsAndPercentages")))
+
+```
 
 # Table 2 
 
@@ -277,7 +524,7 @@ tableX <- rbind(tX.country, tX.age, tX.sex, tX.season, tX.lengthHospitalization)
 ```
 
 ```{r}
-rm(list=setdiff(ls(), c("table1","table2","table3","tableX","a1.1", "countsAndPercentages")))
+rm(list=setdiff(ls(), c("updated_table1","table1_opt2","table2","table3","tableX","a1.1", "countsAndPercentages")))
 ```
 
 ```{r}
@@ -290,13 +537,22 @@ library(flextable)
 doc <- read_docx()
 
 # Add a heading for table1
-doc <- body_add_par(doc, "Table 1", 
+doc <- body_add_par(doc, "Table 1, opt 1", 
                     style = "heading 1")
 
 # Add the table1 to the doc
 doc <- body_add_flextable(
   doc,
-  value = flextable(table1))
+  value = flextable(updated_table1))
+
+# Add a heading for table1 opt 2
+doc <- body_add_par(doc, "Table 1, opt 2", 
+                    style = "heading 1")
+
+# Add the table2 to the doc
+doc <- body_add_flextable(
+  doc,
+  value = flextable(table1_opt2))
 
 # Add a heading for table2
 doc <- body_add_par(doc, "Table 2", 
