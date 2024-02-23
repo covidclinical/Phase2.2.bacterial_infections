@@ -27,9 +27,9 @@ design.mats = vector("list",length(sites))
 gap = 3 #use gap=2 as sensitivity analysis, change points identified are very consistent
 
 #disease_subgroupToStudy <- "Skin"
-#disease_subgroupToStudy <- "Respiratory"
+disease_subgroupToStudy <- "Respiratory"
 #disease_subgroupToStudy <- "IBI_extensive"
-disease_subgroupToStudy <- "IBI_simple"
+#disease_subgroupToStudy <- "IBI_simple"
 
 for (kk in 1:length(sites)){
   load(paste0("../results/sites_outputs/", sites[kk],"/a2Tables.RData"))
@@ -176,11 +176,13 @@ Next, based on the variable selection results. Let us re-fit the model using glm
 ```{r echo=FALSE}
 # we now refit the model with variables selected by adaptive lasso
 # this is to facilitate hypothesis testing
-#selected_var = rownames(beta.alasso)[which(beta.alasso != 0)][-1]
+selected_var = rownames(beta.alasso)[which(beta.alasso != 0)][-1]
+selected_var = union(selected_var, c("cFrac","iFrac","mFrac","summer","autumn","winter",
+                 "CCHMC","CCMC","GOSH","H12O","HCUV","MICHIGAN","UPitt"))
 
 # for Skin, IBI, do the following instead
-selected_var = c("cFrac","iFrac","mFrac","summer","autumn","winter",
-                 "CCHMC","CCMC","GOSH","H12O","HCUV","MICHIGAN","UPitt","time12","time24")
+#selected_var = c("cFrac","iFrac","mFrac","summer","autumn","winter",
+#                 "CCHMC","CCMC","GOSH","H12O","HCUV","MICHIGAN","UPitt","time12","time24")
 
 design_reduced = design_combined[,colnames(design_combined) %in% selected_var]
 time_points = as.numeric(sapply(selected_var[sapply(selected_var,function(x){substr(x,1,4)}) == "time"],function(x){substr(x,5,nchar(x))}))
