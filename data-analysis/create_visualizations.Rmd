@@ -149,6 +149,12 @@ png(filename = "../../figure2_linePlot_HighCategory_byHospital.png",
     height   = 600 )
 linePlot
 dev.off()
+
+ggsave(filename = "../../figure2_linePlot_HighCategory_byHospital_700dpi.png",
+       plot = linePlot, 
+       width = 10, 
+       #height = 450, 
+       dpi=700)
 ```
 Test the violin plot idea
 ```{r, eval=FALSE}
