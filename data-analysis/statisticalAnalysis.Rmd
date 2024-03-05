@@ -127,8 +127,11 @@ We analyze data from all the sites.
 Let us visualized the counts in the 8 sites over time.
 
 ```{r echo=FALSE}
-ggplot(dat_combined) +
-  geom_line(aes(x = timeToGroup, y = bacterial, colour = site)) + labs(x="time",y="number of infection")
+panelA <- ggplot(dat_combined) +
+  geom_line(aes(x = timeToGroup, y = bacterial, colour = site)) + 
+  labs(x="time",y="number of infection") +
+  theme(legend.position = "none")
+  
 ```
 
 First, we fit a poisson GLM using total number of hospitalization as an offset, allowing change in slope every 3 months. That is,
@@ -240,9 +243,33 @@ for (kk in 1:length(sites)){
 
 library(ggplot2)
 all_pred$date = dat_combined$timeToGroup
-ggplot(data=all_pred,aes(x=date,y=pred,colour=site)) + geom_line()+ylab("predicted bacterial infection")+
+panelC <- ggplot(data=all_pred,aes(x=date,y=pred,colour=site)) + geom_line()+ylab("predicted bacterial infection")+
   geom_vline(xintercept=as.Date("2020-01-01"),linetype=2,colour="blue")+geom_vline(xintercept=as.Date("2021-01-01"),linetype=2,colour="blue")+geom_vline(xintercept=as.Date("2022-09-01"),linetype=2,colour="blue")+geom_vline(xintercept=as.Date("2022-12-01"),linetype=2,colour="blue")+
   geom_vline(xintercept=as.Date("2020-03-01"),linetype=2)+geom_vline(xintercept=as.Date("2021-03-01"),linetype=2)
+
+```
+
+# Create final panel figure
+```{r}
+library(ggpu)
+
+# ggarrange(panelB,
+#           ggarrange(panelA, panelC, 
+#                     ncol = 2, 
+#                     labels = c("B", "C")), 
+#           nrow = 2, 
+#           labels = "A"
+#           ) 
+
+top_row = ggarrange(panelA, panelC, ncol = 2, labels = c("A", "C"))
+bottom_row = ggarrange( panelB, ncol = 1, labels = c("B"))
+final_plot = ggarrange(top_row, bottom_row, ncol = 1)
+
+ggsave(filename = "../../panelFigure.png",
+       plot = final_plot, 
+       width = 10, 
+       #height = 450, 
+       dpi=700)
 
 ```
 
