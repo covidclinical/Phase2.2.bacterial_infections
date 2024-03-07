@@ -134,31 +134,30 @@ panelA <- ggplot(dat_combined) +
   
 ```
 
-First, we fit a poisson GLM using total number of hospitalization as an offset, allowing change in slope every 3 months. That is,
-\begin{equation}
- Y = \beta_0 + \sum_{j=1}^{16} \beta_j(t-t_j)_{+} + \beta_{age}* age + \beta_{season}* season + \alpha_{site}* site
-\end{equation}
+First, we fit a poisson GLM using log of the total number of hospitalization as a covariate, allowing change in slope every 3 months.
+
 We fit the model using adaptive lasso, so that we achieve variable selection as well.
 
 ```{r echo=FALSE, warning=FALSE}
-# -------------------------------------------------
-# --- glm poisson model with total as offset ------
-# -------------------------------------------------
+# ---------------------------------------------------------------
+# --- glm poisson model with log of the total as covariate ------
+# ---------------------------------------------------------------
+design_combined[,1] = log(design_combined[,1])
 set.seed(123)
-mod.lasso.pois = cv.glmnet(x=design_combined[,-1], y=dat_combined$bacterial,family=poisson,offset=log(design_combined[,1]))
+mod.lasso.pois = cv.glmnet(x=design_combined, y=dat_combined$bacterial,family=poisson)
 beta.init = as.vector(coef(mod.lasso.pois,s="lambda.1se"))[-1]
 set.seed(123)
-mod.lasso.pois = cv.glmnet(x=design_combined[,-1], y=dat_combined$bacterial,family=poisson,offset=log(design_combined[,1]),penalty.factor=1/abs(beta.init))
+mod.lasso.pois = cv.glmnet(x=design_combined, y=dat_combined$bacterial,family=poisson,penalty.factor=1/abs(beta.init))
 beta.alasso = coef(mod.lasso.pois,s="lambda.1se")
 beta.alasso
-pred.lasso = predict(mod.lasso.pois, s="lambda.1se",newx=design_combined[,-1],newoffset=log(design_combined[,1]),type="response")
+pred.lasso = predict(mod.lasso.pois, s="lambda.1se",newx=design_combined,type="response")
 dat_combined$pred = pred.lasso
 ```
 
 Now let's visualize the fitted results in each site.
 
 ```{r echo = FALSE}
-pred.lasso = predict(mod.lasso.pois, s="lambda.1se",newx=design_combined[,-1],newoffset=log(design_combined[,1]),type="response")
+pred.lasso = predict(mod.lasso.pois, s="lambda.1se",newx=design_combined,type="response")
 dat_combined$pred = pred.lasso
 p1= ggplot(dat_combined %>% filter(site=="BCH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("BCH")+labs(x="time",y="bacterial infection")
 p2= ggplot(dat_combined %>% filter(site=="MICHIGAN")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("Michigan")+labs(x="time",y="bacterial infection")
@@ -179,13 +178,12 @@ Next, based on the variable selection results. Let us re-fit the model using glm
 ```{r echo=FALSE}
 # we now refit the model with variables selected by adaptive lasso
 # this is to facilitate hypothesis testing
-selected_var = rownames(beta.alasso)[which(beta.alasso != 0)][-1]
-selected_var = union(selected_var, c("cFrac","iFrac","mFrac","summer","autumn","winter",
-                 "CCHMC","CCMC","GOSH","H12O","HCUV","MICHIGAN","UPitt"))
+#selected_var = rownames(beta.alasso)[which(beta.alasso != 0)][-1]
+#selected_var = union(selected_var, c("cFrac","iFrac","mFrac","summer","autumn","winter",              "CCHMC","CCMC","GOSH","H12O","HCUV","MICHIGAN","UPitt"))
 
 # for Skin, IBI, do the following instead
-#selected_var = c("cFrac","iFrac","mFrac","summer","autumn","winter",
-#                 "CCHMC","CCMC","GOSH","H12O","HCUV","MICHIGAN","UPitt","time12","time24")
+#selected_var = c("cFrac","iFrac","mFrac","summer","autumn","winter","CCHMC","CCMC","GOSH","H12O","HCUV","MICHIGAN","UPitt","time15","time24")
+
 
 design_reduced = design_combined[,colnames(design_combined) %in% selected_var]
 time_points = as.numeric(sapply(selected_var[sapply(selected_var,function(x){substr(x,1,4)}) == "time"],function(x){substr(x,5,nchar(x))}))
@@ -195,7 +193,7 @@ design_slope = data.frame(design_reduced)
 # model with only slope change
 dat_slope = cbind(dat_combined$bacterial,design_combined[,1],design_slope)
 colnames(dat_slope)[1:2] = c("bacterial","all")
-myformula = paste0("bacterial~offset(log(all))+",paste0(colnames(dat_slope)[-c(1:2)],collapse="+"))
+myformula = paste0("bacterial~all+",paste0(colnames(dat_slope)[-c(1:2)],collapse="+"))
 mod_slope = glm(as.formula(myformula),family=poisson(),data=dat_slope)
 summary(mod_slope)
 ```
@@ -213,7 +211,7 @@ p6= ggplot(dat_combined %>% filter(site=="GOSH")) + geom_col(aes(x=timeToGroup,y
 p7= ggplot(dat_combined %>% filter(site=="UPitt")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("UPitt")+labs(x="time",y="bacterial infection")
 p8= ggplot(dat_combined %>% filter(site=="CCHMC")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("CCHMC")+labs(x="time",y="bacterial infection")
 
-grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,ncol=4)
+panelB <- grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,ncol=4)
 ```
 
 # Now let's plot the fit using a standard population
@@ -251,7 +249,7 @@ panelC <- ggplot(data=all_pred,aes(x=date,y=pred,colour=site)) + geom_line()+yla
 
 # Create final panel figure
 ```{r}
-library(ggpu)
+library(ggpubr)
 
 # ggarrange(panelB,
 #           ggarrange(panelA, panelC, 
@@ -265,11 +263,11 @@ top_row = ggarrange(panelA, panelC, ncol = 2, labels = c("A", "C"))
 bottom_row = ggarrange( panelB, ncol = 1, labels = c("B"))
 final_plot = ggarrange(top_row, bottom_row, ncol = 1)
 
-ggsave(filename = "../../panelFigure.png",
-       plot = final_plot, 
-       width = 10, 
+#ggsave(filename = "../../panelFigure_IBIextensive.png",
+#       plot = final_plot, 
+#       width = 10, 
        #height = 450, 
-       dpi=700)
+#       dpi=700)
 
 ```
 
