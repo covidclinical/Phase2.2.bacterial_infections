@@ -253,8 +253,8 @@ all_pred$date = dat_combined$timeToGroup
 
 ### add a second legend for the panel C
 panelC_data <- all_pred
-panelC_data$vline_label <- ifelse( panelC_data$date %in% as.Date(c("2020-01-01","2021-01-01","2022-09-01","2022-12-01")), "Predicted",
-                             ifelse( panelC_data$date %in% as.Date(c("2020-03-01", "2021-03-01")), "NPIs", ""))
+panelC_data$vline_label <- ifelse( panelC_data$date %in% as.Date(c("2020-01-01","2021-01-01","2022-09-01","2022-12-01")), "Change Point",
+                             ifelse( panelC_data$date %in% as.Date(c("2020-03-01", "2021-03-01")), "NPI Period", ""))
 
 panelC_data$vline_x <- panelC_data$date
 for( i in 1:nrow( panelC_data)){
@@ -263,7 +263,9 @@ for( i in 1:nrow( panelC_data)){
   }
 }
 
-panelC_data$significant <- ifelse( panelC_data$date %in% as.Date(c("2020-07-01","2022-01-01")), "significant", "")
+
+panelC_data$significant <- ifelse( panelC_data$date %in% as.Date(c("2020-07-01")), "first",
+                                   ifelse( panelC_data$date %in% as.Date(c("2022-01-01")), "second", ifelse( panelC_data$date %in% as.Date(c("2022-10-01")), "third", ifelse( panelC_data$date %in% as.Date(c("2023-02-01")), "fourth", ""))))
 
 
 panelC <- ggplot(data=panelC_data,aes(x=date,y=pred,colour=site)) + 
@@ -272,12 +274,14 @@ panelC <- ggplot(data=panelC_data,aes(x=date,y=pred,colour=site)) +
   ylab("predicted bacterial infection")+
   scale_color_manual(name = "Site", values = c("BCH" = "#F8766D", "CCHMC" = "#CD9600", "CCMC" ="#7CAE00", "GOSH"="#00BE67",
                                                "H12O" = "#00BFC4", "HCUV" = "#00A9FF", "MICHIGAN" = "#C77CFF", "UPitt" = "#FF61CC"))+
-  scale_linetype_manual(name = "Events", values = c("Predicted" = "dashed", "NPIs" = "dotted")) +
+  scale_linetype_manual(name = "Events", values = c("Change Point" = "dashed", "NPI Period" = "dotted")) +
   guides(color = guide_legend(title = "Site"),
          linetype = guide_legend(title = "Events"),
          color = guide_legend(title = "Site"),
          linetype = guide_legend(title = "Events")) +
-  theme(legend.key = element_rect(fill = "white")) +  geom_point(data = panelC_data[panelC_data$significant =="significant", ],aes(x=date, y=40),shape = "*", size=5, color ="black", show.legend = FALSE)
+  theme(legend.key = element_rect(fill = "white")) +  geom_point(data = panelC_data[panelC_data$significant =="first", ],aes(x=date, y=35),shape = "*", size=5, color ="black", show.legend = FALSE)+  
+  geom_point(data = panelC_data[panelC_data$significant =="second", ],aes(x=date, y=40),shape = "*", size=5, color ="black", show.legend = FALSE)+  geom_point(data = panelC_data[panelC_data$significant =="third", ],aes(x=date, y=60),shape = "*", size=5, color ="black", show.legend = FALSE)+  
+  geom_point(data = panelC_data[panelC_data$significant =="fourth", ],aes(x=date, y=55),shape = "*", size=5, color ="black", show.legend = FALSE)
 
 
 ```
