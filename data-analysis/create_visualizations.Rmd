@@ -130,8 +130,18 @@ valuesToPlot <- rbind( totalBacterialPerMonth, bacterialSubgroupPerMonth)
 ```
 
 ```{r}
-linePlot <- ggplot2::ggplot( data = valuesToPlot, aes(x=timeToGroup, y=count, group=category_name)) +
-    ggplot2::geom_line( aes( color=category_name)) +
+# remove IBI simple
+valuesToPlot <- valuesToPlot %>%
+  dplyr::filter( category_name != "IBI_simple")
+
+#rename IBI_extensive as Invasive Bacterial Infection
+valuesToPlot <- valuesToPlot %>%
+  dplyr::mutate( category_name = ifelse( category_name == "IBI_extensive", "Invasive Bacterial Infection", category_name )) %>%
+  dplyr::rename( "Bacterial Infection Category" = category_name )
+
+
+linePlot <- ggplot2::ggplot( data = valuesToPlot, aes(x=timeToGroup, y=count, group=`Bacterial Infection Category`)) +
+    ggplot2::geom_line( aes( color=`Bacterial Infection Category`)) +
   #ggplot2::geom_line( aes(linetype=category_name, color=category_name)) +
   ggplot2::facet_wrap(~ site, scales = "free", nrow = 2) + 
   #ggplot2::scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9","darkgreen", "grey")) +
