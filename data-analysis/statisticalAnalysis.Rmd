@@ -29,7 +29,6 @@ gap = 3 #use gap=2 as sensitivity analysis, change points identified are very co
 #disease_subgroupToStudy <- "Skin"
 disease_subgroupToStudy <- "Respiratory"
 #disease_subgroupToStudy <- "IBI_extensive"
-#disease_subgroupToStudy <- "IBI_simple"
 
 for (kk in 1:length(sites)){
   load(paste0("../results/sites_outputs/", sites[kk],"/a2Tables.RData"))
@@ -178,12 +177,19 @@ Next, based on the variable selection results. Let us re-fit the model using glm
 ```{r echo=FALSE}
 # we now refit the model with variables selected by adaptive lasso
 # this is to facilitate hypothesis testing
-#selected_var = rownames(beta.alasso)[which(beta.alasso != 0)][-1]
-#selected_var = union(selected_var, c("cFrac","iFrac","mFrac","summer","autumn","winter",              "CCHMC","CCMC","GOSH","H12O","HCUV","MICHIGAN","UPitt"))
+selected_var = rownames(beta.alasso)[which(beta.alasso != 0)][-1]
+selected_var = union(selected_var, c("cFrac","iFrac","mFrac","summer","autumn","winter",              "CCHMC","CCMC","GOSH","H12O","HCUV","MICHIGAN","UPitt"))
 
 # for Skin, IBI, do the following instead
-#selected_var = c("cFrac","iFrac","mFrac","summer","autumn","winter","CCHMC","CCMC","GOSH","H12O","HCUV","MICHIGAN","UPitt","time15","time24")
+#selected_var = c("cFrac","iFrac","mFrac","summer","autumn","winter","CCHMC","CCMC","GOSH","H12O","HCUV","MICHIGAN","UPitt","time15","time24", "time45","time48")
 
+#selected_var = c("cFrac","iFrac","mFrac","summer","autumn","winter","CCHMC","CCMC","GOSH","H12O","HCUV","MICHIGAN","UPitt","time16","time25", "time46","time49")
+
+#selected_var = c("cFrac","iFrac","mFrac","summer","autumn","winter","CCHMC","CCMC","GOSH","H12O","HCUV","MICHIGAN","UPitt","time1","time2","time3",  "time4","time5","time6","time7",   "time8","time9","time10","time11",  "time12","time13","time14","time15",  "time16","time17","time18","time19",  "time20","time21","time22","time23",  "time24","time25","time26","time27",  "time28","time29","time30","time31",  "time32","time33","time34","time35",  "time36","time37","time38","time39",  "time40","time41","time42","time43",  "time44","time45","time46","time47",  "time48","time49","time50")
+
+#selected_var = c("cFrac","iFrac","mFrac","summer","autumn","winter","CCHMC","CCMC","GOSH","H12O","HCUV","MICHIGAN","UPitt","time3", "time6","time9", "time12","time15","time18","time21",  "time24","time27", "time30","time33",  "time36","time39","time42","time45",  "time48")
+
+#selected_var = c("cFrac","iFrac","mFrac","summer","autumn","winter","CCHMC","CCMC","GOSH","H12O","HCUV","MICHIGAN","UPitt","time2","time4","time6",   "time8","time10", "time12","time14", "time16","time18",  "time20","time22", "time24","time26",  "time28","time30",  "time32","time34",  "time36","time38","time40","time42",  "time44","time46",  "time48","time50")
 
 design_reduced = design_combined[,colnames(design_combined) %in% selected_var]
 time_points = as.numeric(sapply(selected_var[sapply(selected_var,function(x){substr(x,1,4)}) == "time"],function(x){substr(x,5,nchar(x))}))
@@ -241,9 +247,38 @@ for (kk in 1:length(sites)){
 
 library(ggplot2)
 all_pred$date = dat_combined$timeToGroup
-panelC <- ggplot(data=all_pred,aes(x=date,y=pred,colour=site)) + geom_line()+ylab("predicted bacterial infection")+
-  geom_vline(xintercept=as.Date("2020-01-01"),linetype=2,colour="blue")+geom_vline(xintercept=as.Date("2021-01-01"),linetype=2,colour="blue")+geom_vline(xintercept=as.Date("2022-09-01"),linetype=2,colour="blue")+geom_vline(xintercept=as.Date("2022-12-01"),linetype=2,colour="blue")+
-  geom_vline(xintercept=as.Date("2020-03-01"),linetype=2)+geom_vline(xintercept=as.Date("2021-03-01"),linetype=2)
+#panelC <- ggplot(data=all_pred,aes(x=date,y=pred,colour=site)) + geom_line()+ylab("predicted bacterial infection")+
+#  geom_vline(xintercept=as.Date("2020-01-01"),linetype=2,colour="blue")+geom_vline(xintercept=as.Date("2021-01-01"),linetype=2,colour="blue")+geom_vline(xintercept=as.Date("2022-09-01"),linetype=2,colour="blue")+geom_vline(xintercept=as.Date("2022-12-01"),linetype=2,colour="blue")+
+#  geom_vline(xintercept=as.Date("2020-03-01"),linetype=2)+geom_vline(xintercept=as.Date("2021-03-01"),linetype=2)
+
+### add a second legend for the panel C
+panelC_data <- all_pred
+panelC_data$vline_label <- ifelse( panelC_data$date %in% as.Date(c("2020-01-01","2021-01-01","2022-09-01","2022-12-01")), "Predicted",
+                             ifelse( panelC_data$date %in% as.Date(c("2020-03-01", "2021-03-01")), "NPIs", ""))
+
+panelC_data$vline_x <- panelC_data$date
+for( i in 1:nrow( panelC_data)){
+  if( panelC_data$vline_label[i] == ""){
+    panelC_data$vline_x[i] = "1900-01-01"
+  }
+}
+
+panelC_data$significant <- ifelse( panelC_data$date %in% as.Date(c("2020-07-01","2022-01-01")), "significant", "")
+
+
+panelC <- ggplot(data=panelC_data,aes(x=date,y=pred,colour=site)) + 
+  geom_line()+
+  geom_vline(aes(xintercept = vline_x, color = vline_label, linetype = vline_label)) +
+  ylab("predicted bacterial infection")+
+  scale_color_manual(name = "Site", values = c("BCH" = "#F8766D", "CCHMC" = "#CD9600", "CCMC" ="#7CAE00", "GOSH"="#00BE67",
+                                               "H12O" = "#00BFC4", "HCUV" = "#00A9FF", "MICHIGAN" = "#C77CFF", "UPitt" = "#FF61CC"))+
+  scale_linetype_manual(name = "Events", values = c("Predicted" = "dashed", "NPIs" = "dotted")) +
+  guides(color = guide_legend(title = "Site"),
+         linetype = guide_legend(title = "Events"),
+         color = guide_legend(title = "Site"),
+         linetype = guide_legend(title = "Events")) +
+  theme(legend.key = element_rect(fill = "white")) +  geom_point(data = panelC_data[panelC_data$significant =="significant", ],aes(x=date, y=40),shape = "*", size=5, color ="black", show.legend = FALSE)
+
 
 ```
 
@@ -263,11 +298,11 @@ top_row = ggarrange(panelA, panelC, ncol = 2, labels = c("A", "C"))
 bottom_row = ggarrange( panelB, ncol = 1, labels = c("B"))
 final_plot = ggarrange(top_row, bottom_row, ncol = 1)
 
-#ggsave(filename = "../../panelFigure_IBIextensive.png",
-#       plot = final_plot, 
-#       width = 10, 
+ggsave(filename = "../../panelFigure_respiratory.png",
+       plot = final_plot, 
+       width = 10, 
        #height = 450, 
-#       dpi=700)
+       dpi=700)
 
 ```
 
