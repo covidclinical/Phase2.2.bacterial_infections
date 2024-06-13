@@ -81,21 +81,29 @@ bacterial_counts_bySite <- rbind( bacterial_counts_bySite, ceroCategories)
 
 Create the barplots
 ```{r}
-bacterial_counts_bySite$site <- factor(bacterial_counts_bySite$site, levels = c("BCH","CCHMC", "CCMC", "MICHIGAN", "UPitt","H12O", "HCUV", "GOSH"))
+bacterial_counts_bySite$site <- gsub("UPitt", "UPMC", bacterial_counts_bySite$site)
+bacterial_counts_bySite$site <- gsub("MICHIGAN", "UMICH", bacterial_counts_bySite$site)
+
+bacterial_counts_bySite$site <- factor(bacterial_counts_bySite$site, levels = c("BCH","CCHMC", "CCMC", "UMICH", "UPMC","H12O", "HCUV", "GOSH"))
 
 bacterial_counts_bySite$country <- ifelse( bacterial_counts_bySite$site %in% c("H12O", "HCUV"), "Spain", ifelse( bacterial_counts_bySite$site == "GOSH", "UK", "US"))
 
-bacterial_counts_bySite$site <- factor(bacterial_counts_bySite$site, levels = c("BCH","CCHMC", "CCMC", "MICHIGAN", "UPitt","H12O", "HCUV", "GOSH"))
+bacterial_counts_bySite$site <- factor(bacterial_counts_bySite$site, levels = c("BCH","CCHMC", "CCMC", "UMICH", "UPMC","H12O", "HCUV", "GOSH"))
+
+
+ordered_levels <- c("US", "Spain", "UK")
+bacterial_counts_bySite$country <- factor(bacterial_counts_bySite$country, levels = ordered_levels)
+
 
 
 output_plot <- ggplot2::ggplot( data = bacterial_counts_bySite, 
                  aes( x= site, y = n, fill=country )) +
   ggplot2::geom_bar( stat = "identity") +
-  ggplot2::scale_fill_manual( "legend", values = c("Spain" = "#D81B60", "US" = "#1E88E5", "UK" = "#FFC107")) +
   ggplot2::geom_vline(xintercept = 5.5, linetype="dotted") +
   ggplot2::geom_vline(xintercept = 7.5, linetype="dotted") +
-  ggplot2::facet_wrap(~ category, scales = "free") + 
-  ggplot2::geom_text( aes(label=n), vjust=1.6, color="white", size=3.5) + 
+  ggplot2::facet_wrap(~ category, scales = "free") +
+  ggplot2::scale_fill_manual( values = c("US" = "#1E88E5", "Spain" = "#D81B60", "UK" = "#FFC107")) +
+  ggplot2::geom_text( aes(label=n), vjust=1.6, color="black", size=2.5) + 
   ggplot2::ylab( "Number of hospitalizations") +
   ggplot2::theme_bw( ) +
   ggplot2::theme(panel.grid.major.x = element_blank(), 
@@ -135,9 +143,18 @@ valuesToPlot <- valuesToPlot %>%
   dplyr::filter( category_name != "IBI_simple")
 
 #rename IBI_extensive as Invasive Bacterial Infection
+valuesToPlot$category_name <- gsub("total", "Total", valuesToPlot$category_name)
+
 valuesToPlot <- valuesToPlot %>%
-  dplyr::mutate( category_name = ifelse( category_name == "IBI_extensive", "Invasive Bacterial Infection", category_name )) %>%
+  dplyr::mutate( category_name = ifelse( category_name == "IBI_extensive", "Invasive", category_name )) %>%
   dplyr::rename( "Bacterial Infection Category" = category_name )
+
+
+valuesToPlot$site <- gsub("UPitt", "UPMC", valuesToPlot$site)
+valuesToPlot$site <- gsub("MICHIGAN", "UMICH", valuesToPlot$site)
+
+
+valuesToPlot$site <- factor(valuesToPlot$site, levels = c("BCH","CCHMC","CCMC", "UMICH","UPMC", "H12O", "HCUV", "GOSH"))
 
 
 linePlot <- ggplot2::ggplot( data = valuesToPlot, aes(x=timeToGroup, y=count, group=`Bacterial Infection Category`)) +
@@ -154,13 +171,13 @@ linePlot <- ggplot2::ggplot( data = valuesToPlot, aes(x=timeToGroup, y=count, gr
   ggplot2::theme_bw()+
   ggplot2::theme(legend.position="bottom")
 
-png(filename = "../../figure2_linePlot_HighCategory_byHospital.png",
+png(filename = "../../figure1_linePlot_HighCategory_byHospital.png",
     width    = 800, 
     height   = 600 )
 linePlot
 dev.off()
 
-ggsave(filename = "../../figure2_linePlot_HighCategory_byHospital_700dpi.png",
+ggsave(filename = "../../figure1_linePlot_HighCategory_byHospital_700dpi.png",
        plot = linePlot, 
        width = 10, 
        #height = 450, 
@@ -168,16 +185,25 @@ ggsave(filename = "../../figure2_linePlot_HighCategory_byHospital_700dpi.png",
 ```
 Test the violin plot idea
 ```{r, eval=FALSE}
-valuesToPlot$site <- factor(valuesToPlot$site, levels = c("BCH","CCHMC","CCMC", "MICHIGAN","UPitt", "H12O", "HCUV", "GOSH"))
+valuesToPlot$site <- gsub("UPitt", "UPMC", valuesToPlot$site)
+valuesToPlot$site <- gsub("MICHIGAN", "UMICH", valuesToPlot$site)
+
+
+valuesToPlot$site <- factor(valuesToPlot$site, levels = c("BCH","CCHMC","CCMC", "UMICH","UPMC", "H12O", "HCUV", "GOSH"))
 
 valuesToPlot$country <-  ifelse( valuesToPlot$site %in% c("H12O", "HCUV"), "Spain", ifelse( valuesToPlot$site == "GOSH", "UK", "US"))
   
+valuesToPlot$`Bacterial Infection Category` <- gsub( "total", "Total", valuesToPlot$`Bacterial Infection Category`)
+
+ordered_levels <- c("US", "Spain", "UK")
+valuesToPlot$country <- factor(valuesToPlot$country, levels = ordered_levels)
+
 violin_output <- ggplot2::ggplot(valuesToPlot, aes(x=as.factor(site), y=count, fill=country)) +
   ggplot2::geom_violin( )+
   ggplot2::scale_fill_manual(values = c("Spain" = "#D81B60", "US" = "#1E88E5", "UK" = "#FFC107")) +
-  ggplot2::facet_wrap( ~category_name, scales = "free",nrow = 3)+
-  ggplot2::geom_vline(xintercept = 3.5, linetype="dotted")+
+  ggplot2::facet_wrap( ~`Bacterial Infection Category`, scales = "free",nrow = 3)+
   ggplot2::geom_vline(xintercept = 5.5, linetype="dotted")+
+  ggplot2::geom_vline(xintercept = 7.5, linetype="dotted")+
   ggplot2::ylab( "Number of hospitalizations") +
   ggplot2::xlab( "")+
   ggplot2::theme_bw( ) +
@@ -196,6 +222,11 @@ total_counts <- a2.1 %>%
       dplyr::filter(type == "all") %>%
       dplyr::filter(category_name == "total" )%>%
       dplyr::select( timeToGroup, count, site )
+
+total_counts$site <- gsub("UPitt", "UPMC", total_counts$site)
+total_counts$site <- gsub("MICHIGAN", "UMICH", total_counts$site)
+
+total_counts$site <- factor(total_counts$site, levels = c("BCH","CCHMC", "CCMC", "UMICH", "UPMC","H12O", "HCUV", "GOSH"))
 
 totalHosp_plot <- total_counts %>%
   ggplot2::ggplot( aes( x= timeToGroup, y = count )) +
