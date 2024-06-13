@@ -126,8 +126,14 @@ We analyze data from all the sites.
 Let us visualized the counts in the 8 sites over time.
 
 ```{r echo=FALSE}
+dat_combined$site <- gsub("UPitt", "UPMC", dat_combined$site)
+dat_combined$site <- gsub("MICHIGAN", "UMICH", dat_combined$site)
+
+dat_combined$site <- factor(dat_combined$site, levels = c("BCH","CCHMC", "CCMC", "UMICH", "UPMC","H12O", "HCUV", "GOSH"))
+
 panelA <- ggplot(dat_combined) +
   geom_line(aes(x = timeToGroup, y = bacterial, colour = site)) + 
+  scale_color_manual(name = "Site", values = c("BCH" = "#F8766D", "CCHMC" = "#CD9600", "CCMC" ="#7CAE00", "UMICH" = "#C77CFF", "UPMC" = "#FF61CC", "H12O" = "#00BFC4", "HCUV" = "#00A9FF", "GOSH"="#00BE67" ))+
   labs(x="time",y="number of infection") +
   theme(legend.position = "none")
   
@@ -158,18 +164,18 @@ Now let's visualize the fitted results in each site.
 ```{r echo = FALSE}
 pred.lasso = predict(mod.lasso.pois, s="lambda.1se",newx=design_combined,type="response")
 dat_combined$pred = pred.lasso
-p1= ggplot(dat_combined %>% filter(site=="BCH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("BCH")+labs(x="time",y="bacterial infection")
-p2= ggplot(dat_combined %>% filter(site=="MICHIGAN")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("Michigan")+labs(x="time",y="bacterial infection")
-p3= ggplot(dat_combined %>% filter(site=="HCUV")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("HCUV")+labs(x="time",y="bacterial infection")
-p4= ggplot(dat_combined %>% filter(site=="H12O")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("H12O")+labs(x="time",y="bacterial infection")
+p1= ggplot(dat_combined %>% filter(site=="BCH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("BCH")+labs(x="",y="bacterial infection")
+p2= ggplot(dat_combined %>% filter(site=="UMICH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("UMICH")+labs(x="",y="bacterial infection")
+p3= ggplot(dat_combined %>% filter(site=="HCUV")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("HCUV")+labs(x="",y="bacterial infection")
+p4= ggplot(dat_combined %>% filter(site=="H12O")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("H12O")+labs(x="",y="bacterial infection")
 grid.arrange(p1,p2,p3,p4,ncol=2)
-p5= ggplot(dat_combined %>% filter(site=="CCMC")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("CCMC")+labs(x="time",y="bacterial infection")
+p5= ggplot(dat_combined %>% filter(site=="CCMC")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("CCMC")+labs(x="",y="bacterial infection")
 grid.arrange(p1,p2,p3,p4,ncol=2)
-p6= ggplot(dat_combined %>% filter(site=="GOSH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("GOSH")+labs(x="time",y="bacterial infection")
-p7= ggplot(dat_combined %>% filter(site=="UPitt")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("UPitt")+labs(x="time",y="bacterial infection")
-p8= ggplot(dat_combined %>% filter(site=="CCHMC")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("CCHMC")+labs(x="time",y="bacterial infection")
+p6= ggplot(dat_combined %>% filter(site=="GOSH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("GOSH")+labs(x="",y="bacterial infection")
+p7= ggplot(dat_combined %>% filter(site=="UPMC")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("UPMC")+labs(x="",y="bacterial infection")
+p8= ggplot(dat_combined %>% filter(site=="CCHMC")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("CCHMC")+labs(x="",y="bacterial infection")
 
-grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,ncol=4)
+grid.arrange(p1,p8,p5,p2,p7,p4,p3,p6,ncol=4)
 ```
 
 Next, based on the variable selection results. Let us re-fit the model using glm. 
@@ -208,20 +214,23 @@ And let's visualize the fit.
 
 ```{r echo=FALSE}
 dat_combined$pred = predict(mod_slope,type="response")
-p1= ggplot(dat_combined %>% filter(site=="BCH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("BCH")+labs(x="time",y="bacterial infection")
-p2= ggplot(dat_combined %>% filter(site=="MICHIGAN")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("Michigan")+labs(x="time",y="bacterial infection")
-p3= ggplot(dat_combined %>% filter(site=="HCUV")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("HCUV")+labs(x="time",y="bacterial infection")
-p4= ggplot(dat_combined %>% filter(site=="H12O")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("H12O")+labs(x="time",y="bacterial infection")
-p5= ggplot(dat_combined %>% filter(site=="CCMC")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("CCMC")+labs(x="time",y="bacterial infection")
-p6= ggplot(dat_combined %>% filter(site=="GOSH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("GOSH")+labs(x="time",y="bacterial infection")
-p7= ggplot(dat_combined %>% filter(site=="UPitt")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("UPitt")+labs(x="time",y="bacterial infection")
-p8= ggplot(dat_combined %>% filter(site=="CCHMC")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("CCHMC")+labs(x="time",y="bacterial infection")
+p1= ggplot(dat_combined %>% filter(site=="BCH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("BCH")+labs(x="",y="bacterial infection")
+p2= ggplot(dat_combined %>% filter(site=="UMICH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("UMICH")+labs(x="",y="bacterial infection")
+p3= ggplot(dat_combined %>% filter(site=="HCUV")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("HCUV")+labs(x="",y="bacterial infection")
+p4= ggplot(dat_combined %>% filter(site=="H12O")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("H12O")+labs(x="",y="bacterial infection")
+p5= ggplot(dat_combined %>% filter(site=="CCMC")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("CCMC")+labs(x="",y="bacterial infection")
+p6= ggplot(dat_combined %>% filter(site=="GOSH")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("GOSH")+labs(x="",y="bacterial infection")
+p7= ggplot(dat_combined %>% filter(site=="UPMC")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("UPMC")+labs(x="",y="bacterial infection")
+p8= ggplot(dat_combined %>% filter(site=="CCHMC")) + geom_col(aes(x=timeToGroup,y=bacterial))+geom_line(aes(x=timeToGroup,y=pred))+ggtitle("CCHMC")+labs(x="",y="bacterial infection")
 
-panelB <- grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,ncol=4)
+panelB <- grid.arrange(p1,p8,p5,p2,p7,p4,p3,p6,ncol=4)
 ```
 
 # Now let's plot the fit using a standard population
 ```{r}
+dat_combined$site <- gsub("UMICH", "MICHIGAN", dat_combined$site )
+dat_combined$site <- gsub("UPMC", "UPitt", dat_combined$site )
+
 all_pred = NULL
 for (kk in 1:length(sites)){
   standard_site = sites[kk]
@@ -246,6 +255,10 @@ for (kk in 1:length(sites)){
 }
 
 library(ggplot2)
+all_pred$site <- gsub("UPitt", "UPMC", all_pred$site)
+all_pred$site <- gsub("MICHIGAN", "UMICH", all_pred$site)
+all_pred$site <- factor(all_pred$site, levels = c("BCH","CCHMC", "CCMC", "UMICH", "UPMC","H12O", "HCUV", "GOSH"))
+
 all_pred$date = dat_combined$timeToGroup
 #panelC <- ggplot(data=all_pred,aes(x=date,y=pred,colour=site)) + geom_line()+ylab("predicted bacterial infection")+
 #  geom_vline(xintercept=as.Date("2020-01-01"),linetype=2,colour="blue")+geom_vline(xintercept=as.Date("2021-01-01"),linetype=2,colour="blue")+geom_vline(xintercept=as.Date("2022-09-01"),linetype=2,colour="blue")+geom_vline(xintercept=as.Date("2022-12-01"),linetype=2,colour="blue")+
@@ -272,8 +285,7 @@ panelC <- ggplot(data=panelC_data,aes(x=date,y=pred,colour=site)) +
   geom_line()+
   geom_vline(aes(xintercept = vline_x, color = vline_label, linetype = vline_label)) +
   ylab("predicted bacterial infection")+
-  scale_color_manual(name = "Site", values = c("BCH" = "#F8766D", "CCHMC" = "#CD9600", "CCMC" ="#7CAE00", "GOSH"="#00BE67",
-                                               "H12O" = "#00BFC4", "HCUV" = "#00A9FF", "MICHIGAN" = "#C77CFF", "UPitt" = "#FF61CC"))+
+  scale_color_manual(name = "Site", values = c("BCH" = "#F8766D", "CCHMC" = "#CD9600", "CCMC" ="#7CAE00", "UMICH" = "#C77CFF", "UPMC" = "#FF61CC", "H12O" = "#00BFC4", "HCUV" = "#00A9FF", "GOSH"="#00BE67" ))+
   scale_linetype_manual(name = "Events", values = c("Change Point" = "dashed", "NPI Period" = "dotted")) +
   guides(color = guide_legend(title = "Site"),
          linetype = guide_legend(title = "Events"),
